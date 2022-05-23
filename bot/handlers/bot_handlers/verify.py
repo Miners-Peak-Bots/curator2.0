@@ -1,10 +1,12 @@
-from ...db.cache import users_cache, groups_cache
-from ...db.models import Group, User, UserLog
 from ...utils.msg import errorify
+from user.utils import create_get_user
+from group.models import (
+    SpecialGroup
+)
+from django.conf import settings
 from pyrogram.handlers import MessageHandler
 import os
 import emoji
-import peewee
 from pyrogram import filters
 
 
@@ -13,7 +15,7 @@ How is it going"""
 
 
 def handle_unverify(client, msg):
-    if msg.from_user.id != client.config.general.master_id:
+    if msg.from_user.id != settings.BOT_MASTER:
         msg.delete()
         return False
 
@@ -31,13 +33,7 @@ def handle_unverify(client, msg):
         return False
 
     reply_to = msg.reply_to_message
-    user_id = reply_to.forward_from.id
-
-    try:
-        user = User.get(User.user_id == user_id)
-    except peewee.DoesNotExist:
-        msg.reply_text('User not found in database')
-        return False
+    user, created = create_get_user(reply_to.from_user)
 
     if not user.verified:
         msg.reply_text('User is not verified.')
@@ -45,12 +41,12 @@ def handle_unverify(client, msg):
 
     user.verified = False
     user.save()
-    log = UserLog(user=user,
-                  message=reason)
-    log.save()
+    # log = UserLog(user=user,
+    #               message=reason)
+    # log.save()
 
     errors = []
-    for group in Group.select():
+    for group in SpecialGroup.objects.all():
         try:
             client.promote_chat_member(chat_id=group.group_id,
                                        user_id=user.user_id,
@@ -65,8 +61,8 @@ def handle_unverify(client, msg):
     msg.reply_text(response)
 
 
-async def handle_verify(client, msg):
-    if msg.from_user.id != client.config.general.master_id:
+def handle_verify(client, msg):
+    if msg.from_user.id != settings.BOT_MASTER:
         msg.delete()
         return False
 
@@ -79,14 +75,7 @@ async def handle_verify(client, msg):
         return False
 
     reply_to = msg.reply_to_message
-    user_id = reply_to.forward_from.id
-
-    try:
-        user = User.get(User.user_id == user_id)
-    except peewee.DoesNotExist:
-        msg.reply_text('User not found in database')
-        return False
-
+    user, created = create_get_user(reply_to.forward_from)
     try:
         flagg = msg.command[1]
     except IndexError:
@@ -124,14 +113,16 @@ async def handle_verify(client, msg):
     Promote user to admin and set admin title
     """
     errors = []
-    for group in Group.select():
+    for group in SpecialGroup.objects.all():
         try:
+            privileges = group.get_privileges()
+            print(privileges)
             client.promote_chat_member(chat_id=group.group_id,
-                                       user_id=user.user_id,
-                                       can_pin_messages=True)
-
-            client.set_administrator_title(group.group_id, user.user_id,
-                                           'Curator verified')
+                                       user_id=user.tele_id,
+                                       privileges=privileges)
+            if group.flair:
+                client.set_administrator_title(group.group_id, user.tele_id,
+                                               group.flair)
         except Exception as e:
             errors.append(
                 f'Could not promote in {group.group_id} due to\n'
@@ -139,7 +130,7 @@ async def handle_verify(client, msg):
             )
 
     response = errorify('User has been verified', errors)
-    await msg.reply_text(response)
+    msg.reply_text(response)
 
 
 __HANDLERS__ = [
