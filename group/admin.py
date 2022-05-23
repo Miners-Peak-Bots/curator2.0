@@ -20,7 +20,7 @@ class PermissionAdmin(admin.ModelAdmin):
 
 
 class PrivilegeAdmin(admin.ModelAdmin):
-    pass
+    readonly_fields = ['is_anonymous']
 
 
 admin.site.register(Group, GroupAdmin)
