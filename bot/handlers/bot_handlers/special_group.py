@@ -1,0 +1,56 @@
+from group.utils import create_get_group
+from group.models import SpecialGroup
+from django.conf import settings
+from pyrogram import filters
+from pyrogram.handlers import MessageHandler
+
+__HELP__ = ''
+
+
+def handle_makespecial(client, msg):
+    if msg.from_user.id != settings.BOT_MASTER:
+        msg.delete()
+        return False
+
+    group, created = create_get_group(msg.chat)
+    specgroup = SpecialGroup.objects.create(
+        group_id=group.group_id,
+        title=group.title,
+        username=group.username,
+        link=group.link
+    )
+    print(specgroup)
+    return msg.reply_text(
+        'Group has been marked as special.\n'
+        'Please set privileges and flair from dashboard'
+    )
+
+
+def handle_removespecial(client, msg):
+    if msg.from_user.id != settings.BOT_MASTER:
+        msg.delete()
+        return False
+
+    group, created = create_get_group(msg.chat)
+    if created:
+        msg.delete()
+        return msg.reply_text('Group is not special currently')
+
+    try:
+        SpecialGroup.objects.get(pk=group.group_id).delete()
+    except Exception:
+        return msg.reply_text(
+            'Could not delete group. Try from dashboard'
+        )
+
+    return msg.reply_text('Group has been removed from special groups.')
+
+
+__HANDLERS__ = [
+    MessageHandler(handle_makespecial,
+                   (filters.command('special', prefixes='!') &
+                    filters.group)),
+    MessageHandler(handle_removespecial,
+                   (filters.command('notspecial', prefixes='!') &
+                    filters.group)),
+]
