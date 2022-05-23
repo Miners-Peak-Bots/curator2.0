@@ -28,7 +28,7 @@ pyaes==1.6.1
 pydantic==1.9.0
 Pygments==2.11.2
 pykeyboard==0.1.5
-Pyrogram==1.4.8
+Pyrogram==2.0.24
 pyromod==1.5
 PySocks==1.7.1
 python-decouple==3.6
