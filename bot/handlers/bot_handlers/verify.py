@@ -8,6 +8,7 @@ from pyrogram.handlers import MessageHandler
 import os
 import emoji
 from pyrogram import filters
+from pyrogram.types import ChatPrivileges
 
 
 __HELP__ = """Hey man
@@ -33,7 +34,7 @@ def handle_unverify(client, msg):
         return False
 
     reply_to = msg.reply_to_message
-    user, created = create_get_user(reply_to.from_user)
+    user, created = create_get_user(reply_to.forward_from)
 
     if not user.verified:
         msg.reply_text('User is not verified.')
@@ -45,12 +46,13 @@ def handle_unverify(client, msg):
     #               message=reason)
     # log.save()
 
+    privileges = ChatPrivileges(can_manage_chat=False)
     errors = []
     for group in SpecialGroup.objects.all():
         try:
             client.promote_chat_member(chat_id=group.group_id,
-                                       user_id=user.user_id,
-                                       can_manage_chat=False)
+                                       user_id=user.tele_id,
+                                       privileges=privileges)
         except Exception as e:
             errors.append(
                 f'Could not remove as admin in {group.group_id} due to\n'
@@ -116,7 +118,6 @@ def handle_verify(client, msg):
     for group in SpecialGroup.objects.all():
         try:
             privileges = group.get_privileges()
-            print(privileges)
             client.promote_chat_member(chat_id=group.group_id,
                                        user_id=user.tele_id,
                                        privileges=privileges)
