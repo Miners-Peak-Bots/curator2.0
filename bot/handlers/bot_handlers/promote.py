@@ -2,6 +2,7 @@ from group.models import Group
 from user.utils import create_get_user
 from ...utils.msg import errorify
 from django.conf import settings
+from pyrogram.types import ChatPrivileges
 from pyrogram.handlers import MessageHandler
 from pyrogram import filters
 
@@ -27,10 +28,11 @@ def handle_promote(client, msg):
     errors = []
     for group in Group.objects.all():
         client.resolve_peer(group.group_id)
+        privileges = group.get_admin_privileges()
         try:
             client.promote_chat_member(chat_id=group.group_id,
                                        user_id=member.tele_id,
-                                       can_pin_messages=True)
+                                       privileges=privileges)
         except Exception as e:
             errors.append(
                 f'Could not promote user in {group.group_id} due to '
@@ -55,12 +57,13 @@ def handle_demote(client, msg):
     member.admin = False
     member.save()
     errors = []
+    privileges = ChatPrivileges(can_manage_chat=False)
     for group in Group.objects.all():
         client.resolve_peer(group.group_id)
         try:
             client.promote_chat_member(chat_id=group.group_id,
                                        user_id=member.tele_id,
-                                       can_manage_chat=False)
+                                       privileges=privileges)
         except Exception as e:
             errors.append(
                 f'Could not remove as admin in {group.group_id} due to\n'

@@ -1,7 +1,7 @@
 from ...utils.msg import errorify
 from user.utils import create_get_user
 from group.models import (
-    SpecialGroup
+   Group
 )
 from django.conf import settings
 from pyrogram.handlers import MessageHandler
@@ -48,7 +48,7 @@ def handle_unverify(client, msg):
 
     privileges = ChatPrivileges(can_manage_chat=False)
     errors = []
-    for group in SpecialGroup.objects.all():
+    for group in Group.objects.filter(special=True).all():
         try:
             client.promote_chat_member(chat_id=group.group_id,
                                        user_id=user.tele_id,
@@ -115,9 +115,9 @@ def handle_verify(client, msg):
     Promote user to admin and set admin title
     """
     errors = []
-    for group in SpecialGroup.objects.all():
+    for group in Group.objects.filter(special=True).all():
         try:
-            privileges = group.get_privileges()
+            privileges = group.get_special_privileges()
             client.promote_chat_member(chat_id=group.group_id,
                                        user_id=user.tele_id,
                                        privileges=privileges)
