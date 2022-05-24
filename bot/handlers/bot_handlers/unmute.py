@@ -1,7 +1,3 @@
-from ...utils.user import (
-    get_user,
-    create_user
-)
 import peewee
 from pyrogram.types import ChatPermissions
 from pyrogram.handlers import CallbackQueryHandler

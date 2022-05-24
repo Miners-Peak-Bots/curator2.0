@@ -1,5 +1,3 @@
-from ...db.cache import users_cache, groups_cache
-from ...db.models import Group, User
 from ...utils.msg import errorify
 from pyrogram.handlers import MessageHandler
 from pyrogram import filters
