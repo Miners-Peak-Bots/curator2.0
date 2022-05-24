@@ -1,11 +1,9 @@
-from ...db.cache import users_cache, groups_cache
-from ...db.models import User
-from ...utils.user import get_user, create_user
 from ...utils.msg import titlefy, linkify, titlefy_simple, boldify
 from pyrogram.handlers import MessageHandler
 import emoji
-import peewee
+from pyrogram.enums import ParseMode
 from pyrogram import filters
+from user.utils import create_get_user
 
 
 __HELP__ = """Hey man
@@ -14,7 +12,7 @@ How is it going"""
 
 def prep_log(user):
     response = []
-    logs = user.log.select()
+    logs = user.logs.all()
     for log in logs:
         response.append(
             boldify(log.message + ' on ' + log.date.strftime('%m/%d/%Y'))
@@ -25,7 +23,7 @@ def prep_log(user):
 
 def prep_message(user):
     text = '@MinersPeak <b>Curator Bot</b>\n--------------------\n'
-    text = text + titlefy('User id', user.user_id)
+    text = text + titlefy('User id', user.tele_id)
     text = text + titlefy('First name', user.first_name)
     text = text + titlefy_simple('Username', user.username_tag)
 
@@ -43,9 +41,9 @@ def prep_message(user):
         text = text + '\n' + emoji.emojize(
             ':check_mark_button: <code>Verified!</code>'
         )
-    text = text + '\n' + titlefy('Reputation', len(user.rep.select()))
+    # text = text + '\n' + titlefy('Reputation', len(user.rep.select()))
     text = text + '------------' + '\n'
-    warns = len(user.warns.select())
+    warns = user.warning.count()
     text = text + titlefy('Warns', f'{warns}/3')
     banned_status = 'Yes' if user.banned else 'No'
     text = text + titlefy('Banned', banned_status)
@@ -60,34 +58,19 @@ def prep_message(user):
     return text
 
 
-async def handle_acheck(client, msg):
+def handle_acheck(client, msg):
     if not msg.reply_to_message:
         return False
 
-    """
-    if the command is not from master
-    fetch the current user and check if they are an admin
-    """
-    master = client.config.general.master_id
-    if msg.from_user.id != master:
-        try:
-            user = get_user(msg.from_user.id)
-            if not user.admin:
-                await msg.delete()
-                return False
-        except peewee.DoesNotExist:
-            await msg.delete()
-            return False
+    admin, created = create_get_user(msg.from_user)
+    if not admin.is_admin:
+        msg.delete()
+        return False
 
     target_user = msg.reply_to_message.from_user
-    member_id = target_user.id
-    try:
-        member = get_user(member_id)
-    except peewee.DoesNotExist:
-        member = create_user(target_user)
-
+    member, created = create_get_user(target_user)
     response = prep_message(member)
-    await msg.reply_text(response, parse_mode="html")
+    msg.reply_text(response, parse_mode=ParseMode.HTML)
 
 
 __HANDLERS__ = [

@@ -1,9 +1,6 @@
-from ...db.cache import users_cache, groups_cache
-from ...db.models import Group, User
 from pyrogram.handlers import MessageHandler
-from ...utils.user import get_user, create_user
-import peewee
 import emoji
+from user.utils import create_get_user
 from pyrogram import filters
 
 
@@ -12,7 +9,7 @@ How is it going"""
 
 
 def prep_message(user):
-    text = f'User id: {user.user_id}\n'
+    text = f'User id: {user.tele_id}\n'
     if user.first_name:
         text = text + f'First name: {user.first_name}\n'
     if user.username:
@@ -26,24 +23,15 @@ def prep_message(user):
     return text
 
 
-async def handle_check(client, msg):
+def handle_check(client, msg):
     if not msg.reply_to_message:
-        await msg.delete()
+        msg.delete()
         return False
 
     member = msg.reply_to_message.from_user
-    user_id = member.id
-    try:
-        user = get_user(user_id)
-    except peewee.DoesNotExist:
-        # await msg.reply_text('User not found in database')
-        """
-        Create the user
-        """
-        user = create_user(member)
-
-    response = prep_message(user)
-    await msg.reply_text(response)
+    member, created = create_get_user(member)
+    response = prep_message(member)
+    msg.reply_text(response)
 
 
 __HANDLERS__ = [
