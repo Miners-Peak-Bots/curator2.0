@@ -73,3 +73,11 @@ class TeleUser(models.Model):
 
     class Meta:
         db_table = 'telegram_users'
+
+
+class TeleUserLog(models.Model):
+    user = models.ForeignKey(TeleUser,
+                             on_delete=models.CASCADE,
+                             related_name='logs')
+    reason = models.CharField(max_length=256)
+    created_at = models.DateTimeField(auto_now_add=True)
