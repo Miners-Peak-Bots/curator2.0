@@ -1,26 +1,38 @@
 from django.db import models
 from pyrogram.types import (
-    ChatPermissions,
+    # ChatPermissions,
     ChatPrivileges
 )
-# from pyrogram.types.user_and_chats.chat_privileges import (
-#     ChatPrivileges
-# )
 
 
 class Group(models.Model):
     group_id = models.CharField(max_length=30, primary_key=True)
     permission = models.ForeignKey('group.Permission',
                                    on_delete=models.SET_NULL,
-                                   null=True)
-    privilege = models.ForeignKey('group.Privilege',
-                                  on_delete=models.SET_NULL,
-                                  null=True)
+                                   null=True,
+                                   blank=True)
+    verified_privilege = models.ForeignKey('group.Privilege',
+                                           help_text=(
+                                               'Privileges for verified'
+                                               'users'
+                                           ),
+                                           on_delete=models.SET_NULL,
+                                           null=True,
+                                           blank=True)
+    admin_privilege = models.ForeignKey('group.Privilege',
+                                        help_text=(
+                                            'Privileges for admins'
+                                        ),
+                                        on_delete=models.SET_NULL,
+                                        null=True,
+                                        related_name='+',
+                                        blank=True)
+    special = models.BooleanField(default=False)
     enabled = models.BooleanField(default=True)
-    log_channel = models.IntegerField(null=True)
-    title = models.CharField(null=True, max_length=30)
-    username = models.CharField(null=True, max_length=30)
-    link = models.CharField(null=True, max_length=30)
+    log_channel = models.IntegerField(null=True, blank=True)
+    title = models.CharField(null=True, max_length=30, blank=True)
+    username = models.CharField(null=True, max_length=30, blank=True)
+    link = models.CharField(null=True, max_length=30, blank=True)
 
     def __str__(self):
         if self.title:
@@ -28,9 +40,9 @@ class Group(models.Model):
         else:
             return self.group_id
 
-    def get_privileges(self):
-        if self.privileges:
-            return self.privilege.get_privileges()
+    def get_admin_privileges(self):
+        if self.admin_privilege:
+            return self.admin_privilege.get_privileges()
         else:
             return ChatPrivileges(can_change_info=True)
 
@@ -38,31 +50,14 @@ class Group(models.Model):
         if self.permission:
             return self.permission.get_permissions()
 
+    def get_special_privileges(self):
+        if self.verified_privilege:
+            return self.verified_privilege.get_privileges()
+        else:
+            return ChatPrivileges(can_change_info=True)
+
     class Meta:
         db_table = 'groups'
-
-
-class SpecialGroup(models.Model):
-    group_id = models.CharField(max_length=30, primary_key=True)
-    privilege = models.ForeignKey('group.Privilege',
-                                  on_delete=models.SET_NULL,
-                                  null=True)
-    flair = models.CharField(max_length=25, null=True, blank=True)
-    title = models.CharField(null=True, max_length=30, blank=True)
-    username = models.CharField(null=True, max_length=30, blank=True)
-    link = models.CharField(null=True, max_length=30, blank=True)
-
-    def get_privileges(self):
-        if self.privilege:
-            return self.privilege.get_privileges()
-        else:
-            return ChatPermissions(can_change_info=True)
-
-    def __str__(self):
-        if self.title:
-            return f'{self.title}({self.group_id})'
-        else:
-            return self.group_id
 
 
 class Permission(models.Model):
