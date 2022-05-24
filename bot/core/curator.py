@@ -15,7 +15,7 @@ class Curator(Client):
         self.name = name
         self.help = []
         super().__init__(
-            session_name=f'{os.getcwd()}/{name}',
+            name=f'{os.getcwd()}/{name}',
             api_id=settings.BOT_API_ID,
             api_hash=settings.BOT_API_HASH,
             bot_token=settings.BOT_API_TOKEN
