@@ -1,3 +1,5 @@
 from bot import initialize
 
-initialize()
+
+def run(*args):
+    initialize()
