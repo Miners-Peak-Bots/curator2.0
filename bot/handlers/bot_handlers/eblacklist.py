@@ -1,5 +1,3 @@
-from ...db.cache import users_cache, groups_cache
-from ...db.models import EntityBlacklist
 from ...utils.group import parse_entities
 from pyrogram.handlers import MessageHandler
 import peewee
