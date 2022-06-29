@@ -9,8 +9,7 @@ __HELP__ = """Hey man
 How is it going"""
 
 
-def handle_notify(client, msg):
-    print('report')
+def handle_report(client, msg):
     if not msg.reply_to_message:
         msg.delete()
         return False
@@ -29,6 +28,6 @@ def handle_notify(client, msg):
 
 
 __HANDLERS__ = [
-    MessageHandler(handle_notify,
-                   filters.command('report', prefixes='!'))
+    MessageHandler(handle_report,
+                   filters.command(['report', 'admin'], prefixes='!'))
 ]
