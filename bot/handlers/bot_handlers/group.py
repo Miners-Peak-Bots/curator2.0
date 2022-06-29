@@ -69,6 +69,14 @@ def handle_messages(client, msg):
     be added after a user is banned. This means the user will not be banned in
     said group, so the ban has to be issued in the new group.
     """
+    if msg.sender_chat:
+        """
+        User is sending messages as channel/group
+        delete the message and stop processing
+        """
+        msg.delete()
+        return False
+
     user, created = create_get_user(msg.from_user)
     if user.banned:
         msg.delete()
