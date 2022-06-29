@@ -22,6 +22,10 @@ def get_admins():
     return admins
 
 
+data = {
+    'patterns': get_patterns(),
+    'admins': get_admins(),
+}
 patterns = get_patterns()
 admins = get_admins()
 
@@ -36,6 +40,18 @@ def handle_msg2(client, msg):
     msg.delete()
 
 
+@app.on_message(filters.command('refreshbl'))
+def handle_refresh_bl(client, msg):
+    data['patterns'] = get_patterns()
+    msg.reply_text('Blacklist updated')
+
+
+@app.on_message(filters.command('refreshadmins'))
+def handle_refresh_admin(client, msg):
+    data['admins'] = get_admins()
+    msg.reply_text('Admins list updated')
+
+
 @app.on_message(filters.regex(
     '(https?:\/\/)?(www[.])?(telegram|t)\.me\/([a-zA-Z0-9_-]*)\/?$'))
 def handle_msg3(client, msg):
@@ -48,6 +64,7 @@ def handle_msg4(client, msg):
     user = msg.from_user.id
     if user in admins:
         return False
+    patterns = data['patterns']
     for pattern in patterns:
         res = pattern.regex.search(msg.text)
         if res is not None:
