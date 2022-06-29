@@ -1,76 +1,61 @@
 from pyrogram.handlers import MessageHandler
-import peewee
+from django.conf import settings
 from pyrogram import filters
+from blacklist.models import Blacklist
+from pyrogram.enums import ParseMode
 
 
 __HELP__ = """Hey man
 How is it going"""
 
 
-async def handle_add_blacklist_words(client, msg):
-    if msg.from_user.id != client.config.general.master_id:
+def add_blacklist(client, msg):
+    if msg.from_user.id != settings.BOT_MASTER:
+        msg.delete()
         return False
 
-    words = msg.command[1:]
-    words = [word.lower() for word in words]
-    for word in words:
-        bl, created = Blacklist.get_or_create(phrase=word)
-        bl.save()
+    phrase = msg.text.replace('!blacklist', '').strip()
+    if not len(phrase) >= 1:
+        msg.delete()
+        return False
 
-    await msg.reply_text(
-        ', '.join(words) + ' have been added to blacklist'
+    query = Blacklist.objects.filter(regex=phrase)
+    if not query.count():
+        Blacklist.objects.create(regex=phrase)
+    msg.reply_text(
+        f'<code>{phrase.strip()}</code> has been added to blacklist.',
+        parse_mode=ParseMode.HTML
     )
 
 
-async def handle_add_blacklist_phrase(client, msg):
-    if msg.from_user.id != client.config.general.master_id:
+def whitelist(client, msg):
+    if msg.from_user.id != settings.BOT_MASTER:
+        msg.delete()
         return False
 
-    command = '/blacklistp'
-    phrase = msg.text.replace(command, '').strip().lower()
-    bl, created = Blacklist.get_or_create(phrase=phrase)
-
-    await msg.reply_text(
-        f"```{phrase}```\nhas been added to blacklist"
-    )
-
-
-async def handle_whitelist(client, msg):
-    command = '/whitelist'
-    phrase = msg.text.replace(command, '').strip().lower()
-    try:
-        row = Blacklist.get(Blacklist.phrase == phrase)
-        row.enabled = False
-        row.save()
-
-        await msg.reply_text(
-            phrase + ' has been whitelisted'
-        )
-    except peewee.DoesNotExist:
-        await msg.reply_text(
-            phrase + ' does not exist in blacklist'
-        )
-
-
-async def view_blacklist(client, msg):
-    if msg.from_user.id != client.config.general.master_id:
+    phrase = msg.text.replace('!whitelist', '').strip()
+    if not len(phrase) >= 1:
+        msg.delete()
         return False
 
-    phrases = []
-    for row in Blacklist.select().where(Blacklist.enabled == 1):
-        phrases.append(row.phrase)
+    query = Blacklist.objects.filter(regex=phrase)
+    if not query.count():
+        msg.reply_text(
+            f'<code>{phrase.strip()}</code> does not exist in blacklist',
+            parse_mode=ParseMode.HTML
+        )
+        return False
 
-    await msg.reply_text(
-        '\n'.join(phrases)
+    query.all().delete()
+    msg.reply_text(
+        f'<code>{phrase.strip()}</code> has been whitelisted',
+        parse_mode=ParseMode.HTML
     )
 
 
 __HANDLERS__ = [
-    MessageHandler(handle_whitelist, filters.command('whitelist',
-                                                     prefixes='!')),
-    MessageHandler(handle_add_blacklist_words, filters.command('blacklistw',
-                                                               prefixes='!')),
-    MessageHandler(handle_add_blacklist_phrase, filters.command('blacklistp',
-                                                                prefixes='!')),
-    MessageHandler(view_blacklist, filters.command('blist', prefixes='!')),
+    MessageHandler(add_blacklist, filters.command('blacklist',
+                                                  prefixes='!')),
+    MessageHandler(whitelist, filters.command('whitelist',
+                                              prefixes='!')),
 ]

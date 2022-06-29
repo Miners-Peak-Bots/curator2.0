@@ -26,8 +26,6 @@ data = {
     'patterns': get_patterns(),
     'admins': get_admins(),
 }
-patterns = get_patterns()
-admins = get_admins()
 
 
 @app.on_message(filters.regex('.+[\u4E00-\uA000]'))
@@ -61,9 +59,9 @@ def handle_msg3(client, msg):
 
 @app.on_message(filters.text)
 def handle_msg4(client, msg):
-    user = msg.from_user.id
-    if user in admins:
-        return False
+    # user = msg.from_user.id
+    # if user in data['admins']:
+    #     return False
     patterns = data['patterns']
     for pattern in patterns:
         res = pattern.regex.search(msg.text)
