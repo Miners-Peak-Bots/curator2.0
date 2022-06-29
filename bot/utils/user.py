@@ -40,10 +40,8 @@ def get_target_user_and_reason(msg, ommit='!warn'):
 
 
 def get_target_user(msg):
-    print('func called')
     if msg.reply_to_message:
         userid = msg.reply_to_message.from_user.id
-        print(userid)
         try:
             user = get_user_by_id(userid)
             return user
