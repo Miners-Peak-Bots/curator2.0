@@ -1,39 +1,62 @@
-from ..core.cache import Cache
-from ..db.models import User
-from ..db.pydantic_models import User as PyUser
-from dataclasses import dataclass
-import peewee
+from user.models import TeleUser
 
 
-def load_users_cache():
-    cache = Cache(PyUser)
-    for user in User.select():
-        cache.add(user.user_id, user)
-    return cache
-
-
-def get_user(user_id):
+def get_user_by_username(username):
+    print(username)
     try:
-        user = User.get(User.user_id == user_id)
-    except peewee.DoesNotExist:
+        return TeleUser.objects.get(username=username)
+    except TeleUser.DoesNotExist:
         raise
-    return user
 
 
-def create_user(member, active=False):
-    user = User(
-        user_id=member.id,
-        username=member.username,
-        first_name=member.first_name,
-        last_name=member.last_name,
-        active=active
-    )
-    user.save(force_insert=1)
-    return user
+def get_user_by_id(userid):
+    try:
+        return TeleUser.objects.get(pk=userid)
+    except TeleUser.DoesNotExist:
+        raise
 
 
-def is_admin(client, user):
-    if user.user_id == client.config.general.master_id:
-        return True
+def get_target_user_and_reason(msg, ommit='!warn'):
+    if msg.reply_to_message:
+        reason = msg.text.replace(ommit, '')
+        userid = msg.reply_to_message.from_user.id
+        data = {'reason': reason}
+        try:
+            data['user'] = get_user_by_id(userid)
+            return data
+        except Exception:
+            raise
 
-    return user.admin
+    if len(msg.command) > 2:
+        userid = msg.command[1]
+        userid = userid.replace('@', '')
+        reason = ' '.join(msg.command[2:])
+        data = {'reason': reason}
+        try:
+            data['user'] = get_user_by_username(userid)
+            return data
+        except Exception:
+            raise
+
+
+def get_target_user(msg):
+    print('func called')
+    if msg.reply_to_message:
+        userid = msg.reply_to_message.from_user.id
+        print(userid)
+        try:
+            user = get_user_by_id(userid)
+            return user
+        except Exception:
+            raise
+
+    if len(msg.command) >= 1:
+        userid = msg.command[1]
+        userid = userid.replace('@', '')
+        try:
+            user = get_user_by_username(userid)
+            return user
+        except Exception:
+            raise
+    else:
+        raise Exception('User not found')

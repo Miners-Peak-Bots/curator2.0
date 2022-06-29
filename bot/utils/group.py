@@ -1,24 +1,3 @@
-from ..db.models import Group
-from ..db.pydantic_models import Group as PyGroup
-from ..core.cache import Cache
-import peewee
-
-
-def load_groups_cache():
-    group_cache = Cache(PyGroup)
-    for group in Group.select():
-        group_cache.add(group.group_id, group)
-    return group_cache
-
-
-def get_group(group_id):
-    try:
-        group = Group.get(Group.group_id == group_id)
-    except peewee.DoesNotExist:
-        raise
-    return group
-
-
 def parse_entities(msg):
     """
     Iterates Message.entities and prepares
