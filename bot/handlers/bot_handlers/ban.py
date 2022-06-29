@@ -2,21 +2,17 @@ from user.models import (
     TeleUser,
 )
 from user.utils import (
-    create_get_user,
     ban_user
 )
-# from djang.conf import settings
 from group.models import Group
+from bot.utils.user import get_target_user_and_reason
 from pyrogram.handlers import MessageHandler
 from ...utils.msg import errorify
 from pyrogram import filters
+from pyrogram.enums import ParseMode
 
 
 def handle_ban(client, msg):
-    if not msg.reply_to_message:
-        msg.delete()
-        return False
-
     if not len(msg.command) > 1:
         """
         A warn reason was not provided
@@ -30,9 +26,13 @@ def handle_ban(client, msg):
         msg.reply_text('Admin not found')
         return False
 
-    target_user = msg.reply_to_message.from_user
-    victim, created = create_get_user(target_user)
-    reason = msg.text.replace('!ban', '').strip()
+    try:
+        data = get_target_user_and_reason(msg, ommit='!ban')
+    except Exception:
+        return msg.reply_text('User not found')
+
+    victim = data['user']
+    reason = data['reason']
 
     if not admin.is_admin:
         msg.delete()
@@ -49,7 +49,6 @@ def handle_ban(client, msg):
         reason=reason,
         admin=admin,
     )
-    print(warn.reason, warn.id)
     errors = []
     for group in Group.objects.all():
         try:
@@ -65,11 +64,11 @@ def handle_ban(client, msg):
                 f'{str(e)}')
 
     response = (
-        f'{msg.from_user.mention} banned {target_user.mention} for\n'
+        f'{msg.from_user.mention} banned {victim.mention} for\n'
         f'<code>{reason}</code>\n'
     )
     response = errorify(response, errors)
-    client.send_message(msg.chat.id, response, parse_mode='html')
+    client.send_message(msg.chat.id, response, parse_mode=ParseMode.HTML)
 
 
 __HANDLERS__ = [

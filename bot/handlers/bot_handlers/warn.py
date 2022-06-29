@@ -1,16 +1,13 @@
 from user.models import (
     TeleUser
 )
-from user.utils import create_get_user
+from bot.utils.user import get_target_user_and_reason
 from pyrogram.handlers import MessageHandler
 from pyrogram import filters
+from pyrogram.enums import ParseMode
 
 
 def handle_warn(client, msg):
-    if not msg.reply_to_message:
-        msg.delete()
-        return False
-
     if not len(msg.command) > 1:
         """
         A warn reason was not provided
@@ -24,9 +21,14 @@ def handle_warn(client, msg):
         msg.reply_text('Admin not found')
         return False
 
-    target_user = msg.reply_to_message.from_user
-    victim, created = create_get_user(target_user)
+    try:
+        data = get_target_user_and_reason(msg)
+    except Exception:
+        return msg.reply_text('User not found')
 
+    victim = data['user']
+    reason = data['reason']
+    print(data)
     if not admin.is_admin:
         msg.delete()
         return False
@@ -35,7 +37,6 @@ def handle_warn(client, msg):
         msg.delete()
         return False
 
-    reason = msg.text.replace('!warn', '').strip()
     warn = victim.warn(
         admin=admin,
         reason=reason
@@ -43,11 +44,11 @@ def handle_warn(client, msg):
     warn.save()
 
     response = (
-        f'{msg.from_user.mention} warned {target_user.mention} for\n'
+        f'{msg.from_user.mention} warned {victim.mention} for\n'
         f'<code>{reason}</code>\n'
         # f'Warn {warns}/3'
     )
-    client.send_message(msg.chat.id, response, parse_mode='html')
+    client.send_message(msg.chat.id, response, parse_mode=ParseMode.HTML)
 
 
 __HANDLERS__ = [

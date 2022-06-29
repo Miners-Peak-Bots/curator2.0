@@ -1,22 +1,18 @@
-import peewee
 from pyrogram.types import ChatPermissions
+from user.utils import create_get_user
 from pyrogram.handlers import CallbackQueryHandler
 from pyrogram import filters
 
 
-async def handle_unmute(client, msg):
+def handle_unmute(client, msg):
     from_user = msg.from_user
-    try:
-        user = get_user(from_user.id)
-    except peewee.DoesNotEXist:
-        user = create_user(from_user)
-
+    user, created = create_get_user(from_user)
     if user.active:
-        await msg.answer('You are already unmuted')
+        msg.answer('You are already unmuted')
         return False
 
     try:
-        await client.restrict_chat_member(
+        client.restrict_chat_member(
             msg.message.chat.id,
             from_user.id,
             ChatPermissions(
@@ -32,9 +28,9 @@ async def handle_unmute(client, msg):
         )
         user.active = True
         user.save()
-        await msg.answer('You have been unmuted')
+        msg.answer('You have been unmuted')
     except Exception:
-        await msg.answer('You are an admin or already unmuted', True)
+        msg.answer('You are an admin or already unmuted', True)
 
 
 __HANDLERS__ = [
