@@ -28,7 +28,6 @@ def handle_warn(client, msg):
 
     victim = data['user']
     reason = data['reason']
-    print(data)
     if not admin.is_admin:
         msg.delete()
         return False
@@ -44,11 +43,13 @@ def handle_warn(client, msg):
     warn.save()
 
     response = (
-        f'{msg.from_user.mention} warned {victim.mention} for\n'
-        f'<code>{reason}</code>\n'
+        f'⚠️ {msg.from_user.mention} warned {victim.mention} for\n'
+        f'<b>Reason:</b> {reason.strip()}</code>\n'
         # f'Warn {warns}/3'
     )
     client.send_message(msg.chat.id, response, parse_mode=ParseMode.HTML)
+    if msg.reply_to_message:
+        msg.reply_to_message.delete()
 
 
 __HANDLERS__ = [

@@ -64,11 +64,13 @@ def handle_ban(client, msg):
                 f'{str(e)}')
 
     response = (
-        f'{msg.from_user.mention} banned {victim.mention} for\n'
-        f'<code>{reason}</code>\n'
+        f'🚫 {msg.from_user.mention} banned {victim.mention}\n'
+        f'<b>Reason:</b> {reason.strip()}\n'
     )
     response = errorify(response, errors)
     client.send_message(msg.chat.id, response, parse_mode=ParseMode.HTML)
+    if msg.reply_to_message:
+        msg.reply_to_message.delete()
 
 
 __HANDLERS__ = [
