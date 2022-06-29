@@ -1,6 +1,6 @@
 from django.db import models
 from pyrogram.types import (
-    # ChatPermissions,
+    ChatPermissions,
     ChatPrivileges
 )
 
@@ -49,6 +49,8 @@ class Group(models.Model):
     def get_permissions(self):
         if self.permission:
             return self.permission.get_permissions()
+        else:
+            return ChatPermissions(can_send_messages=True)
 
     def get_special_privileges(self):
         if self.verified_privilege:
