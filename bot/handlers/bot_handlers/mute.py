@@ -79,7 +79,7 @@ def handle_muteall(client, msg):
     for group in Group.objects.all():
         try:
             client.restrict_chat_member(
-                chat_id=msg.chat.id,
+                chat_id=group.group_id,
                 user_id=data['user'].tele_id,
                 permissions=ChatPermissions()
             )
