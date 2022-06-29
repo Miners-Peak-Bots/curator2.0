@@ -27,7 +27,8 @@ class Warn(models.Model):
 
 class TeleUser(models.Model):
     tele_id = models.IntegerField(primary_key=True)
-    username = models.CharField(max_length=32, null=True, default=None)
+    username = models.CharField(max_length=32, null=True, default=None,
+                                blank=True)
     first_name = models.CharField(max_length=64, null=True, default=None)
     last_name = models.CharField(max_length=64, null=True, default=None)
     captcha_solved = models.BooleanField(default=False)
@@ -70,6 +71,13 @@ class TeleUser(models.Model):
             admin=admin,
             banning_warn=banning_warn
         )
+
+    @property
+    def mention(self):
+        if not self.username:
+            return f"<a href='tg://user?id={self.tele_id}'>{self.tele_id}</a>"
+        else:
+            return f"@{self.username}"
 
     class Meta:
         db_table = 'telegram_users'

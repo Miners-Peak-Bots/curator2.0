@@ -32,3 +32,13 @@ def ban_user(client, user_id, chat_id):
         )
     except Exception:
         raise
+
+
+def unban_user(client, user_id, chat_id):
+    try:
+        client.unban_chat_member(
+            chat_id=chat_id,
+            user_id=user_id
+        )
+    except Exception:
+        raise
