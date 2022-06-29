@@ -1,40 +1,102 @@
-from pyrogram.types import ChatPermissions
-from user.utils import create_get_user
-from pyrogram.handlers import CallbackQueryHandler
+from user.models import (
+    TeleUser
+)
+from group.models import Group
+from bot.utils.user import get_target_user
+from pyrogram.handlers import MessageHandler
 from pyrogram import filters
+from pyrogram.enums import ParseMode
+from pyrogram.types import ChatPermissions
+from ...utils.msg import errorify
 
 
 def handle_unmute(client, msg):
-    from_user = msg.from_user
-    user, created = create_get_user(from_user)
-    if user.active:
-        msg.answer('You are already unmuted')
+    try:
+        admin = TeleUser.objects.get(pk=msg.from_user.id)
+    except TeleUser.DoesNotExist:
+        msg.reply_text('Admin not found')
+        return False
+
+    if not admin.is_admin:
+        msg.delete()
         return False
 
     try:
-        client.restrict_chat_member(
-            msg.message.chat.id,
-            from_user.id,
-            ChatPermissions(
-                can_send_messages=True,
-                can_send_media_messages=True,
-                can_send_other_messages=True,
-                can_send_polls=True,
-                can_add_web_page_previews=True,
-                can_invite_users=True,
-                can_pin_messages=False,
-                can_change_info=False,
-            ),
-        )
-        user.active = True
-        user.save()
-        msg.answer('You have been unmuted')
-    except Exception:
-        msg.answer('You are an admin or already unmuted', True)
+        user = get_target_user(msg)
+    except Exception as e:
+        return msg.reply_text(str(e))
+
+    if user.is_admin:
+        msg.delete()
+        return False
+
+    client.restrict_chat_member(
+        chat_id=msg.chat.id,
+        user_id=user.tele_id,
+        permissions=ChatPermissions()
+    )
+
+    response = (
+        f'🎤 {msg.from_user.mention} unmuted {user.mention}'
+    )
+    msg.delete()
+    client.send_message(
+        chat_id=msg.chat.id,
+        text=response,
+        parse_mode=ParseMode.HTML
+    )
+
+
+def handle_unmuteall(client, msg):
+    try:
+        admin = TeleUser.objects.get(pk=msg.from_user.id)
+    except TeleUser.DoesNotExist:
+        msg.reply_text('Admin not found')
+        return False
+
+    if not admin.is_admin:
+        msg.delete()
+        return False
+
+    try:
+        user = get_target_user(msg)
+    except Exception as e:
+        return msg.reply_text(str(e))
+
+    if user.is_admin:
+        msg.delete()
+        return False
+
+    errors = []
+    for group in Group.objects.all():
+        try:
+            client.restrict_chat_member(
+                chat_id=msg.chat.id,
+                user_id=user.tele_id,
+                permissions=ChatPermissions()
+            )
+        except Exception as e:
+            errors.append(
+                f'Could not mute {user.tele_id} '
+                f'on chat {group.group_id} due to '
+                f'{str(e)}')
+
+    response = (
+        f'🎤 {msg.from_user.mention} globally unmuted {user.mention}'
+    )
+    response = errorify(response, errors)
+    msg.delete()
+    client.send_message(
+        chat_id=msg.chat.id,
+        text=response,
+        parse_mode=ParseMode.HTML
+    )
 
 
 __HANDLERS__ = [
-    CallbackQueryHandler(handle_unmute, filters.regex('unmute'))
+    MessageHandler(handle_unmute, filters.command('unmute', prefixes='!')),
+    MessageHandler(handle_unmuteall, filters.command(
+        'unmuteall', prefixes='!')),
 ]
 
 __HELP__ = ''
