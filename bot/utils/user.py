@@ -18,14 +18,16 @@ def get_user_by_id(userid):
 
 def get_target_user_and_reason(msg, ommit='!warn'):
     if msg.reply_to_message:
-        reason = msg.text.replace(ommit, '')
+        reason = msg.text.replace(ommit, '').strip()
+        if not len(reason) >= 1:
+            raise Exception('Invalid reason')
         userid = msg.reply_to_message.from_user.id
         data = {'reason': reason}
         try:
             data['user'] = get_user_by_id(userid)
             return data
         except Exception:
-            raise
+            raise Exception('User not found')
 
     if len(msg.command) > 2:
         userid = msg.command[1]
