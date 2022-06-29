@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_extensions',
     'user',
-    'group'
+    'group',
+    'blacklist'
 ]
 
 MIDDLEWARE = [
@@ -131,3 +132,4 @@ BOT_API_ID = config('BOT_API_ID', cast=str)
 BOT_API_HASH = config('BOT_API_HASH', cast=str)
 BOT_API_TOKEN = config('BOT_API_TOKEN', cast=str)
 BOT_MASTER = config('BOT_MASTER', cast=int)
+ANTISPAM_BOT_TOKEN = config('ANTISPAM_BOT_TOKEN', cast=str)
