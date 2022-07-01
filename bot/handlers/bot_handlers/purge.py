@@ -1,5 +1,5 @@
 from pyrogram.handlers import MessageHandler
-import peewee
+from django.conf import settings
 from pyrogram import filters
 
 
@@ -7,7 +7,7 @@ __HELP__ = 'Help text'
 
 
 async def handle_purge(client, msg):
-    if msg.from_user.id != client.config.general.master_id:
+    if msg.from_user.id != settings.BOT_MASTER:
         await msg.delete()
         return False
 
@@ -16,7 +16,7 @@ async def handle_purge(client, msg):
         return False
 
     target_msg = msg.reply_to_message
-    purge_list = list(range(target_msg.message_id, msg.message_id+1))
+    purge_list = list(range(target_msg.id, msg.id+1))
 
     reason = None
     if len(msg.command) > 1:
