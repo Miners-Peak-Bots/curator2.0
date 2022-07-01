@@ -5,6 +5,7 @@ from bot.utils.user import get_target_user_and_reason
 from pyrogram.handlers import MessageHandler
 from pyrogram import filters
 from pyrogram.enums import ParseMode
+from user.utils import ban_user, mute_user
 
 
 def handle_warn(client, msg):
@@ -41,15 +42,50 @@ def handle_warn(client, msg):
         reason=reason
     )
     warn.save()
-
+    warnings = victim.warning.count()
     response = (
         f'⚠️ {msg.from_user.mention} warned {victim.mention} for\n'
         f'<b>Reason:</b> {reason.strip()}</code>\n'
         # f'Warn {warns}/3'
     )
+    if warnings == 3:
+        print("muting for 30")
+        """
+        Mute for 30 days
+        """
+        mute_user(client, msg.chat.id, victim.tele_id, 30)
+        response = response + 'User has been muted for 30 days'
+
+    if warnings == 6:
+        print("muting for 90")
+        """
+        Mute for 60 days
+        """
+        mute_user(client, msg.chat.id, victim.tele_id, 60)
+        response = response + 'User has been muted for 60 days'
+
+    if warnings == 9:
+        """
+        Ban the user
+        """
+        ban_user(msg.chat, victim, client)
+        warn.banning_warn = True
+        warn.save()
+        victim.banned = True
+        victim.save()
+        response = response + 'User has been banned'
+
     client.send_message(msg.chat.id, response, parse_mode=ParseMode.HTML)
     if msg.reply_to_message:
+        """
+        Delete the target message
+        """
         msg.reply_to_message.delete()
+
+    """
+    Delete the issued command
+    """
+    msg.delete()
 
 
 __HANDLERS__ = [
