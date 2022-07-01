@@ -27,6 +27,8 @@ class Group(models.Model):
                                         null=True,
                                         related_name='+',
                                         blank=True)
+    shortname = models.CharField(max_length=30, null=True, blank=True,
+                                 unique=True)
     special = models.BooleanField(default=False)
     enabled = models.BooleanField(default=True)
     log_channel = models.IntegerField(null=True, blank=True)
