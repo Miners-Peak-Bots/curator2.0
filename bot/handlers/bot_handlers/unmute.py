@@ -73,7 +73,7 @@ def handle_unmuteall(client, msg):
             client.restrict_chat_member(
                 chat_id=group.group_id,
                 user_id=user.tele_id,
-                permissions=ChatPermissions()
+                permissions=group.get_permissions()
             )
         except Exception as e:
             errors.append(
