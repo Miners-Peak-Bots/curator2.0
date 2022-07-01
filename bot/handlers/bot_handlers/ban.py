@@ -70,7 +70,15 @@ def handle_ban(client, msg):
     response = errorify(response, errors)
     client.send_message(msg.chat.id, response, parse_mode=ParseMode.HTML)
     if msg.reply_to_message:
+        """
+        Delete the target message
+        """
         msg.reply_to_message.delete()
+
+    """
+    Delete the command
+    """
+    msg.delete()
 
 
 __HANDLERS__ = [
