@@ -1,4 +1,6 @@
 from .models import TeleUser
+from datetime import datetime, timedelta
+from pyrogram.types import ChatPermissions
 
 
 def create_user(member):
@@ -42,3 +44,13 @@ def unban_user(client, user_id, chat_id):
         )
     except Exception:
         raise
+
+
+def mute_user(client, chat_id, user_id, duration=30):
+    until = datetime.now() + timedelta(days=duration)
+    client.restrict_chat_member(
+        chat_id=chat_id,
+        user_id=user_id,
+        permissions=ChatPermissions(),
+        until_date=until
+    )
