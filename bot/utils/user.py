@@ -2,7 +2,6 @@ from user.models import TeleUser
 
 
 def get_user_by_username(username):
-    print(username)
     try:
         return TeleUser.objects.get(username=username)
     except TeleUser.DoesNotExist:
