@@ -4,10 +4,6 @@ from pyrogram import filters
 from django.conf import settings
 
 
-__HELP__ = """Hey man
-How is it going"""
-
-
 def handle_channel_mode(client, msg):
     if msg.from_user.id != settings.BOT_MASTER:
         msg.delete()
@@ -36,3 +32,11 @@ __HANDLERS__ = [
     MessageHandler(handle_group_mode,
                    filters.command('groupmode', prefixes='!')),
 ]
+
+
+__HELP__ = (
+    '!channelmode: Switch a group to channel mode where only admins can post\n'
+    '    Send !channelmode in a group\n'
+    '!groupmode: Switch a group back to group mode where everybody can post'
+    '    Send !groupmode in a group\n'
+)

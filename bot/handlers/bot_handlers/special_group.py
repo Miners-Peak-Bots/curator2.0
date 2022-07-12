@@ -3,8 +3,6 @@ from django.conf import settings
 from pyrogram import filters
 from pyrogram.handlers import MessageHandler
 
-__HELP__ = ''
-
 
 def handle_makespecial(client, msg):
     if msg.from_user.id != settings.BOT_MASTER:

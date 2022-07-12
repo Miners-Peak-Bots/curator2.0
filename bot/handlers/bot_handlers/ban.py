@@ -86,7 +86,7 @@ __HANDLERS__ = [
 ]
 
 __HELP__ = (
-    '!ban: Ban a user from all the groups\n'
+    '!ban: Ban a user from all the groups(admin only)\n'
     '    !ban 567319 Flooding chat\n'
     '    !ban @username Flooding chat\n'
     '    Reply to a user\'s message with !ban reason'

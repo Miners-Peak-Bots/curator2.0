@@ -91,7 +91,6 @@ def handle_messages(client, msg):
 
 
 def handle_group_update(client, msg):
-    print('receiv')
     group, created = create_get_group(msg.chat)
     group.username = msg.chat.username
     group.title = msg.chat.title

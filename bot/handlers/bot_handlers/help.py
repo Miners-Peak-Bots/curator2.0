@@ -4,7 +4,6 @@ from pyrogram.enums import ParseMode
 
 
 def handle_help(client, msg):
-    msg.reply('\n'.join(client.help))
     response = '\n\n'.join(client.help)
     response = f'<code>{response}</code>'
     msg.reply(

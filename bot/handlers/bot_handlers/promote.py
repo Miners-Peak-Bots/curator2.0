@@ -1,14 +1,10 @@
 from group.models import Group
-from user.utils import create_get_user
 from ...utils.msg import errorify
 from django.conf import settings
 from pyrogram.types import ChatPrivileges
 from pyrogram.handlers import MessageHandler
 from pyrogram import filters
-
-
-__HELP__ = """Hey man
-How is it going"""
+from bot.utils.user import get_target_user
 
 
 def handle_promote(client, msg):
@@ -20,8 +16,11 @@ def handle_promote(client, msg):
         msg.delete()
         return False
 
-    member = msg.reply_to_message.from_user
-    member, created = create_get_user(member)
+    try:
+        member = get_target_user(msg)
+    except Exception:
+        return msg.reply_text('User not found')
+
     member.admin = True
     member.save()
 
@@ -52,8 +51,11 @@ def handle_demote(client, msg):
         msg.delete()
         return False
 
-    member = msg.reply_to_message.from_user
-    member, created = create_get_user(member)
+    try:
+        member = get_target_user(msg)
+    except Exception:
+        return msg.reply_text('User not found')
+
     member.admin = False
     member.save()
     errors = []

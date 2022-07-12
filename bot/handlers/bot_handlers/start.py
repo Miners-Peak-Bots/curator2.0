@@ -1,8 +1,7 @@
 from pyrogram.handlers import MessageHandler
 from pyrogram import filters
 
-__HELP__ = """Hey man
-How is it going"""
+__HELP__ = ''
 
 
 def handle_start(client, msg):

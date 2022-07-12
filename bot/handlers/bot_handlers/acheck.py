@@ -79,7 +79,7 @@ __HANDLERS__ = [
 
 
 __HELP__ = (
-    "!acheck: Check a user's status"
+    "!acheck: Check a user's status(admin only)"
     '    !acheck 5431231\n'
     '    !acheck @username\n'
     '    Reply to a user\'s message with !acheck'

@@ -5,9 +5,6 @@ from blacklist.models import Blacklist
 from pyrogram.enums import ParseMode
 
 
-__HELP__ = """Hey man
-How is it going"""
-
 
 def add_blacklist(client, msg):
     if msg.from_user.id != settings.BOT_MASTER:

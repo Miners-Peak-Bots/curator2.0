@@ -46,7 +46,7 @@ __HANDLERS__ = [
 ]
 
 __HELP__ = (
-    "!unwarn: Remove a user's latest warn"
+    "!unwarn: Remove a user's latest warn(admin only)"
     '    !unwarn 567319\n'
     '    !unwarn @username\n'
     '    Reply to a user\'s message with !unwarn'

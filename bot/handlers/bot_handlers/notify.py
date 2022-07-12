@@ -37,6 +37,6 @@ __HANDLERS__ = [
 
 
 __HELP__ = (
-    '!notification: Reply to a message in private to send it as notification'
-    'network side'
+    '!notification: Send a network side message(admin only)\n'
+    '   Reply to a message with !notification'
 )

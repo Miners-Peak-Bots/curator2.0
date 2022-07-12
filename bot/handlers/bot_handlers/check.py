@@ -4,10 +4,6 @@ from user.utils import create_get_user
 from pyrogram import filters
 
 
-__HELP__ = """Hey man
-How is it going"""
-
-
 def prep_message(user):
     text = f'User id: {user.tele_id}\n'
     if user.first_name:
@@ -37,3 +33,11 @@ def handle_check(client, msg):
 __HANDLERS__ = [
     MessageHandler(handle_check, filters.command('check', prefixes='!'))
 ]
+
+
+__HELP__ = (
+    '!check: Retrieve public information about a user\n'
+    '   !check 521231\n'
+    '   !check @username\n'
+    "   Reply to a user's message with !check\n"
+)

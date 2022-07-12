@@ -5,10 +5,6 @@ from django.conf import settings
 from pyrogram.enums import ParseMode
 
 
-__HELP__ = """Hey man
-How is it going"""
-
-
 def handle_report(client, msg):
     if not msg.reply_to_message:
         msg.delete()
@@ -31,3 +27,8 @@ __HANDLERS__ = [
     MessageHandler(handle_report,
                    filters.command(['report', 'admin'], prefixes='!'))
 ]
+
+__HELP__ = (
+    '!report/!admin: Report a message\n'
+    '   Send !report as a reply to target message'
+)

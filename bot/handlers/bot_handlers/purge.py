@@ -3,9 +3,6 @@ from django.conf import settings
 from pyrogram import filters
 
 
-__HELP__ = 'Help text'
-
-
 async def handle_purge(client, msg):
     if msg.from_user.id != settings.BOT_MASTER:
         await msg.delete()
@@ -38,3 +35,10 @@ async def handle_purge(client, msg):
 __HANDLERS__ = [
     MessageHandler(handle_purge, filters.command('purge', prefixes='!')),
 ]
+
+
+__HELP__ = (
+    '!purge: Delete one or more messages from the group'
+    '   Reply to a message with !purge'
+    '   All succeeding messages will be deleted as well'
+)

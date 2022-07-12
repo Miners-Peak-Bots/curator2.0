@@ -4,9 +4,6 @@ from pyrogram import filters
 from group.models import Group
 
 
-__HELP__ = 'Help text'
-
-
 def handle_move(client, msg):
     if not msg.reply_to_message:
         msg.delete()
@@ -90,3 +87,14 @@ __HANDLERS__ = [
     MessageHandler(handle_move, filters.command('move', prefixes='!')),
     MessageHandler(handle_bulk_move, filters.command('bmove', prefixes='!')),
 ]
+
+
+__HELP__ = (
+    '!move: Move one to a specified destination\n'
+    '   Destination group is identified by a shortname set in dashboard'
+    '   Reply to a message with !move'
+    '!bmove: Move more than one messages to a specified destination\n'
+    '   Destination group is identified by a shortname set in dashboard'
+    '   Reply to a message with !move'
+    '   All succeeding messages will be moved as well'
+)
