@@ -8,6 +8,7 @@ from pyrogram import filters
 from pyrogram.enums import ParseMode
 from pyrogram.types import ChatPermissions
 from ...utils.msg import errorify
+from bot.utils.msg import log
 
 
 def handle_unmute(client, msg):
@@ -39,6 +40,8 @@ def handle_unmute(client, msg):
     response = (
         f'🎤 {msg.from_user.mention} unmuted {user.mention}'
     )
+    log_msg = f'{response}\nChat: {msg.chat.title}'
+    log(client, log_msg)
     msg.delete()
     client.send_message(
         chat_id=msg.chat.id,
@@ -84,7 +87,8 @@ def handle_unmuteall(client, msg):
     response = (
         f'🎤 {msg.from_user.mention} globally unmuted {user.mention}'
     )
-    response = errorify(response, errors)
+    log_msg = errorify(response, errors)
+    log(client, log_msg)
     msg.delete()
     client.send_message(
         chat_id=msg.chat.id,

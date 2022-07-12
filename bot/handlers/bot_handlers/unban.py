@@ -10,6 +10,7 @@ from ...utils.msg import errorify
 from pyrogram import filters
 from bot.utils.user import get_target_user
 from pyrogram.enums import ParseMode
+from bot.utils.msg import log
 
 
 def handle_unban(client, msg):
@@ -50,9 +51,10 @@ def handle_unban(client, msg):
                 f'{str(e)}')
 
     response = (
-        f'{msg.from_user.mention} unbanned {victim.mention} for\n'
+        f'{msg.from_user.mention} unbanned {victim.mention}'
     )
-    response = errorify(response, errors)
+    logmsg = errorify(response, errors)
+    log(client, logmsg)
     client.send_message(msg.chat.id, response, parse_mode=ParseMode.HTML)
 
 

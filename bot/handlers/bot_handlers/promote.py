@@ -5,14 +5,11 @@ from pyrogram.types import ChatPrivileges
 from pyrogram.handlers import MessageHandler
 from pyrogram import filters
 from bot.utils.user import get_target_user
+from bot.utils.msg import log
 
 
 def handle_promote(client, msg):
     if msg.from_user.id != settings.BOT_MASTER:
-        msg.delete()
-        return False
-
-    if not msg.reply_to_message:
         msg.delete()
         return False
 
@@ -38,16 +35,13 @@ def handle_promote(client, msg):
                 f'{str(e)}. Please promote manually or retry'
             )
 
-    response = errorify('User has been promoted', errors)
-    msg.reply_text(response)
+    log_msg = errorify(f'{member.mention} has been promoted', errors)
+    log(client, log_msg)
+    msg.reply_text(f'{member.mention} has been promoted')
 
 
 def handle_demote(client, msg):
     if msg.from_user.id != settings.BOT_MASTER:
-        msg.delete()
-        return False
-
-    if not msg.reply_to_message:
         msg.delete()
         return False
 
@@ -72,8 +66,9 @@ def handle_demote(client, msg):
                 f'{str(e)}. Please demote manually or retry'
             )
 
-    response = errorify('User has been demoted', errors)
-    msg.reply_text(response)
+    log_msg = errorify(f'{member.mention} has been demoted', errors)
+    log(client, log_msg)
+    msg.reply_text(f'{member.mention} has been demoted')
 
 
 __HANDLERS__ = [

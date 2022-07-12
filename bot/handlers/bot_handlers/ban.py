@@ -10,6 +10,7 @@ from pyrogram.handlers import MessageHandler
 from ...utils.msg import errorify
 from pyrogram import filters
 from pyrogram.enums import ParseMode
+from bot.utils.msg import log
 
 
 def handle_ban(client, msg):
@@ -67,7 +68,8 @@ def handle_ban(client, msg):
         f'🚫 {msg.from_user.mention} banned {victim.mention}\n'
         f'<b>Reason:</b> {reason.strip()}\n'
     )
-    response = errorify(response, errors)
+    log_msg = errorify(response, errors)
+    log(client, log_msg)
     client.send_message(msg.chat.id, response, parse_mode=ParseMode.HTML)
     if msg.reply_to_message:
         """
