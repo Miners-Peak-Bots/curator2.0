@@ -35,7 +35,8 @@ class Curator(Client):
             logger.info(f'Attaching handlers in {module}')
             module_path = import_path+module.replace('.py', '')
             module_ = importlib.import_module(module_path)
-            self.help.append(module_.__HELP__)
+            if not len(module_.__HELP__) == 0:
+                self.help.append(module_.__HELP__)
             for handler in module_.__HANDLERS__:
                 if isinstance(handler, list):
                     event_handler = handler[0],
