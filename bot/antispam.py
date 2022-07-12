@@ -2,6 +2,8 @@ from pyrogram import Client, idle, filters
 from django.conf import settings
 from blacklist.models import Blacklist
 from user.models import TeleUser
+from bot.utils.msg import log
+from pyrogram.enums import ChatType
 
 
 api_id = settings.BOT_API_ID
@@ -67,6 +69,21 @@ def handle_msg4(client, msg):
         res = pattern.regex.search(msg.text)
         if res is not None:
             msg.delete()
+            """
+            Send log to log group
+            """
+            if (
+                msg.chat.type == ChatType.SUPERGROUP
+                or
+                msg.chat.type == ChatType.GROUP
+            ):
+                print('group detected')
+                logmsg = (
+                    f'Message from {msg.from_user.mention} in '
+                    f'{msg.chat.title} was deleted for blacklisted word'
+                    f'/phrase\n<code>{msg.text}</code>'
+                )
+                log(client, logmsg)
             break
 
 
