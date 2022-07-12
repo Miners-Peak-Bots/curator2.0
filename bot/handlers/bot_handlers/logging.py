@@ -52,3 +52,12 @@ __HANDLERS__ = [
     MessageHandler(handle_logging_off,
                    (filters.command('log_off', prefixes='!') & filters.group))
 ]
+
+
+__HELP__ = (
+    '!logging: Enable logging for a group\n'
+    '    !logging {group_id}\n'
+    '    Example: !logging -10054341412\n'
+    '!log_off: Disable logging for a group\n'
+    '     Send !log_off in the group to disable logging'
+)

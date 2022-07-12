@@ -59,3 +59,11 @@ __HANDLERS__ = [
     MessageHandler(whitelist, filters.command('whitelist',
                                               prefixes='!')),
 ]
+
+
+__HELP__ = (
+    '!blacklist: Add a word/phrase to blacklist(Not case sensitive)\n'
+    '    !blacklist Foobar\n'
+    '!whitelist: Remove a word/phrase from blacklist'
+    '    !whitelist Foobar\n'
+)

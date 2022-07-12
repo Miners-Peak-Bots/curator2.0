@@ -11,10 +11,6 @@ from pyrogram import filters
 from pyrogram.types import ChatPrivileges
 
 
-__HELP__ = """Hey man
-How is it going"""
-
-
 def handle_unverify(client, msg):
     if msg.from_user.id != settings.BOT_MASTER:
         msg.delete()
@@ -142,3 +138,11 @@ __HANDLERS__ = [
                    (filters.command('unverify', prefixes='!') &
                     filters.private)),
 ]
+
+__HELP__ = (
+    '!verify: Promote a user to verified seller status\n'
+    '    Respond to a forwarded message of a user in private to verify\n'
+    '    !verify 🇺🇸 +14332334234 user@mail.com keybase.io/username\n'
+    '!unverify: Remove a user from verified seller status\n'
+    '    Respond to a forwarded message of a user in private to unverify\n'
+)

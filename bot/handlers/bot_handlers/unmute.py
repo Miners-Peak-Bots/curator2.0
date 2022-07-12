@@ -99,4 +99,14 @@ __HANDLERS__ = [
         'unmuteall', prefixes='!')),
 ]
 
-__HELP__ = ''
+
+__HELP__ = (
+    '!unmute: Unmute a user in the current group\n'
+    '    !unmute 567319\n'
+    '    !unmute @username\n'
+    '    Reply to a user\'s message with !unmute'
+    '!unmuteall: Unmute a user from all the groups\n'
+    '    !unmute 567319\n'
+    '    !unmute @username\n'
+    '    Reply to a user\'s message with !unmute'
+)

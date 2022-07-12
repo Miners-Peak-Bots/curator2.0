@@ -85,4 +85,13 @@ __HANDLERS__ = [
     MessageHandler(handle_ban, filters.command('ban', prefixes='!')),
 ]
 
-__HELP__ = ''
+__HELP__ = (
+    '!ban: Ban a user from all the groups\n'
+    '    !ban 567319 Flooding chat\n'
+    '    !ban @username Flooding chat\n'
+    '    Reply to a user\'s message with !ban reason'
+    '!unban: Unban a user from all the groups\n'
+    '    !unban 567319 Flooding chat\n'
+    '    !unban @username Flooding chat\n'
+    '    Reply to a user\'s message with !unban'
+)

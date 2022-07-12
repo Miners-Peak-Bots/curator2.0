@@ -4,10 +4,6 @@ from pyrogram import filters
 from django.conf import settings
 
 
-__HELP__ = """Hey man
-How is it going"""
-
-
 def handle_set_rules(client, msg):
     if msg.from_user.id != settings.BOT_MASTER:
         msg.delete()
@@ -44,3 +40,9 @@ __HANDLERS__ = [
         filters.group
     ))
 ]
+
+
+__HELP__ = (
+    '!setrules: Set a rules message and attach unmute button\n'
+    '    Reply to a message with !setrules to pin and set it as rules\n'
+)

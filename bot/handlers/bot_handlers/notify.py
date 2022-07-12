@@ -5,10 +5,6 @@ from group.models import Group
 from django.conf import settings
 
 
-__HELP__ = """Hey man
-How is it going"""
-
-
 def handle_notify(client, msg):
     print('i am running')
     if msg.from_user.id != settings.BOT_MASTER:
@@ -38,3 +34,9 @@ __HANDLERS__ = [
                    (filters.command('notification', prefixes='!') &
                     filters.private))
 ]
+
+
+__HELP__ = (
+    '!notification: Reply to a message in private to send it as notification'
+    'network side'
+)

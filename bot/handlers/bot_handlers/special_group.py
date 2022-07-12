@@ -43,3 +43,9 @@ __HANDLERS__ = [
                    (filters.command('notspecial', prefixes='!') &
                     filters.group)),
 ]
+
+
+__HELP__ = (
+    '!special: Set special status to group\n'
+    '!notspecial: Remove special status from group'
+)

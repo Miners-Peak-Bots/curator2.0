@@ -78,3 +78,15 @@ __HANDLERS__ = [
     MessageHandler(handle_promote, filters.command('promote', prefixes='!')),
     MessageHandler(handle_demote, filters.command('demote', prefixes='!')),
 ]
+
+
+__HELP__ = (
+    '!promote: Promote a user to admin\n'
+    '    !promote 567319\n'
+    '    !promote @username Flooding chat\n'
+    '    Reply to a user\'s message with !promote\n'
+    '!demote:- Remove a user as admin\n'
+    '    !demote 567319\n'
+    '    !demote @username\n'
+    '    Reply to a user\'s message with !demote'
+)
