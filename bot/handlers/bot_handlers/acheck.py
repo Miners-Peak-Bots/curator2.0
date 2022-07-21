@@ -6,10 +6,6 @@ from pyrogram import filters
 from user.utils import create_get_user
 
 
-__HELP__ = """Hey man
-How is it going"""
-
-
 def prep_log(user):
     response = []
     logs = user.logs.all()
