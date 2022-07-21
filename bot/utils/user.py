@@ -50,8 +50,11 @@ def get_target_user(msg):
             raise
 
     if len(msg.command) >= 1:
-        userid = msg.command[1]
-        userid = userid.replace('@', '')
+        try:
+            userid = int(msg.command[1])
+        except ValueError:
+            userid = msg.command[1]
+            userid = userid.replace('@', '')
         try:
             user = get_user_by_username(userid)
             return user
