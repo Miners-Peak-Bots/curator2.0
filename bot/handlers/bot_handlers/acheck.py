@@ -3,7 +3,7 @@ from pyrogram.handlers import MessageHandler
 import emoji
 from pyrogram.enums import ParseMode
 from pyrogram import filters
-from user.utils import create_get_user
+from bot.utils.user import get_target_user
 
 
 def prep_log(user):
@@ -63,8 +63,10 @@ def handle_acheck(client, msg):
         msg.delete()
         return False
 
-    target_user = msg.reply_to_message.from_user
-    member, created = create_get_user(target_user)
+    try:
+        member = get_target_user(msg)
+    except Exception:
+        return msg.reply_text('User not found')
     response = prep_message(member)
     msg.reply_text(response, parse_mode=ParseMode.HTML)
 

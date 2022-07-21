@@ -1,7 +1,7 @@
 from pyrogram.handlers import MessageHandler
 import emoji
-from user.utils import create_get_user
 from pyrogram import filters
+from bot.utils.user import get_target_user
 
 
 def prep_message(user):
@@ -20,12 +20,11 @@ def prep_message(user):
 
 
 def handle_check(client, msg):
-    if not msg.reply_to_message:
-        msg.delete()
-        return False
+    try:
+        member = get_target_user(msg)
+    except Exception:
+        return msg.reply_text('User not found')
 
-    member = msg.reply_to_message.from_user
-    member, created = create_get_user(member)
     response = prep_message(member)
     msg.reply_text(response)
 
