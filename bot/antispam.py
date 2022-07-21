@@ -81,7 +81,8 @@ def handle_msg4(client, msg):
                 logmsg = (
                     f'Message from {msg.from_user.mention} in '
                     f'{msg.chat.title} was deleted for blacklisted word'
-                    f'/phrase\n<code>{msg.text}</code>'
+                    f'/phrase\n<code>{msg.text}</code>\n'
+                    f'Matched pattern: {pattern.regex}'
                 )
                 log(client, logmsg)
             break
