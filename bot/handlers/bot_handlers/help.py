@@ -14,7 +14,9 @@ def handle_help(client, msg):
 
 __HANDLERS__ = [
     MessageHandler(handle_help,
-                   filters.command(['help', 'commands'], prefixes='!'))
+                   (filters.command(['help', 'commands'], prefixes='!')
+                    &
+                    filters.private))
 ]
 
 
