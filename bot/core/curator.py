@@ -4,6 +4,8 @@ from logzero import logger
 from typing import Union
 from ..core import config_engine
 from pyrogram import Client
+from pyrogram.handlers import MessageHandler
+from pyrogram import filters
 import importlib
 from django.conf import settings
 

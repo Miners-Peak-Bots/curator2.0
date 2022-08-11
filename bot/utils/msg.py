@@ -1,6 +1,7 @@
 from django.conf import settings
 from logzero import logger
 from pyrogram.enums import ParseMode
+from bot.sched import jobs
 
 
 def errorify(msg, erray):
@@ -44,3 +45,31 @@ def log(client, message):
         )
     except Exception as e:
         logger.error(e)
+
+
+def create_task_id(msg):
+    return str(hash(f'{msg.chat.id}_{msg.id}'))
+
+
+def delete(msg, task_id):
+    print('Running task ', task_id)
+    raise Exception('foobar')
+    try:
+        msg.delete()
+        jobs.remove_job(task_id)
+    except Exception as e:
+        print(str(e))
+        raise
+
+    # jobs.remove_job(task_id)
+    return True
+
+
+def sched_cleanup(msg, interval=60):
+    task_id = create_task_id(msg)
+    args = {
+        'msg': msg,
+        'task_id': task_id
+    }
+    jobs.add_job(delete, 'interval', seconds=interval,
+                 kwargs=args, id=task_id)
