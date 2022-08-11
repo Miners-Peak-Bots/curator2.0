@@ -52,6 +52,7 @@ def handle_warn(client, msg):
     response = (
         f'⚠️ {msg.from_user.mention} warned {victim.mention} for\n'
         f'<b>Reason:</b> {reason.strip()}</code>\n'
+        f'Warn {victim.warning.count()}/5\n'
         # f'Warn {warns}/3'
     )
     if warnings == 3:
@@ -62,15 +63,15 @@ def handle_warn(client, msg):
         mute_user(client, msg.chat.id, victim.tele_id, 30)
         response = response + 'User has been muted for 30 days'
 
-    if warnings == 6:
-        print("muting for 90")
+    if warnings == 4:
+        print("muting for 60")
         """
         Mute for 60 days
         """
         mute_user(client, msg.chat.id, victim.tele_id, 60)
         response = response + 'User has been muted for 60 days'
 
-    if warnings == 9:
+    if warnings == 5:
         """
         Ban the user
         """
