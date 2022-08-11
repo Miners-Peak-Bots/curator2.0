@@ -2,6 +2,7 @@ from django.conf import settings
 from logzero import logger
 from pyrogram.enums import ParseMode
 from bot.sched import jobs
+from django.conf import settings
 
 
 def errorify(msg, erray):
@@ -66,6 +67,8 @@ def delete(msg, task_id):
 
 
 def sched_cleanup(msg, interval=60):
+    if not interval:
+        interval = settings.CLEANUP_INTERVAL
     task_id = create_task_id(msg)
     args = {
         'msg': msg,

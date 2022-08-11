@@ -126,6 +126,7 @@ STATIC_URL = 'static/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'user.User'
 BOT_API_ID = config('BOT_API_ID', cast=str)
@@ -135,3 +136,4 @@ BOT_MASTER = config('BOT_MASTER', cast=int)
 REPORT_CHANNEL = config('REPORT_CHANNEL', cast=str)
 LOG_GROUP = config('LOG_GROUP', cast=str)
 ANTISPAM_BOT_TOKEN = config('ANTISPAM_BOT_TOKEN', cast=str)
+CLEANUP_INTERVAL = config('CLEANUP_INTERVAL', cast=int)
