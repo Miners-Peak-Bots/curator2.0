@@ -12,6 +12,35 @@ from user.models import TeleUser
 __HELP__ = ''
 
 
+def acronym(orig_word):
+    words = orig_word.split()
+    if len(words) > 1:
+        """
+        Group title has whitespace in them
+        eg: Foobar Group
+        """
+        letters = [word[0].upper() for word in words]
+    else:
+        """
+        Group title does not have whitespace in them
+        eg: FooBarGroup
+        """
+        letters = [
+            letter if letter.isupper() else None for letter in orig_word
+        ]
+        letters = [letter for letter in letters if letter is not None]
+
+        if len(letters) == 0:
+            """
+            Cmon all of its in lowercase?
+
+            This needs a better solution
+            """
+            return f'{orig_word[0:3]}{orig_word[0:3]}'
+
+    return ''.join(letters)
+
+
 def handle_new_user(client, msg):
     """
     A user joined the group
@@ -39,11 +68,16 @@ def handle_self_add(client, msg):
     group, created = Group.objects.get_or_create(
         group_id=msg.chat.id,
         enabled=True,
-        title=msg.chat.title
+        title=msg.chat.title,
+        shortname=acronym(msg.chat.title)
+    )
+    response = (
+        f"Great! I'll help manage the group.\n"
+        f"Group short tag is {group.shortname}"
     )
     client.send_message(
         msg.chat.id,
-        "Great! I'll help manage this group."
+        response
     )
 
 
@@ -94,8 +128,15 @@ def handle_group_update(client, msg):
     group, created = create_get_group(msg.chat)
     group.username = msg.chat.username
     group.title = msg.chat.title
+    if not group.shortname:
+        group.shortname = acronym(group.title)
     group.save()
-    client.send_message(msg.chat.id, 'Group updated!')
+    response = (
+        f'Group updated\n'
+        f'Group short tag is {group.shortname}'
+    )
+    client.send_message(msg.chat.id,
+                        response)
 
 
 __HANDLERS__ = [
