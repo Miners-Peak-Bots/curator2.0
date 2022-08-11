@@ -41,7 +41,7 @@ def prep_message(user):
     # text = text + '\n' + titlefy('Reputation', len(user.rep.select()))
     text = text + '------------' + '\n'
     warns = user.warning.count()
-    text = text + titlefy('Warns', f'{warns}/3')
+    text = text + titlefy('Warns', f'{warns}/5')
     banned_status = 'Yes' if user.banned else 'No'
     text = text + titlefy('Banned', banned_status)
 

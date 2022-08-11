@@ -35,8 +35,9 @@ def handle_unwarn(client, msg):
     warning.delete()
 
     response = (
-        f'❎ {msg.from_user.mention} unwarned {victim.mention} for\n'
-        f'<b>Reason:</b> {warning.reason.strip()}'
+        f'❎ {msg.from_user.mention} pardoned {victim.mention} for\n'
+        f'<b>Reason:</b> {warning.reason.strip()}\n'
+        f'<b>Warns:</b> {victim.warning.count()}/5'
     )
     client.send_message(msg.chat.id, response, parse_mode=ParseMode.HTML)
 
