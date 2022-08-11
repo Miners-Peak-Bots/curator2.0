@@ -65,7 +65,7 @@ def delete(msg, task_id):
     return True
 
 
-def sched_cleanup(msg, interval=60):
+def sched_cleanup(msg, interval=None):
     if not interval:
         interval = settings.CLEANUP_INTERVAL
     task_id = create_task_id(msg)
