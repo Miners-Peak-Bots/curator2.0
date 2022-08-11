@@ -54,7 +54,6 @@ def create_task_id(msg):
 
 def delete(msg, task_id):
     print('Running task ', task_id)
-    raise Exception('foobar')
     try:
         msg.delete()
         jobs.remove_job(task_id)
