@@ -9,8 +9,9 @@ from bot.utils.user import (
     get_target_user,
     get_reason
 )
+# from bot.utils.group import cleanup
 from pyrogram.handlers import MessageHandler
-from ...utils.msg import errorify
+from ...utils.msg import errorify, sched_cleanup
 from pyrogram import filters
 from pyrogram.enums import ParseMode
 from bot.utils.msg import log
@@ -21,24 +22,30 @@ def handle_ban(client, msg):
         """
         A warn reason was not provided
         """
-        msg.reply_text('Please specify a reason to warn for')
+        reply = msg.reply_text('Please specify a reason to warn for')
+        sched_cleanup(reply)
         return False
 
     try:
         admin = TeleUser.objects.get(pk=msg.from_user.id)
     except TeleUser.DoesNotExist:
-        msg.reply_text('Admin not found')
+        reply = msg.reply_text('Admin not found')
+        sched_cleanup(reply)
         return False
 
     try:
         victim = get_target_user(msg)
     except Exception:
-        return msg.reply_text('User could not be found')
+        reply = msg.reply_text('User could not be found')
+        sched_cleanup(reply)
+        return False
 
     try:
         reason = get_reason(msg)
     except Exception:
-        return msg.reply_text('Please specify a reason to warn')
+        reply = msg.reply_text('Please specify a reason to ban')
+        sched_cleanup(reply)
+        return False
 
     if not admin.is_admin:
         msg.delete()
@@ -75,13 +82,14 @@ def handle_ban(client, msg):
     )
     log_msg = errorify(response, errors)
     log(client, log_msg)
-    client.send_message(msg.chat.id, response, parse_mode=ParseMode.HTML)
+    reply = client.send_message(msg.chat.id, response, parse_mode=ParseMode.HTML)
     if msg.reply_to_message:
         """
         Delete the target message
         """
         msg.reply_to_message.delete()
 
+    sched_cleanup(reply, interval=120)
     """
     Delete the command
     """
