@@ -2,7 +2,10 @@ from user.models import (
     TeleUser
 )
 from group.models import Group
-from bot.utils.user import get_target_user_and_reason
+from bot.utils.user import (
+    get_target_user,
+    get_reason
+)
 from pyrogram.handlers import MessageHandler
 from pyrogram import filters
 from pyrogram.enums import ParseMode
@@ -23,12 +26,14 @@ def handle_mute(client, msg):
         return False
 
     try:
-        data = get_target_user_and_reason(msg, ommit='!mute')
-    except Exception as e:
-        return msg.reply_text(str(e))
+        user = get_target_user(msg)
+    except Exception:
+        return msg.reply_text('User could not be found')
 
-    user = data['user']
-    reason = data['reason']
+    try:
+        reason = get_reason(msg)
+    except Exception:
+        return msg.reply_text('Please specify a reason to warn')
 
     if user.is_admin:
         msg.delete()
@@ -36,7 +41,7 @@ def handle_mute(client, msg):
 
     client.restrict_chat_member(
         chat_id=msg.chat.id,
-        user_id=data['user'].tele_id,
+        user_id=user.tele_id,
         permissions=ChatPermissions()
     )
 
@@ -67,12 +72,14 @@ def handle_muteall(client, msg):
         return False
 
     try:
-        data = get_target_user_and_reason(msg, ommit='!muteall')
-    except Exception as e:
-        return msg.reply_text(str(e))
+        user = get_target_user(msg)
+    except Exception:
+        return msg.reply_text('User could not be found')
 
-    user = data['user']
-    reason = data['reason']
+    try:
+        reason = get_reason(msg)
+    except Exception:
+        return msg.reply_text('Please specify a reason to warn')
 
     if user.is_admin:
         msg.delete()
@@ -83,7 +90,7 @@ def handle_muteall(client, msg):
         try:
             client.restrict_chat_member(
                 chat_id=group.group_id,
-                user_id=data['user'].tele_id,
+                user_id=user.tele_id,
                 permissions=ChatPermissions()
             )
         except Exception as e:

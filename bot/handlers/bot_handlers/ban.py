@@ -5,7 +5,10 @@ from user.utils import (
     ban_user
 )
 from group.models import Group
-from bot.utils.user import get_target_user_and_reason
+from bot.utils.user import (
+    get_target_user,
+    get_reason
+)
 from pyrogram.handlers import MessageHandler
 from ...utils.msg import errorify
 from pyrogram import filters
@@ -18,7 +21,7 @@ def handle_ban(client, msg):
         """
         A warn reason was not provided
         """
-        msg.delete()
+        msg.reply_text('Please specify a reason to warn for')
         return False
 
     try:
@@ -28,12 +31,14 @@ def handle_ban(client, msg):
         return False
 
     try:
-        data = get_target_user_and_reason(msg, ommit='!ban')
+        victim = get_target_user(msg)
     except Exception:
-        return msg.reply_text('User not found')
+        return msg.reply_text('User could not be found')
 
-    victim = data['user']
-    reason = data['reason']
+    try:
+        reason = get_reason(msg)
+    except Exception:
+        return msg.reply_text('Please specify a reason to warn')
 
     if not admin.is_admin:
         msg.delete()
