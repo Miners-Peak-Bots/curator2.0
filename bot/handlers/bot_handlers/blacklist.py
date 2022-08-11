@@ -5,7 +5,6 @@ from blacklist.models import Blacklist
 from pyrogram.enums import ParseMode
 
 
-
 def add_blacklist(client, msg):
     if msg.from_user.id != settings.BOT_MASTER:
         msg.delete()
@@ -16,6 +15,8 @@ def add_blacklist(client, msg):
         msg.delete()
         return False
 
+    phrase = f'\\b{phrase}\\b'
+    print(phrase)
     query = Blacklist.objects.filter(regex=phrase)
     if not query.count():
         Blacklist.objects.create(regex=phrase)
