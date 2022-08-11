@@ -3,10 +3,12 @@ from pyrogram.handlers import MessageHandler
 from pyrogram import filters
 from group.models import Group
 from django.conf import settings
+from bot.utils.msg import (
+    sched_cleanup
+)
 
 
 def handle_notify(client, msg):
-    print('i am running')
     if msg.from_user.id != settings.BOT_MASTER:
         msg.delete()
         return False
@@ -26,7 +28,9 @@ def handle_notify(client, msg):
             )
 
     response = errorify('Done!', errors)
-    msg.reply_text(response)
+    reply = msg.reply_text(response)
+    sched_cleanup(reply)
+    sched_cleanup(msg)
 
 
 __HANDLERS__ = [

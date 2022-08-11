@@ -6,6 +6,9 @@ from bot.utils.user import (
     get_target_user,
     get_reason
 )
+from bot.utils.msg import (
+    sched_cleanup
+)
 from pyrogram.handlers import MessageHandler
 from pyrogram import filters
 from pyrogram.enums import ParseMode
@@ -18,7 +21,8 @@ def handle_mute(client, msg):
     try:
         admin = TeleUser.objects.get(pk=msg.from_user.id)
     except TeleUser.DoesNotExist:
-        msg.reply_text('Admin not found')
+        reply = msg.reply_text('Admin not found')
+        sched_cleanup(reply)
         return False
 
     if not admin.is_admin:
@@ -28,12 +32,16 @@ def handle_mute(client, msg):
     try:
         user = get_target_user(msg)
     except Exception:
-        return msg.reply_text('User could not be found')
+        reply = msg.reply_text('User could not be found')
+        sched_cleanup(reply)
+        return False
 
     try:
         reason = get_reason(msg)
     except Exception:
-        return msg.reply_text('Please specify a reason to warn')
+        reply = msg.reply_text('Please specify a reason to warn')
+        sched_cleanup(reply)
+        return False
 
     if user.is_admin:
         msg.delete()
@@ -53,18 +61,20 @@ def handle_mute(client, msg):
     log_msg = f'{response}\nChat: {msg.chat.title}'
     log(client, log_msg)
     msg.delete()
-    client.send_message(
+    reply = client.send_message(
         chat_id=msg.chat.id,
         text=response,
         parse_mode=ParseMode.HTML
     )
+    sched_cleanup(reply)
 
 
 def handle_muteall(client, msg):
     try:
         admin = TeleUser.objects.get(pk=msg.from_user.id)
     except TeleUser.DoesNotExist:
-        msg.reply_text('Admin not found')
+        reply = msg.reply_text('Admin not found')
+        sched_cleanup(reply)
         return False
 
     if not admin.is_admin:
@@ -74,12 +84,16 @@ def handle_muteall(client, msg):
     try:
         user = get_target_user(msg)
     except Exception:
-        return msg.reply_text('User could not be found')
+        reply = msg.reply_text('User could not be found')
+        sched_cleanup(reply)
+        return False
 
     try:
         reason = get_reason(msg)
     except Exception:
-        return msg.reply_text('Please specify a reason to warn')
+        reply = msg.reply_text('Please specify a reason to warn')
+        sched_cleanup(reply)
+        return False
 
     if user.is_admin:
         msg.delete()
@@ -107,11 +121,12 @@ def handle_muteall(client, msg):
     log_msg = errorify(response, errors)
     log(client, log_msg)
     msg.delete()
-    client.send_message(
+    reply = client.send_message(
         chat_id=msg.chat.id,
         text=response,
         parse_mode=ParseMode.HTML
     )
+    sched_cleanup(reply)
 
 
 __HANDLERS__ = [

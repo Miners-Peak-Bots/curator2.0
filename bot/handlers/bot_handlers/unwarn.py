@@ -1,6 +1,9 @@
 from user.models import (
     TeleUser
 )
+from bot.utils.msg import (
+    sched_cleanup
+)
 from bot.utils.user import get_target_user
 from pyrogram.handlers import MessageHandler
 from pyrogram import filters
@@ -11,13 +14,16 @@ def handle_unwarn(client, msg):
     try:
         admin = TeleUser.objects.get(pk=msg.from_user.id)
     except TeleUser.DoesNotExist:
-        msg.reply_text('Admin not found')
+        reply = msg.reply_text('Admin not found')
+        sched_cleanup(reply)
         return False
 
     try:
         victim = get_target_user(msg)
     except Exception:
-        return msg.reply_text('User not found')
+        reply = msg.reply_text('User not found')
+        sched_cleanup(reply)
+        return False
 
     if not admin.is_admin:
         msg.delete()
@@ -39,7 +45,10 @@ def handle_unwarn(client, msg):
         f'<b>Reason:</b> {warning.reason.strip()}\n'
         f'<b>Warns:</b> {victim.warning.count()}/5'
     )
-    client.send_message(msg.chat.id, response, parse_mode=ParseMode.HTML)
+    reply = client.send_message(msg.chat.id, response,
+                                parse_mode=ParseMode.HTML)
+    sched_cleanup(reply)
+    msg.delete()
 
 
 __HANDLERS__ = [

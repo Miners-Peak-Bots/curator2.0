@@ -9,7 +9,6 @@ from bot.utils.user import (
     get_target_user,
     get_reason
 )
-# from bot.utils.group import cleanup
 from pyrogram.handlers import MessageHandler
 from ...utils.msg import errorify, sched_cleanup
 from pyrogram import filters

@@ -1,6 +1,9 @@
 from user.models import (
     TeleUser
 )
+from bot.utils.msg import (
+    sched_cleanup
+)
 from group.models import Group
 from bot.utils.user import get_target_user
 from pyrogram.handlers import MessageHandler
@@ -15,7 +18,8 @@ def handle_unmute(client, msg):
     try:
         admin = TeleUser.objects.get(pk=msg.from_user.id)
     except TeleUser.DoesNotExist:
-        msg.reply_text('Admin not found')
+        reply = msg.reply_text('Admin not found')
+        sched_cleanup(reply)
         return False
 
     if not admin.is_admin:
@@ -25,7 +29,9 @@ def handle_unmute(client, msg):
     try:
         user = get_target_user(msg)
     except Exception as e:
-        return msg.reply_text(str(e))
+        reply = msg.reply_text(str(e))
+        sched_cleanup(reply)
+        return False
 
     if user.is_admin:
         msg.delete()
@@ -43,18 +49,20 @@ def handle_unmute(client, msg):
     log_msg = f'{response}\nChat: {msg.chat.title}'
     log(client, log_msg)
     msg.delete()
-    client.send_message(
+    reply = client.send_message(
         chat_id=msg.chat.id,
         text=response,
         parse_mode=ParseMode.HTML
     )
+    sched_cleanup(reply)
 
 
 def handle_unmuteall(client, msg):
     try:
         admin = TeleUser.objects.get(pk=msg.from_user.id)
     except TeleUser.DoesNotExist:
-        msg.reply_text('Admin not found')
+        reply = msg.reply_text('Admin not found')
+        sched_cleanup(reply)
         return False
 
     if not admin.is_admin:
@@ -64,7 +72,9 @@ def handle_unmuteall(client, msg):
     try:
         user = get_target_user(msg)
     except Exception as e:
-        return msg.reply_text(str(e))
+        reply = msg.reply_text(str(e))
+        sched_cleanup(reply)
+        return False
 
     if user.is_admin:
         msg.delete()
@@ -90,11 +100,12 @@ def handle_unmuteall(client, msg):
     log_msg = errorify(response, errors)
     log(client, log_msg)
     msg.delete()
-    client.send_message(
+    reply = client.send_message(
         chat_id=msg.chat.id,
         text=response,
         parse_mode=ParseMode.HTML
     )
+    sched_cleanup(reply)
 
 
 __HANDLERS__ = [

@@ -6,6 +6,9 @@ from pyrogram.handlers import MessageHandler
 from pyrogram import filters
 from bot.utils.user import get_target_user
 from bot.utils.msg import log
+from bot.utils.msg import (
+    sched_cleanup
+)
 
 
 def handle_promote(client, msg):
@@ -16,7 +19,9 @@ def handle_promote(client, msg):
     try:
         member = get_target_user(msg)
     except Exception:
-        return msg.reply_text('User not found')
+        reply = msg.reply_text('User not found')
+        sched_cleanup(reply)
+        return False
 
     member.admin = True
     member.save()
@@ -37,7 +42,9 @@ def handle_promote(client, msg):
 
     log_msg = errorify(f'{member.mention} has been promoted', errors)
     log(client, log_msg)
-    msg.reply_text(f'{member.mention} has been promoted')
+    reply = msg.reply_text(f'{member.mention} has been promoted')
+    sched_cleanup(reply)
+    sched_cleanup(msg)
 
 
 def handle_demote(client, msg):
@@ -48,7 +55,9 @@ def handle_demote(client, msg):
     try:
         member = get_target_user(msg)
     except Exception:
-        return msg.reply_text('User not found')
+        reply = msg.reply_text('User not found')
+        sched_cleanup(reply)
+        return False
 
     member.admin = False
     member.save()
@@ -68,7 +77,9 @@ def handle_demote(client, msg):
 
     log_msg = errorify(f'{member.mention} has been demoted', errors)
     log(client, log_msg)
-    msg.reply_text(f'{member.mention} has been demoted')
+    reply = msg.reply_text(f'{member.mention} has been demoted')
+    sched_cleanup(reply)
+    sched_cleanup(msg)
 
 
 __HANDLERS__ = [

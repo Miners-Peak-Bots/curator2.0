@@ -2,6 +2,9 @@ from pyrogram.handlers import MessageHandler
 from user.models import TeleUser
 from pyrogram import filters
 from group.models import Group
+from bot.utils.msg import (
+    sched_cleanup
+)
 
 
 def handle_move(client, msg):
@@ -16,7 +19,8 @@ def handle_move(client, msg):
     try:
         admin = TeleUser.objects.get(pk=msg.from_user.id)
     except TeleUser.DoesNotExist:
-        msg.reply_text('Admin not found')
+        reply = msg.reply_text('Admin not found')
+        sched_cleanup(reply)
         return False
 
     if not admin.is_admin:
@@ -53,7 +57,8 @@ def handle_bulk_move(client, msg):
     try:
         admin = TeleUser.objects.get(pk=msg.from_user.id)
     except TeleUser.DoesNotExist:
-        msg.reply_text('Admin not found')
+        reply = msg.reply_text('Admin not found')
+        sched_cleanup(reply)
         return False
 
     if not admin.is_admin:
@@ -67,7 +72,8 @@ def handle_bulk_move(client, msg):
     try:
         group = Group.objects.filter(shortname=target_group).get()
     except Group.DoesNotExist:
-        msg.reply_text('Group not found')
+        reply = msg.reply_text('Group not found')
+        sched_cleanup(reply)
         return False
 
     for msgid in move_list:

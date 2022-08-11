@@ -1,8 +1,10 @@
 from pyrogram.handlers import MessageHandler
 from pyrogram import filters
-from group.models import Group
 from django.conf import settings
 from pyrogram.enums import ParseMode
+from bot.utils.msg import (
+    sched_cleanup
+)
 
 
 def handle_report(client, msg):
@@ -21,6 +23,7 @@ def handle_report(client, msg):
         text=response,
         parse_mode=ParseMode.HTML
     )
+    sched_cleanup(msg)
 
 
 __HANDLERS__ = [
