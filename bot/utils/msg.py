@@ -6,6 +6,8 @@ from django.conf import settings
 
 
 def errorify(msg, erray):
+    if not error:
+        return msg
     errors = f'Errors occured: {len(erray)}\n'
     errors = errors + '<code>' + '\n'.join(erray) + '</code>'
     return msg + '\n\n' + errors
