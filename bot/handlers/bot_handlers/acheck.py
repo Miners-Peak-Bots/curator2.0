@@ -61,9 +61,6 @@ def prep_message(user):
 
 
 def handle_acheck(client, msg):
-    if not msg.reply_to_message:
-        return False
-
     admin, created = create_get_user(msg.from_user)
     if not admin.is_admin:
         msg.delete()
@@ -77,7 +74,8 @@ def handle_acheck(client, msg):
         return False
 
     response = prep_message(member)
-    reply = msg.reply_text(response, parse_mode=ParseMode.HTML)
+    reply = msg.reply_text(response, parse_mode=ParseMode.HTML,
+                           disable_web_page_preview=True)
     sched_cleanup(reply)
 
 
