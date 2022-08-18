@@ -42,6 +42,7 @@ def handle_warn(client, msg):
     except Exception:
         reply = msg.reply_text('Please specify a reason to warn')
         sched_cleanup(reply)
+        return False
 
     if not admin.is_admin:
         msg.delete()
