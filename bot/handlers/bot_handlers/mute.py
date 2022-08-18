@@ -52,11 +52,10 @@ def handle_mute(client, msg):
         user_id=user.tele_id,
         permissions=ChatPermissions()
     )
-
+    user.log(message=reason, event=4)
     response = (
         f'🔇 {msg.from_user.mention} muted {user.mention} for\n'
         f'<b>Reason:</b> {reason.strip()}\n'
-        # f'Warn {warns}/3'
     )
     log_msg = f'{response}\nChat: {msg.chat.title}'
     log(client, log_msg)
@@ -113,6 +112,7 @@ def handle_muteall(client, msg):
                 f'on chat {group.group_id} due to '
                 f'{str(e)}')
 
+    user.log(message=reason, event=4)
     response = (
         f'🔇 {msg.from_user.mention} globally muted {user.mention} for\n'
         f'<b>Reason:</b> {reason.strip()}\n'

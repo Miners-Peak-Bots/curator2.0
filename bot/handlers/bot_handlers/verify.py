@@ -38,9 +38,7 @@ def handle_unverify(client, msg):
 
     user.verified = False
     user.save()
-    # log = UserLog(user=user,
-    #               message=reason)
-    # log.save()
+    user.log(message=reason, event=7)
 
     privileges = ChatPrivileges(can_manage_chat=False)
     errors = []
@@ -126,6 +124,7 @@ def handle_verify(client, msg):
                 f'{str(e)}. Please fix manually or retry.'
             )
 
+    user.log(message='', event=6)
     response = errorify('User has been verified', errors)
     msg.reply_text(response)
 

@@ -4,7 +4,10 @@ from user.models import (
 from bot.utils.msg import (
     sched_cleanup
 )
-from bot.utils.user import get_target_user
+from bot.utils.user import (
+    get_target_user,
+    get_reason
+)
 from pyrogram.handlers import MessageHandler
 from pyrogram import filters
 from pyrogram.enums import ParseMode
@@ -25,6 +28,13 @@ def handle_unwarn(client, msg):
         sched_cleanup(reply)
         return False
 
+    try:
+        reason = get_reason(msg)
+    except Exception:
+        reply = msg.reply_text('Please specify a reason to warn')
+        sched_cleanup(reply)
+        return False
+
     if not admin.is_admin:
         msg.delete()
         return False
@@ -39,7 +49,7 @@ def handle_unwarn(client, msg):
 
     warning = victim.warning.last()
     warning.delete()
-
+    victim.log(message=reason, event=1)
     response = (
         f'❎ {msg.from_user.mention} pardoned {victim.mention} for\n'
         f'<b>Reason:</b> {warning.reason.strip()}\n'

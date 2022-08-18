@@ -25,6 +25,39 @@ class Warn(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 
+class TeleUserLog(models.Model):
+    events = {
+        0: 'warned',
+        1: 'unwarned',
+        2: 'banned',
+        3: 'unbanned',
+        4: 'muted',
+        5: 'unmuted',
+        6: 'verified',
+        7: 'unverified'
+    }
+    user = models.ForeignKey('user.TeleUser',
+                             on_delete=models.CASCADE,
+                             related_name='logs')
+    reason = models.CharField(max_length=256)
+    """
+    0 - Warn
+    1 - Unwarn
+    2 - Ban
+    3 - Unban
+    4 - Mute
+    5 - Unmute
+    6 - Unverify
+    """
+    event = models.IntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def message(self):
+        event_msg = self.events.get(self.event)
+        return f'{self.created_at.date()} - {event_msg} - {self.reason}'
+
+
 class TeleUser(models.Model):
     tele_id = models.IntegerField(primary_key=True)
     username = models.CharField(max_length=32, null=True, default=None,
@@ -72,6 +105,13 @@ class TeleUser(models.Model):
             banning_warn=banning_warn
         )
 
+    def log(self, message, event):
+        return TeleUserLog.objects.create(
+            user=self,
+            reason=message,
+            event=event
+        )
+
     @property
     def mention(self):
         if not self.username:
@@ -81,11 +121,3 @@ class TeleUser(models.Model):
 
     class Meta:
         db_table = 'telegram_users'
-
-
-class TeleUserLog(models.Model):
-    user = models.ForeignKey(TeleUser,
-                             on_delete=models.CASCADE,
-                             related_name='logs')
-    reason = models.CharField(max_length=256)
-    created_at = models.DateTimeField(auto_now_add=True)

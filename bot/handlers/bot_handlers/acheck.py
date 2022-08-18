@@ -11,11 +11,13 @@ from bot.utils.msg import (
 
 
 def prep_log(user):
+    if not user.logs.count():
+        return ''
     response = []
     logs = user.logs.all()
     for log in logs:
         response.append(
-            boldify(log.message + ' on ' + log.date.strftime('%m/%d/%Y'))
+            boldify(log.message)
         )
     response = '\n'.join(response)
     return '<code>' + response + '</code>'

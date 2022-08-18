@@ -69,17 +69,19 @@ def handle_warn(client, msg):
         Mute for 30 days
         """
         mute_user(client, msg.chat.id, victim.tele_id, 30)
+        victim.log(message=reason, event=4)
         response = response + 'User has been muted for 30 days'
 
-    if warnings == 4:
+    elif warnings == 4:
         print("muting for 60")
         """
         Mute for 60 days
         """
         mute_user(client, msg.chat.id, victim.tele_id, 60)
+        victim.log(message=reason, event=4)
         response = response + 'User has been muted for 60 days'
 
-    if warnings == 5:
+    elif warnings == 5:
         """
         Ban the user
         """
@@ -88,7 +90,10 @@ def handle_warn(client, msg):
         warn.save()
         victim.banned = True
         victim.save()
+        victim.log(message=reason, event=2)
         response = response + 'User has been banned'
+    else:
+        victim.log(message=reason, event=0)
 
     reply = client.send_message(msg.chat.id, response,
                                 parse_mode=ParseMode.HTML)

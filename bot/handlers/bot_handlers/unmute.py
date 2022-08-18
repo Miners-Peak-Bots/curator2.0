@@ -5,7 +5,10 @@ from bot.utils.msg import (
     sched_cleanup
 )
 from group.models import Group
-from bot.utils.user import get_target_user
+from bot.utils.user import (
+    get_target_user,
+    get_reason
+)
 from pyrogram.handlers import MessageHandler
 from pyrogram import filters
 from pyrogram.enums import ParseMode
@@ -33,6 +36,13 @@ def handle_unmute(client, msg):
         sched_cleanup(reply)
         return False
 
+    try:
+        reason = get_reason(msg)
+    except Exception:
+        reply = msg.reply_text('Please specify a reason to warn')
+        sched_cleanup(reply)
+        return False
+
     if user.is_admin:
         msg.delete()
         return False
@@ -42,6 +52,7 @@ def handle_unmute(client, msg):
         user_id=user.tele_id,
         permissions=ChatPermissions()
     )
+    user.log(message=reason, event=5)
 
     response = (
         f'🎤 {msg.from_user.mention} unmuted {user.mention}'
@@ -76,6 +87,13 @@ def handle_unmuteall(client, msg):
         sched_cleanup(reply)
         return False
 
+    try:
+        reason = get_reason(msg)
+    except Exception:
+        reply = msg.reply_text('Please specify a reason to warn')
+        sched_cleanup(reply)
+        return False
+
     if user.is_admin:
         msg.delete()
         return False
@@ -94,6 +112,7 @@ def handle_unmuteall(client, msg):
                 f'on chat {group.group_id} due to '
                 f'{str(e)}')
 
+    user.log(message=reason, event=5)
     response = (
         f'🎤 {msg.from_user.mention} globally unmuted {user.mention}'
     )

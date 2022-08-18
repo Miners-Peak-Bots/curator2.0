@@ -6,25 +6,44 @@ from user.utils import (
 )
 from group.models import Group
 from pyrogram.handlers import MessageHandler
-from ...utils.msg import errorify
+from ...utils.msg import errorify, sched_cleanup
 from pyrogram import filters
-from bot.utils.user import get_target_user
+from bot.utils.user import (
+    get_target_user,
+    get_reason
+)
 from pyrogram.enums import ParseMode
 from bot.utils.msg import log
 
 
 def handle_unban(client, msg):
+    if not len(msg.command) > 1:
+        """
+        A warn reason was not provided
+        """
+        reply = msg.reply_text('Please specify a reason to warn for')
+        sched_cleanup(reply)
+        return False
+
     try:
         admin = TeleUser.objects.get(pk=msg.from_user.id)
     except TeleUser.DoesNotExist:
-        msg.reply_text('Admin not found')
+        reply = msg.reply_text('Admin not found')
+        sched_cleanup(reply)
         return False
 
     try:
         victim = get_target_user(msg)
-        print(victim)
     except Exception:
-        return msg.reply_text('User not found')
+        reply = msg.reply_text('User not found')
+        sched_cleanup(reply)
+
+    try:
+        reason = get_reason(msg)
+    except Exception:
+        reply = msg.reply_text('Please specify a reason to ban')
+        sched_cleanup(reply)
+        return False
 
     if not admin.is_admin:
         msg.delete()
@@ -36,6 +55,7 @@ def handle_unban(client, msg):
 
     victim.banned = False
     victim.save()
+    victim.log(message=reason, event=3)
     errors = []
     for group in Group.objects.all():
         try:

@@ -61,6 +61,7 @@ def handle_ban(client, msg):
         reason=reason,
         admin=admin,
     )
+    victim.log(message=reason, event=2)
     errors = []
     for group in Group.objects.all():
         try:
@@ -81,7 +82,8 @@ def handle_ban(client, msg):
     )
     log_msg = errorify(response, errors)
     log(client, log_msg)
-    reply = client.send_message(msg.chat.id, response, parse_mode=ParseMode.HTML)
+    reply = client.send_message(msg.chat.id, response,
+                                parse_mode=ParseMode.HTML)
     if msg.reply_to_message:
         """
         Delete the target message
