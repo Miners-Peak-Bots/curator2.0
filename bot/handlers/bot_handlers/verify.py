@@ -26,7 +26,7 @@ def handle_unverify(client, msg):
 
     reason = msg.text.replace('!unverify', '').strip()
     if not len(reason) > 0:
-        msg.reply_text('Please provide a valid reason')
+        msg.reply_text('Please specify a reason')
         return False
 
     reply_to = msg.reply_to_message

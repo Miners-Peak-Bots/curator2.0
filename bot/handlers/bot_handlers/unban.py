@@ -41,7 +41,7 @@ def handle_unban(client, msg):
     try:
         reason = get_reason(msg)
     except Exception:
-        reply = msg.reply_text('Please specify a reason to ban')
+        reply = msg.reply_text('Please specify a reason to unban')
         sched_cleanup(reply)
         return False
 
