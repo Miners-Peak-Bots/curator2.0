@@ -36,6 +36,7 @@ def whitelist(client, msg):
         msg.delete()
         return False
 
+    phrase = f'\\b{phrase}\\b'
     query = Blacklist.objects.filter(regex=phrase)
     if not query.count():
         msg.reply_text(
