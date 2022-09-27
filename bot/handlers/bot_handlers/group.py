@@ -139,7 +139,12 @@ def handle_group_update(client, msg):
                         response)
 
 
+def handle_id(client, msg):
+    client.send_message(msg.chat.id, msg.chat.id)
+
+
 __HANDLERS__ = [
+    MessageHandler(handle_id, filters.command('id', prefixes='!')),
     MessageHandler(handle_group_join, filters.new_chat_members),
     MessageHandler(handle_messages, (filters.all & filters.group)),
     MessageHandler(handle_group_update,
