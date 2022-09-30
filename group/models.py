@@ -32,6 +32,8 @@ class Group(models.Model):
     special = models.BooleanField(default=False)
     enabled = models.BooleanField(default=True)
     log_channel = models.IntegerField(null=True, blank=True)
+    flair = models.CharField(null=True, max_length=30, blank=True,
+                             default='verified')
     title = models.CharField(null=True, max_length=30, blank=True)
     username = models.CharField(null=True, max_length=30, blank=True)
     link = models.CharField(null=True, max_length=30, blank=True)
