@@ -115,12 +115,20 @@ def handle_verify(client, msg):
             client.promote_chat_member(chat_id=group.group_id,
                                        user_id=user.tele_id,
                                        privileges=privileges)
+        except Exception as e:
+            errors.append(
+                f'Could not promote in {group.group_id} due to\n'
+                f'{str(e)}. Please fix manually or retry.'
+            )
+
+        try:
             if group.flair:
+                print("Setting flair to ", group.flair)
                 client.set_administrator_title(group.group_id, user.tele_id,
                                                group.flair)
         except Exception as e:
             errors.append(
-                f'Could not promote in {group.group_id} due to\n'
+                f'Could not set flair in {group.group_id} due to\n'
                 f'{str(e)}. Please fix manually or retry.'
             )
 
