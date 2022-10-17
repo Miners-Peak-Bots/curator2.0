@@ -77,6 +77,11 @@ def get_target_user(msg):
             user = get_user_by_id(userid)
             return user
         else:
+            # user_entity = None
+            # for entity in msg.entities:
+            #     print(entity.type)
+            #     print(entity.user)
+
             userid = userid.replace('@', '')
             try:
                 user = get_user_by_username(userid)
