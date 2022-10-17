@@ -34,7 +34,7 @@ __HANDLERS__ = [
 ]
 
 
-__HELP__ = (
+__HELP__ADMIN__ = (
     '!channelmode: Switch a group to channel mode where only admins can post\n'
     '    Send !channelmode in a group\n'
     '!groupmode: Switch a group back to group mode where everybody can post'

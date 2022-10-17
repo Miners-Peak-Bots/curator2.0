@@ -43,7 +43,7 @@ __HANDLERS__ = [
 ]
 
 
-__HELP__ = (
+__HELP__ADMIN__ = (
     '!special: Set special status to group\n'
     '!notspecial: Remove special status from group'
 )

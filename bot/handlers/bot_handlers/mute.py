@@ -134,7 +134,7 @@ __HANDLERS__ = [
     MessageHandler(handle_muteall, filters.command('muteall', prefixes='!')),
 ]
 
-__HELP__ = (
+__HELP__ADMIN__ = (
     '!mute: mute a user in the current group\n'
     '    !mute 567319\n'
     '    !mute @username\n'

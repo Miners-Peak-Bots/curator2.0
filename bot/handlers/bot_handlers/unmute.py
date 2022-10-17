@@ -134,7 +134,7 @@ __HANDLERS__ = [
 ]
 
 
-__HELP__ = (
+__HELP__ADMIN__ = (
     '!unmute: Unmute a user in the current group\n'
     '    !unmute 567319\n'
     '    !unmute @username\n'

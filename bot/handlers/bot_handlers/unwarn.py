@@ -65,7 +65,7 @@ __HANDLERS__ = [
     MessageHandler(handle_unwarn, filters.command('unwarn', prefixes='!')),
 ]
 
-__HELP__ = (
+__HELP__ADMIN__ = (
     "!unwarn: Remove a user's latest warn(admin only)"
     '    !unwarn 567319\n'
     '    !unwarn @username\n'

@@ -9,9 +9,6 @@ from group.models import Group
 from user.models import TeleUser
 
 
-__HELP__ = ''
-
-
 def acronym(orig_word):
     words = orig_word.split()
     if len(words) > 1:
@@ -120,7 +117,7 @@ def handle_messages(client, msg):
     if group.log_channel:
         msg.forward(group.log_channel)
 
-    entities = parse_entities(msg)
+    # entities = parse_entities(msg)
     msg.continue_propagation()
 
 

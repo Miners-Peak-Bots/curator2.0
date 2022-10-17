@@ -54,7 +54,7 @@ __HANDLERS__ = [
 ]
 
 
-__HELP__ = (
+__HELP__ADMIN__ = (
     '!logging: Enable logging for a group\n'
     '    !logging {group_id}\n'
     '    Example: !logging -10054341412\n'

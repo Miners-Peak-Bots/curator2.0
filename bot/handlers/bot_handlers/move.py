@@ -95,7 +95,7 @@ __HANDLERS__ = [
 ]
 
 
-__HELP__ = (
+__HELP__ADMIN__ = (
     '!move: Move one to a specified destination\n'
     '   Destination group is identified by a shortname set in dashboard'
     '   Reply to a message with !move'

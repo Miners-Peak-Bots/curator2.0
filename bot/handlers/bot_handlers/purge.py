@@ -37,7 +37,7 @@ __HANDLERS__ = [
 ]
 
 
-__HELP__ = (
+__HELP__ADMIN__ = (
     '!purge: Delete one or more messages from the group'
     '   Reply to a message with !purge'
     '   All succeeding messages will be deleted as well'

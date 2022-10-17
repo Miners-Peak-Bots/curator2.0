@@ -1,8 +1,6 @@
 from pyrogram.handlers import MessageHandler
 from pyrogram import filters
 
-__HELP__ = ''
-
 
 def handle_start(client, msg):
     if len(msg.command) > 1:

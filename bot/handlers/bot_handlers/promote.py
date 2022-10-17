@@ -88,7 +88,7 @@ __HANDLERS__ = [
 ]
 
 
-__HELP__ = (
+__HELP__ADMIN__ = (
     '!promote: Promote a user to admin\n'
     '    !promote 567319\n'
     '    !promote @username Flooding chat\n'

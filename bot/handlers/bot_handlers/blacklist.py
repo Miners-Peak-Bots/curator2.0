@@ -60,7 +60,7 @@ __HANDLERS__ = [
 ]
 
 
-__HELP__ = (
+__HELP__ADMIN__ = (
     '!blacklist: Add a word/phrase to blacklist(Not case sensitive)\n'
     '    !blacklist Foobar\n'
     '!whitelist: Remove a word/phrase from blacklist'

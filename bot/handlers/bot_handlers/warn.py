@@ -115,7 +115,7 @@ __HANDLERS__ = [
     MessageHandler(handle_warn, filters.command('warn', prefixes='!')),
 ]
 
-__HELP__ = (
+__HELP__ADMIN__ = (
     '!warn: warn a user(admin only)\n'
     '    !warn 567319 Flooding chat\n'
     '    !warn @username Flooding chat\n'

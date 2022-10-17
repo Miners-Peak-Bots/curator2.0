@@ -16,6 +16,8 @@ class Curator(Client):
                  config: Union[str, pathlib.Path, dict]):
         self.name = name
         self.help = []
+        self.admin_manual = []
+        self.help = []
         super().__init__(
             name=f'{os.getcwd()}/{name}',
             api_id=settings.BOT_API_ID,
@@ -23,6 +25,20 @@ class Curator(Client):
             bot_token=settings.BOT_API_TOKEN
         )
         self.__attach_handlers()
+
+    def __attach_manual(self, module):
+        try:
+            self.help.append(module.__HELP__)
+        except Exception as e:
+            print(str(e))
+            pass
+
+    def __attach_admin_manual(self, module):
+        try:
+            self.admin_manual.append(module.__HELP__ADMIN__)
+        except Exception as e:
+            print(str(e))
+            pass
 
     def __attach_handlers(self):
         dis_allowed = ['__init__.py', '__pycache__']
@@ -37,8 +53,10 @@ class Curator(Client):
             logger.info(f'Attaching handlers in {module}')
             module_path = import_path+module.replace('.py', '')
             module_ = importlib.import_module(module_path)
-            if not len(module_.__HELP__) == 0:
-                self.help.append(module_.__HELP__)
+
+            self.__attach_manual(module_)
+            self.__attach_admin_manual(module_)
+
             for handler in module_.__HANDLERS__:
                 if isinstance(handler, list):
                     event_handler = handler[0],

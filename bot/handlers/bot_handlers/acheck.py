@@ -84,7 +84,7 @@ __HANDLERS__ = [
 ]
 
 
-__HELP__ = (
+__HELP__ADMIN__ = (
     "!acheck: Check a user's status(admin only)"
     '    !acheck 5431231\n'
     '    !acheck @username\n'

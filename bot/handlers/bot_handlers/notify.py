@@ -40,7 +40,7 @@ __HANDLERS__ = [
 ]
 
 
-__HELP__ = (
+__HELP__ADMIN__ = (
     '!notification: Send a network side message(admin only)\n'
     '   Reply to a message with !notification'
 )

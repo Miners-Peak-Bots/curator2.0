@@ -42,7 +42,7 @@ __HANDLERS__ = [
 ]
 
 
-__HELP__ = (
+__HELP__ADMIN__ = (
     '!setrules: Set a rules message and attach unmute button\n'
     '    Reply to a message with !setrules to pin and set it as rules'
 )

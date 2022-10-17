@@ -101,7 +101,7 @@ __HANDLERS__ = [
     MessageHandler(handle_ban, filters.command('ban', prefixes='!')),
 ]
 
-__HELP__ = (
+__HELP__ADMIN__ = (
     '!ban: Ban a user from all the groups(admin only)\n'
     '    !ban 567319 Flooding chat\n'
     '    !ban @username Flooding chat\n'

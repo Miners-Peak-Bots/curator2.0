@@ -62,16 +62,18 @@ class TeleUser(models.Model):
     tele_id = models.IntegerField(primary_key=True)
     username = models.CharField(max_length=32, null=True, default=None,
                                 blank=True)
-    first_name = models.CharField(max_length=64, null=True, default=None)
-    last_name = models.CharField(max_length=64, null=True, default=None)
-    captcha_solved = models.BooleanField(default=False)
-    verified = models.BooleanField(default=False)
-    email = models.CharField(max_length=40, null=True)
-    keybase = models.CharField(max_length=120, null=True)
-    ph_number = models.CharField(max_length=20, null=True)
-    country = models.CharField(max_length=20, null=True)
-    active = models.BooleanField(default=False)  # set to True after user unmutes self
-    muted = models.BooleanField(default=False)  # muted status from warnings
+    first_name = models.CharField(max_length=64, null=True, default=None,
+                                  blank=True)
+    last_name = models.CharField(max_length=64, null=True, default=None,
+                                 blank=True)
+    captcha_solved = models.BooleanField(default=False, editable=False)
+    verified = models.BooleanField(default=False, blank=True)
+    email = models.CharField(max_length=40, null=True, blank=True)
+    keybase = models.CharField(max_length=120, null=True, blank=True)
+    ph_number = models.CharField(max_length=20, null=True, blank=True)
+    country = models.CharField(max_length=20, null=True, blank=True)
+    active = models.BooleanField(default=False, blank=True)  # set to True after user unmutes self
+    muted = models.BooleanField(default=False, blank=True)  # muted status from warnings
     muted_until = models.DateTimeField(null=True)
     banned = models.BooleanField(default=False)
     admin = models.BooleanField(default=False)
