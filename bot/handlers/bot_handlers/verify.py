@@ -40,9 +40,9 @@ def handle_unverify(client, msg):
     user.save()
     user.log(message=reason, event=7)
 
-    privileges = ChatPrivileges(can_manage_chat=False)
     errors = []
     for group in Group.objects.filter(special=True).all():
+        privileges = group.get_special_privileges()
         try:
             client.promote_chat_member(chat_id=group.group_id,
                                        user_id=user.tele_id,
@@ -146,7 +146,7 @@ __HANDLERS__ = [
                     filters.private)),
 ]
 
-__HELP__ = (
+__HELP__ADMIN__ = (
     '!verify: Promote a user to verified seller status\n'
     '    Respond to a forwarded message of a user in private to verify\n'
     '    !verify 🇺🇸 +14332334234 user@mail.com keybase.io/username\n'
