@@ -2,6 +2,11 @@ from pyrogram.handlers import MessageHandler
 from user.models import TeleUser
 from pyrogram import filters
 from group.models import Group
+from group.utils import (
+    prepare_move_message,
+    prepare_follow_move_kb
+)
+from pyrogram.enums import ParseMode
 from bot.utils.msg import (
     sched_cleanup
 )
@@ -36,13 +41,21 @@ def handle_move(client, msg):
         msg.reply_text('Group not found')
         return False
 
-    client.copy_message(
+    sent = client.send_message(
         chat_id=group.group_id,
-        from_chat_id=msg.chat.id,
-        message_id=target_msg.id,
+        text=target_msg.text
     )
     target_msg.delete()
     msg.delete()
+
+    response = prepare_move_message(target_msg)
+    keyboard = prepare_follow_move_kb(sent)
+    client.send_message(
+        chat_id=msg.chat.id,
+        text=response,
+        parse_mode=ParseMode.HTML,
+        reply_markup=keyboard
+    )
 
 
 def handle_bulk_move(client, msg):
