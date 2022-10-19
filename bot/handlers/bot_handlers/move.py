@@ -48,7 +48,7 @@ def handle_move(client, msg):
     target_msg.delete()
     msg.delete()
 
-    response = prepare_move_message(target_msg)
+    response = prepare_move_message(sent)
     keyboard = prepare_follow_move_kb(sent)
     client.send_message(
         chat_id=msg.chat.id,

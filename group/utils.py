@@ -16,7 +16,7 @@ def prepare_move_message(message):
     text = message.text
     group = message.chat
     return (
-        f'<b>This message was moved from </b> <i>{group.title}</i>\n'
+        f'<b>This message was moved to </b> <i>{group.title}</i>\n'
         f'<code>{text}</code>'
     )
 
