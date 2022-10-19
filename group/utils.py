@@ -22,15 +22,9 @@ def prepare_move_message(message):
 
 
 def prepare_follow_move_kb(message):
-    try:
-        username = message.chat.username
-    except AttributeError:
-        username = message.chat.id
-
-    url = f'https://t.me/{username}/{message.id}'
     reply_markup = [
         [
-            InlineKeyboardButton('Continue', url=url)
+            InlineKeyboardButton('Continue', url=message.link)
         ]
     ]
     return InlineKeyboardMarkup(reply_markup)
