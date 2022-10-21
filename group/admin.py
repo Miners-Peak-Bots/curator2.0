@@ -8,10 +8,11 @@ from .models import (
 
 
 class GroupAdmin(admin.ModelAdmin):
-    list_display = ['__str__', 'special', 'title']
-    list_filter = ['special']
+    list_display = ['__str__', 'vendor', 'title']
+    list_filter = ['vendor']
     search_fields = ['title', 'group_id']
     search_help_text = "Search by name or group id"
+    readonly_fields = ('group_id', 'title', 'username', 'link')
 
 
 # class SpecialGroupAdmin(admin.ModelAdmin):

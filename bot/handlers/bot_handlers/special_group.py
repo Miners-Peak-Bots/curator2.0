@@ -10,7 +10,7 @@ def handle_makespecial(client, msg):
         return False
 
     group, created = create_get_group(msg.chat)
-    group.special = True
+    group.vendor = True
     group.save()
     return msg.reply_text(
         'Group has been marked as special.\n'
@@ -28,7 +28,7 @@ def handle_removespecial(client, msg):
         msg.delete()
         return msg.reply_text('Group is not special currently')
 
-    group.speical = False
+    group.vendor = False
     group.save()
     return msg.reply_text('Group has been removed from special groups.')
 
@@ -44,6 +44,6 @@ __HANDLERS__ = [
 
 
 __HELP__ADMIN__ = (
-    '!special: Set special status to group\n'
-    '!notspecial: Remove special status from group'
+    '!vendor: Set vendor status to group\n'
+    '!novendor: Remove vendor status from group'
 )

@@ -6,7 +6,7 @@ from pyrogram.types import (
 
 
 class Group(models.Model):
-    group_id = models.CharField(max_length=30, primary_key=True)
+    group_id = models.CharField(max_length=30, primary_key=True, editable=False)
     permission = models.ForeignKey('group.Permission',
                                    on_delete=models.SET_NULL,
                                    null=True,
@@ -29,7 +29,7 @@ class Group(models.Model):
                                         blank=True)
     shortname = models.CharField(max_length=30, null=True, blank=True,
                                  unique=True)
-    special = models.BooleanField(default=False)
+    vendor = models.BooleanField(default=False)
     enabled = models.BooleanField(default=True)
     log_channel = models.IntegerField(null=True, blank=True)
     flair = models.CharField(null=True, max_length=30, blank=True,

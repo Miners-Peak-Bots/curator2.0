@@ -1,5 +1,3 @@
-# from ...utils.user import get_user, create_user
-from ...utils.group import parse_entities
 from group.utils import create_get_group
 from user.utils import create_get_user
 from pyrogram.handlers import MessageHandler
