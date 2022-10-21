@@ -45,7 +45,7 @@ def handle_move(client, msg):
         f'<b>This message was moved from </b> <i>{group.title}</i>\n'
         f'Sent by {msg.from_user.mention}\n'
     )
-    sent = client.send_message(
+    client.send_message(
         chat_id=group.group_id,
         text=prior_text
     )
@@ -98,16 +98,35 @@ def handle_bulk_move(client, msg):
         sched_cleanup(reply)
         return False
 
+    prior_text = (
+        f'<b>This conversation was moved from </b> <i>{group.title}</i>\n'
+        f'Sent by {msg.from_user.mention}\n'
+    )
+    client.send_message(
+        chat_id=group.group_id,
+        text=prior_text
+    )
+    copied = []
     for msgid in move_list:
-        client.copy_message(
+        copy = client.copy_message(
             chat_id=group.group_id,
             from_chat_id=msg.chat.id,
             message_id=msgid,
         )
+        copied.append(copy)
 
     client.delete_messages(
         chat_id=msg.chat.id,
         message_ids=del_list
+    )
+    first_message = copied[0]
+    response = prepare_move_message(first_message, conversation=True)
+    keyboard = prepare_follow_move_kb(first_message)
+    client.send_message(
+        chat_id=msg.chat.id,
+        text=response,
+        parse_mode=ParseMode.HTML,
+        reply_markup=keyboard
     )
 
 

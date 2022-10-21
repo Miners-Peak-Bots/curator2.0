@@ -12,11 +12,14 @@ def create_get_group(chat):
     )
 
 
-def prepare_move_message(message):
+def prepare_move_message(message, conversation=False):
+    type_ = 'message'
+    if conversation:
+        type_ = 'conversation'
     text = message.text
     group = message.chat
     return (
-        f'<b>This message was moved to </b> <i>{group.title}</i>\n'
+        f'<b>This {type_} was moved to </b> <i>{group.title}</i>\n'
         f'<code>{text}</code>'
     )
 
