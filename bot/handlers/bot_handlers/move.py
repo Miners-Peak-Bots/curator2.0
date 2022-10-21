@@ -41,15 +41,24 @@ def handle_move(client, msg):
         msg.reply_text('Group not found')
         return False
 
+    prior_text = (
+        f'<b>This message was moved from </b> <i>{group.title}</i>\n'
+        f'Sent by {msg.from_user.mention}\n'
+    )
     sent = client.send_message(
         chat_id=group.group_id,
-        text=target_msg.text
+        text=prior_text
+    )
+    copied = client.copy_message(
+        chat_id=group.group_id,
+        from_chat_id=msg.chat.id,
+        message_id=target_msg.id
     )
     target_msg.delete()
     msg.delete()
 
-    response = prepare_move_message(sent)
-    keyboard = prepare_follow_move_kb(sent)
+    response = prepare_move_message(copied)
+    keyboard = prepare_follow_move_kb(copied)
     client.send_message(
         chat_id=msg.chat.id,
         text=response,
