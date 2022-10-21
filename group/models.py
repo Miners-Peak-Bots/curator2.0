@@ -6,7 +6,7 @@ from pyrogram.types import (
 
 
 class Group(models.Model):
-    group_id = models.CharField(max_length=30, primary_key=True, editable=False)
+    group_id = models.CharField(max_length=30, primary_key=True)
     permission = models.ForeignKey('group.Permission',
                                    on_delete=models.SET_NULL,
                                    null=True,
