@@ -4,7 +4,7 @@ from blacklist.models import Blacklist
 from user.models import TeleUser
 from bot.utils.msg import log
 from pyrogram.enums import ChatType
-
+from django.core.cache import cache
 
 api_id = settings.BOT_API_ID
 api_hash = settings.BOT_API_HASH
@@ -64,7 +64,7 @@ def handle_msg4(client, msg):
     # user = msg.from_user.id
     # if user in data['admins']:
     #     return False
-    patterns = data['patterns']
+    patterns = cache.get('blacklist', [])
     for pattern in patterns:
         res = pattern.regex.search(msg.text)
         if res is not None:
