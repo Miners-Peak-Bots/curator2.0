@@ -2,6 +2,7 @@ from group.utils import create_get_group
 from user.utils import create_get_user
 from pyrogram.handlers import MessageHandler
 from pyrogram import filters
+from pyrogram.enums import ChatType
 from django.conf import settings
 from group.models import Group
 from user.models import TeleUser
@@ -135,6 +136,17 @@ def handle_group_update(client, msg):
 
 
 def handle_id(client, msg):
+    if msg.chat.type == ChatType.PRIVATE:
+        return client.send_message(msg.chat.id,
+                                   f'Your user id is {msg.from_user.id}')
+    else:
+        if msg.reply_to_message:
+            target = msg.reply_to_message.from_user
+            return client.send_message(msg.chat.id,
+                                       f'{target.mention} id is {target.id}')
+        else:
+            return client.send_message(msg.chat.id,
+                                       f'Group id is {msg.chat.id}')
     client.send_message(msg.chat.id, msg.chat.id)
 
 
