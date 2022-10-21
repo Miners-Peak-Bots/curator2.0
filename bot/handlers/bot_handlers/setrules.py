@@ -25,7 +25,7 @@ def handle_set_rules(client, msg):
     pinmsg = client.copy_message(
         chat_id=msg.chat.id,
         from_chat_id=msg.chat.id,
-        message_id=target_msg.message_id,
+        message_id=target_msg.id,
         reply_markup=keyboard
     )
     pinmsg.pin()
