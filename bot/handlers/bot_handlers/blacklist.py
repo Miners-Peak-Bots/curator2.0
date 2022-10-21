@@ -3,6 +3,7 @@ from django.conf import settings
 from pyrogram import filters
 from blacklist.models import Blacklist
 from pyrogram.enums import ParseMode
+from django.core.cache import cache
 
 
 def add_blacklist(client, msg):
@@ -19,7 +20,11 @@ def add_blacklist(client, msg):
     print(phrase)
     query = Blacklist.objects.filter(regex=phrase)
     if not query.count():
-        Blacklist.objects.create(regex=phrase)
+        word = Blacklist.objects.create(regex=phrase)
+        blacklist = cache.get('blacklist', [])
+        blacklist.append(word)
+        cache.set('blacklist', blacklist)
+
     msg.reply_text(
         f'<code>{phrase.strip()}</code> has been added to blacklist.',
         parse_mode=ParseMode.HTML
@@ -46,6 +51,8 @@ def whitelist(client, msg):
         return False
 
     query.all().delete()
+    blacklist = [row for row in Blacklist.objects.all()]
+    cache.set('blacklist', blacklist)
     msg.reply_text(
         f'<code>{phrase.strip()}</code> has been whitelisted',
         parse_mode=ParseMode.HTML
