@@ -41,7 +41,7 @@ def handle_unverify(client, msg):
     user.log(message=reason, event=7)
 
     errors = []
-    for group in Group.objects.filter(special=True).all():
+    for group in Group.objects.filter(vendor=True).all():
         privileges = group.get_special_privileges()
         try:
             client.promote_chat_member(chat_id=group.group_id,
@@ -109,7 +109,7 @@ def handle_verify(client, msg):
     Promote user to admin and set admin title
     """
     errors = []
-    for group in Group.objects.filter(special=True).all():
+    for group in Group.objects.filter(vendor=True).all():
         try:
             privileges = group.get_special_privileges()
             client.promote_chat_member(chat_id=group.group_id,
