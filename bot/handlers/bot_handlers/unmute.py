@@ -138,12 +138,12 @@ __HANDLERS__ = [
 
 
 __HELP__ADMIN__ = (
-    '!unmute: Unmute a user in the current group\n'
-    '    !unmute 567319\n'
-    '    !unmute @username\n'
-    '    Reply to a user\'s message with !unmute'
-    '!unmuteall: Unmute a user from all the groups\n'
-    '    !unmute 567319\n'
-    '    !unmute @username\n'
-    '    Reply to a user\'s message with !unmute'
+    '$unmute: Unmute a user in the current group\n'
+    '    $unmute 567319\n'
+    '    $unmute @username\n'
+    '    Reply to a user\'s message with $unmute'
+    '$unmuteall: Unmute a user from all the groups\n'
+    '    $unmute 567319\n'
+    '    $unmute @username\n'
+    '    Reply to a user\'s message with $unmute'
 )
