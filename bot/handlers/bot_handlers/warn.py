@@ -12,6 +12,9 @@ from pyrogram.handlers import MessageHandler
 from pyrogram import filters
 from pyrogram.enums import ParseMode
 from user.utils import ban_user, mute_user
+from django.conf.settings import (
+    BOT_COMMAND_PREFIX as CMD_PREFIX
+)
 
 
 def handle_warn(client, msg):
@@ -112,12 +115,12 @@ def handle_warn(client, msg):
 
 
 __HANDLERS__ = [
-    MessageHandler(handle_warn, filters.command('warn', prefixes='!')),
+    MessageHandler(handle_warn, filters.command('warn', prefixes=CMD_PREFIX)),
 ]
 
 __HELP__ADMIN__ = (
-    '!warn: warn a user(admin only)\n'
-    '    !warn 567319 Flooding chat\n'
-    '    !warn @username Flooding chat\n'
-    '    Reply to a user\'s message with !warn reason'
+    '$warn: warn a user(admin only)\n'
+    '    $warn 567319 Flooding chat\n'
+    '    $warn @username Flooding chat\n'
+    '    Reply to a user\'s message with $warn reason'
 )

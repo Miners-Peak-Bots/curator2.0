@@ -6,6 +6,9 @@ from django.conf import settings
 from bot.utils.msg import (
     sched_cleanup
 )
+from django.conf.settings import (
+    BOT_COMMAND_PREFIX as CMD_PREFIX
+)
 
 
 def handle_notify(client, msg):
@@ -35,12 +38,12 @@ def handle_notify(client, msg):
 
 __HANDLERS__ = [
     MessageHandler(handle_notify,
-                   (filters.command('notification', prefixes='!') &
+                   (filters.command('notification', prefixes=CMD_PREFIX) &
                     filters.private))
 ]
 
 
 __HELP__ADMIN__ = (
-    '!notification: Send a network side message(admin only)\n'
+    '$notification: Send a network side message(admin only)\n'
     '   Reply to a message with !notification'
 )

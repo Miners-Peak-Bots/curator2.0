@@ -9,6 +9,9 @@ from bot.utils.msg import log
 from bot.utils.msg import (
     sched_cleanup
 )
+from django.conf.settings import (
+    BOT_COMMAND_PREFIX as CMD_PREFIX
+)
 
 
 def handle_promote(client, msg):
@@ -83,18 +86,20 @@ def handle_demote(client, msg):
 
 
 __HANDLERS__ = [
-    MessageHandler(handle_promote, filters.command('promote', prefixes='!')),
-    MessageHandler(handle_demote, filters.command('demote', prefixes='!')),
+    MessageHandler(handle_promote, filters.command('promote',
+                                                   prefixes=CMD_PREFIX)),
+    MessageHandler(handle_demote, filters.command('demote',
+                                                  prefixes=CMD_PREFIX)),
 ]
 
 
 __HELP__ADMIN__ = (
-    '!promote: Promote a user to admin\n'
-    '    !promote 567319\n'
-    '    !promote @username Flooding chat\n'
-    '    Reply to a user\'s message with !promote\n'
-    '!demote:- Remove a user as admin\n'
-    '    !demote 567319\n'
-    '    !demote @username\n'
-    '    Reply to a user\'s message with !demote'
+    '$promote: Promote a user to admin\n'
+    '    $promote 567319\n'
+    '    $promote @username Flooding chat\n'
+    '    Reply to a user\'s message with $promote\n'
+    '$demote:- Remove a user as admin\n'
+    '    $demote 567319\n'
+    '    $demote @username\n'
+    '    Reply to a user\'s message with $demote'
 )

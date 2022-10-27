@@ -10,6 +10,9 @@ from pyrogram.enums import ParseMode
 from bot.utils.msg import (
     sched_cleanup
 )
+from django.conf.settings import (
+    BOT_COMMAND_PREFIX as CMD_PREFIX
+)
 
 
 def handle_move(client, msg):
@@ -131,17 +134,19 @@ def handle_bulk_move(client, msg):
 
 
 __HANDLERS__ = [
-    MessageHandler(handle_move, filters.command('move', prefixes='!')),
-    MessageHandler(handle_bulk_move, filters.command('bmove', prefixes='!')),
+    MessageHandler(handle_move,
+                   filters.command('move', prefixes=CMD_PREFIX)),
+    MessageHandler(handle_bulk_move,
+                   filters.command('bmove', prefixes=CMD_PREFIX)),
 ]
 
 
 __HELP__ADMIN__ = (
-    '!move: Move one to a specified destination\n'
+    '$move: Move one to a specified destination\n'
     '   Destination group is identified by a shortname set in dashboard'
-    '   Reply to a message with !move'
-    '!bmove: Move more than one messages to a specified destination\n'
+    '   Reply to a message with $move'
+    '$bmove: Move more than one messages to a specified destination\n'
     '   Destination group is identified by a shortname set in dashboard'
-    '   Reply to a message with !move'
+    '   Reply to a message with $bmove'
     '   All succeeding messages will be moved as well'
 )

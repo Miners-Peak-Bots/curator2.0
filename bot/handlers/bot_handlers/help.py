@@ -4,6 +4,9 @@ from pyrogram.enums import ParseMode
 from user.models import (
     TeleUser,
 )
+from django.conf.settings import (
+    BOT_COMMAND_PREFIX as CMD_PREFIX
+)
 
 
 def handle_help(client, msg):
@@ -22,7 +25,6 @@ def handle_help(client, msg):
     else:
         help_ = client.help
 
-    print(is_admin)
     response = '\n\n'.join(help_)
     response = f'<code>{response}</code>'
     msg.reply(
@@ -33,12 +35,12 @@ def handle_help(client, msg):
 
 __HANDLERS__ = [
     MessageHandler(handle_help,
-                   (filters.command(['help', 'commands'], prefixes='!')
+                   (filters.command(['help', 'commands'], prefixes=CMD_PREFIX)
                     &
                     filters.private))
 ]
 
 
 __HELP__ = (
-    '!help/!commands - Send list of all avialable commands and usage'
+    '$help/$commands - Send list of all avialable commands and usage'
 )

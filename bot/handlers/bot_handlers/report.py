@@ -5,6 +5,9 @@ from pyrogram.enums import ParseMode
 from bot.utils.msg import (
     sched_cleanup
 )
+from django.conf.settings import (
+    BOT_COMMAND_PREFIX as CMD_PREFIX
+)
 
 
 def handle_report(client, msg):
@@ -28,10 +31,10 @@ def handle_report(client, msg):
 
 __HANDLERS__ = [
     MessageHandler(handle_report,
-                   filters.command(['report', 'admin'], prefixes='!'))
+                   filters.command(['report', 'admin'], prefixes=CMD_PREFIX))
 ]
 
 __HELP__ = (
-    '!report/!admin: Report a message\n'
-    '   Send !report as a reply to target message'
+    '$report/$admin: Report a message\n'
+    '   Send $report as a reply to target message'
 )

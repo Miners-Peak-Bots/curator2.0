@@ -5,6 +5,9 @@ from bot.utils.user import get_target_user
 from bot.utils.msg import (
     sched_cleanup
 )
+from django.conf.settings import (
+    BOT_COMMAND_PREFIX as CMD_PREFIX
+)
 
 
 def prep_message(user):
@@ -36,13 +39,13 @@ def handle_check(client, msg):
 
 
 __HANDLERS__ = [
-    MessageHandler(handle_check, filters.command('check', prefixes='!'))
+    MessageHandler(handle_check, filters.command('check', prefixes=CMD_PREFIX))
 ]
 
 
 __HELP__ = (
-    '!check: Retrieve public information about a user\n'
-    '   !check 521231\n'
-    '   !check @username\n'
-    "   Reply to a user's message with !check\n"
+    '$check: Retrieve public information about a user\n'
+    '   $check 521231\n'
+    '   $check @username\n'
+    "   Reply to a user's message with $check\n"
 )

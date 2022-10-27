@@ -6,6 +6,9 @@ from pyrogram.enums import ChatType
 from django.conf import settings
 from group.models import Group
 from user.models import TeleUser
+from django.conf.settings import (
+    BOT_COMMAND_PREFIX as CMD_PREFIX
+)
 
 
 def acronym(orig_word):
@@ -151,10 +154,10 @@ def handle_id(client, msg):
 
 
 __HANDLERS__ = [
-    MessageHandler(handle_id, filters.command('id', prefixes='!')),
+    MessageHandler(handle_id, filters.command('id', prefixes=CMD_PREFIX)),
     MessageHandler(handle_group_join, filters.new_chat_members),
     MessageHandler(handle_messages, (filters.all & filters.group)),
     MessageHandler(handle_group_update,
-                   (filters.command('updategroup', prefixes='!') &
+                   (filters.command('updategroup', prefixes=CMD_PREFIX) &
                     filters.group))
 ]

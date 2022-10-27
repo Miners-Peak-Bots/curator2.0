@@ -2,10 +2,9 @@ from pyrogram.handlers import MessageHandler
 from pyrogram import filters
 from django.conf import settings
 from group.utils import create_get_group
-
-
-__HELP__ = """Hey man
-How is it going"""
+from django.conf.settings import (
+    BOT_COMMAND_PREFIX as CMD_PREFIX
+)
 
 
 def handle_logging(client, msg):
@@ -46,18 +45,21 @@ def handle_group_id(client, msg):
 
 __HANDLERS__ = [
     MessageHandler(handle_logging,
-                   (filters.command('logging', prefixes='!') & filters.group)),
+                   (filters.command('logging',
+                                    prefixes=CMD_PREFIX) & filters.group)),
     MessageHandler(handle_group_id,
-                   (filters.command('groupid', prefixes='!') & filters.group)),
+                   (filters.command('groupid',
+                                    prefixes=CMD_PREFIX) & filters.group)),
     MessageHandler(handle_logging_off,
-                   (filters.command('log_off', prefixes='!') & filters.group))
+                   (filters.command('log_off',
+                                    prefixes=CMD_PREFIX) & filters.group))
 ]
 
 
 __HELP__ADMIN__ = (
-    '!logging: Enable logging for a group\n'
-    '    !logging {group_id}\n'
+    '$logging: Enable logging for a group\n'
+    '    $logging {group_id}\n'
     '    Example: !logging -10054341412\n'
-    '!log_off: Disable logging for a group\n'
-    '     Send !log_off in the group to disable logging'
+    '$log_off: Disable logging for a group\n'
+    '     Send $log_off in the group to disable logging'
 )

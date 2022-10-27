@@ -1,6 +1,9 @@
 from pyrogram.handlers import MessageHandler
 from django.conf import settings
 from pyrogram import filters
+from django.conf.settings import (
+    BOT_COMMAND_PREFIX as CMD_PREFIX
+)
 
 
 async def handle_purge(client, msg):
@@ -33,12 +36,13 @@ async def handle_purge(client, msg):
 
 
 __HANDLERS__ = [
-    MessageHandler(handle_purge, filters.command('purge', prefixes='!')),
+    MessageHandler(handle_purge,
+                   filters.command('purge', prefixes=CMD_PREFIX)),
 ]
 
 
 __HELP__ADMIN__ = (
-    '!purge: Delete one or more messages from the group'
-    '   Reply to a message with !purge'
+    '$purge: Delete one or more messages from the group'
+    '   Reply to a message with $purge'
     '   All succeeding messages will be deleted as well'
 )

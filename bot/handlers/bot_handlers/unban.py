@@ -14,6 +14,9 @@ from bot.utils.user import (
 )
 from pyrogram.enums import ParseMode
 from bot.utils.msg import log
+from django.conf.settings import (
+    BOT_COMMAND_PREFIX as CMD_PREFIX
+)
 
 
 def handle_unban(client, msg):
@@ -79,12 +82,13 @@ def handle_unban(client, msg):
 
 
 __HANDLERS__ = [
-    MessageHandler(handle_unban, filters.command('unban', prefixes='!')),
+    MessageHandler(handle_unban,
+                   filters.command('unban', prefixes=CMD_PREFIX)),
 ]
 
 __HELP__ADMIN__ = (
-    '!unban: Unban a user from all the groups(admin only)\n'
-    '    !unban 567319 Flooding chat\n'
-    '    !unban @username Flooding chat\n'
-    '    Reply to a user\'s message with !unban'
+    '$unban: Unban a user from all the groups(admin only)\n'
+    '    $unban 567319 Flooding chat\n'
+    '    $unban @username Flooding chat\n'
+    '    Reply to a user\'s message with $unban'
 )

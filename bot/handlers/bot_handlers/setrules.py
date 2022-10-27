@@ -2,6 +2,9 @@ from pyrogram.handlers import MessageHandler
 from pykeyboard import InlineKeyboard, InlineButton
 from pyrogram import filters
 from django.conf import settings
+from django.conf.settings import (
+    BOT_COMMAND_PREFIX as CMD_PREFIX
+)
 
 
 def handle_set_rules(client, msg):
@@ -35,7 +38,7 @@ def handle_set_rules(client, msg):
 
 __HANDLERS__ = [
     MessageHandler(handle_set_rules, (
-        filters.command('setrules', prefixes='!')
+        filters.command('setrules', prefixes=CMD_PREFIX)
         &
         filters.group
     ))
@@ -43,6 +46,6 @@ __HANDLERS__ = [
 
 
 __HELP__ADMIN__ = (
-    '!setrules: Set a rules message and attach unmute button\n'
-    '    Reply to a message with !setrules to pin and set it as rules'
+    '$setrules: Set a rules message and attach unmute button\n'
+    '    Reply to a message with $setrules to pin and set it as rules'
 )

@@ -4,6 +4,9 @@ from pyrogram import filters
 from blacklist.models import Blacklist
 from pyrogram.enums import ParseMode
 from django.core.cache import cache
+from django.conf.settings import (
+    BOT_COMMAND_PREFIX as CMD_PREFIX
+)
 
 
 def add_blacklist(client, msg):
@@ -61,15 +64,15 @@ def whitelist(client, msg):
 
 __HANDLERS__ = [
     MessageHandler(add_blacklist, filters.command('blacklist',
-                                                  prefixes='!')),
+                                                  prefixes=CMD_PREFIX)),
     MessageHandler(whitelist, filters.command('whitelist',
-                                              prefixes='!')),
+                                              prefixes=CMD_PREFIX)),
 ]
 
 
 __HELP__ADMIN__ = (
-    '!blacklist: Add a word/phrase to blacklist(Not case sensitive)\n'
-    '    !blacklist Foobar\n'
-    '!whitelist: Remove a word/phrase from blacklist'
-    '    !whitelist Foobar\n'
+    '$blacklist: Add a word/phrase to blacklist(Not case sensitive)\n'
+    '    $blacklist Foobar\n'
+    '$whitelist: Remove a word/phrase from blacklist'
+    '    $whitelist Foobar\n'
 )

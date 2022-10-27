@@ -11,6 +11,9 @@ from bot.utils.user import (
 from pyrogram.handlers import MessageHandler
 from pyrogram import filters
 from pyrogram.enums import ParseMode
+from django.conf.settings import (
+    BOT_COMMAND_PREFIX as CMD_PREFIX
+)
 
 
 def handle_unwarn(client, msg):
@@ -62,12 +65,13 @@ def handle_unwarn(client, msg):
 
 
 __HANDLERS__ = [
-    MessageHandler(handle_unwarn, filters.command('unwarn', prefixes='!')),
+    MessageHandler(handle_unwarn,
+                   filters.command('unwarn', prefixes=CMD_PREFIX)),
 ]
 
 __HELP__ADMIN__ = (
-    "!unwarn: Remove a user's latest warn(admin only)"
-    '    !unwarn 567319\n'
-    '    !unwarn @username\n'
-    '    Reply to a user\'s message with !unwarn'
+    "$unwarn: Remove a user's latest warn(admin only)"
+    '    $unwarn 567319\n'
+    '    $unwarn @username\n'
+    '    Reply to a user\'s message with $unwarn'
 )

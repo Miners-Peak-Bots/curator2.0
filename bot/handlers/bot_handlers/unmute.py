@@ -15,6 +15,9 @@ from pyrogram.enums import ParseMode
 from pyrogram.types import ChatPermissions
 from ...utils.msg import errorify
 from bot.utils.msg import log
+from django.conf.settings import (
+    BOT_COMMAND_PREFIX as CMD_PREFIX
+)
 
 
 def handle_unmute(client, msg):
@@ -128,9 +131,10 @@ def handle_unmuteall(client, msg):
 
 
 __HANDLERS__ = [
-    MessageHandler(handle_unmute, filters.command('unmute', prefixes='!')),
+    MessageHandler(handle_unmute,
+                   filters.command('unmute', prefixes=CMD_PREFIX)),
     MessageHandler(handle_unmuteall, filters.command(
-        'unmuteall', prefixes='!')),
+        'unmuteall', prefixes=CMD_PREFIX)),
 ]
 
 

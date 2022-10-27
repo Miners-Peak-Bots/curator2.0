@@ -8,6 +8,9 @@ from bot.utils.user import get_target_user
 from bot.utils.msg import (
     sched_cleanup
 )
+from django.conf.settings import (
+    BOT_COMMAND_PREFIX as CMD_PREFIX
+)
 
 
 def prep_log(user):
@@ -80,13 +83,14 @@ def handle_acheck(client, msg):
 
 
 __HANDLERS__ = [
-    MessageHandler(handle_acheck, filters.command('acheck', prefixes='!')),
+    MessageHandler(handle_acheck,
+                   filters.command('acheck', prefixes=CMD_PREFIX)),
 ]
 
 
 __HELP__ADMIN__ = (
-    "!acheck: Check a user's status(admin only)"
-    '    !acheck 5431231\n'
-    '    !acheck @username\n'
-    '    Reply to a user\'s message with !acheck'
+    "$acheck: Check a user's status(admin only)"
+    '    $acheck 5431231\n'
+    '    $acheck @username\n'
+    '    Reply to a user\'s message with $acheck'
 )

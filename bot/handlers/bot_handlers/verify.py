@@ -9,6 +9,9 @@ import os
 import emoji
 from pyrogram import filters
 from pyrogram.types import ChatPrivileges
+from django.conf.settings import (
+    BOT_COMMAND_PREFIX as CMD_PREFIX
+)
 
 
 def handle_unverify(client, msg):
@@ -139,17 +142,17 @@ def handle_verify(client, msg):
 
 __HANDLERS__ = [
     MessageHandler(handle_verify,
-                   (filters.command('verify', prefixes='!') &
+                   (filters.command('verify', prefixes=CMD_PREFIX) &
                     filters.private)),
     MessageHandler(handle_unverify,
-                   (filters.command('unverify', prefixes='!') &
+                   (filters.command('unverify', prefixes=CMD_PREFIX) &
                     filters.private)),
 ]
 
 __HELP__ADMIN__ = (
-    '!verify: Promote a user to verified seller status\n'
+    '$verify: Promote a user to verified seller status\n'
     '    Respond to a forwarded message of a user in private to verify\n'
-    '    !verify 🇺🇸 +14332334234 user@mail.com keybase.io/username\n'
-    '!unverify: Remove a user from verified seller status\n'
+    '    $verify 🇺🇸 +14332334234 user@mail.com keybase.io/username\n'
+    '$unverify: Remove a user from verified seller status\n'
     '    Respond to a forwarded message of a user in private to unverify\n'
 )

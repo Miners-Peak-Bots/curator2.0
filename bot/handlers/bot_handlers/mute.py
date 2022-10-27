@@ -15,6 +15,9 @@ from pyrogram.enums import ParseMode
 from pyrogram.types import ChatPermissions
 from ...utils.msg import errorify
 from bot.utils.msg import log
+from django.conf.settings import (
+    BOT_COMMAND_PREFIX as CMD_PREFIX
+)
 
 
 def handle_mute(client, msg):
@@ -130,17 +133,18 @@ def handle_muteall(client, msg):
 
 
 __HANDLERS__ = [
-    MessageHandler(handle_mute, filters.command('mute', prefixes='!')),
-    MessageHandler(handle_muteall, filters.command('muteall', prefixes='!')),
+    MessageHandler(handle_mute, filters.command('mute', prefixes=CMD_PREFIX)),
+    MessageHandler(handle_muteall,
+                   filters.command('muteall', prefixes=CMD_PREFIX)),
 ]
 
 __HELP__ADMIN__ = (
-    '!mute: mute a user in the current group\n'
-    '    !mute 567319\n'
-    '    !mute @username\n'
-    '    Reply to a user\'s message with !mute'
-    '!muteall: mute a user from all the groups\n'
-    '    !mute 567319\n'
-    '    !mute @username\n'
-    '    Reply to a user\'s message with !mute'
+    '$mute: mute a user in the current group\n'
+    '    $mute 567319\n'
+    '    $mute @username\n'
+    '    Reply to a user\'s message with $mute'
+    '$muteall: mute a user from all the groups\n'
+    '    $mute 567319\n'
+    '    $mute @username\n'
+    '    Reply to a user\'s message with $mute'
 )

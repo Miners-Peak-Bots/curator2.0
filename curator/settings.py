@@ -137,6 +137,7 @@ CACHES = {
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'user.User'
+BOT_COMMAND_PREFIX = config('BOT_COMMAND_PREFIX', cast=str)
 BOT_API_ID = config('BOT_API_ID', cast=str)
 BOT_API_HASH = config('BOT_API_HASH', cast=str)
 BOT_API_TOKEN = config('BOT_API_TOKEN', cast=str)

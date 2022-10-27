@@ -2,6 +2,9 @@ from group.utils import create_get_group
 from django.conf import settings
 from pyrogram import filters
 from pyrogram.handlers import MessageHandler
+from django.conf.settings import (
+    BOT_COMMAND_PREFIX as CMD_PREFIX
+)
 
 
 def handle_makespecial(client, msg):
@@ -35,15 +38,15 @@ def handle_removespecial(client, msg):
 
 __HANDLERS__ = [
     MessageHandler(handle_makespecial,
-                   (filters.command('special', prefixes='!') &
+                   (filters.command('vendor', prefixes=CMD_PREFIX) &
                     filters.group)),
     MessageHandler(handle_removespecial,
-                   (filters.command('notspecial', prefixes='!') &
+                   (filters.command('novendor', prefixes=CMD_PREFIX) &
                     filters.group)),
 ]
 
 
 __HELP__ADMIN__ = (
-    '!vendor: Set vendor status to group\n'
-    '!novendor: Remove vendor status from group'
+    '$vendor: Set vendor status to group\n'
+    '$novendor: Remove vendor status from group'
 )

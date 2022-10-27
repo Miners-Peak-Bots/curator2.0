@@ -14,6 +14,9 @@ from ...utils.msg import errorify, sched_cleanup
 from pyrogram import filters
 from pyrogram.enums import ParseMode
 from bot.utils.msg import log
+from django.conf.settings import (
+    BOT_COMMAND_PREFIX as CMD_PREFIX
+)
 
 
 def handle_ban(client, msg):
@@ -98,16 +101,16 @@ def handle_ban(client, msg):
 
 
 __HANDLERS__ = [
-    MessageHandler(handle_ban, filters.command('ban', prefixes='!')),
+    MessageHandler(handle_ban, filters.command('ban', prefixes=CMD_PREFIX)),
 ]
 
 __HELP__ADMIN__ = (
-    '!ban: Ban a user from all the groups(admin only)\n'
-    '    !ban 567319 Flooding chat\n'
-    '    !ban @username Flooding chat\n'
-    '    Reply to a user\'s message with !ban reason'
-    '!unban: Unban a user from all the groups\n'
-    '    !unban 567319 Flooding chat\n'
-    '    !unban @username Flooding chat\n'
-    '    Reply to a user\'s message with !unban'
+    '$ban: Ban a user from all the groups(admin only)\n'
+    '    $ban 567319 Flooding chat\n'
+    '    $ban @username Flooding chat\n'
+    '    Reply to a user\'s message with $ban reason'
+    '$unban: Unban a user from all the groups\n'
+    '    $unban 567319 Flooding chat\n'
+    '    $unban @username Flooding chat\n'
+    '    Reply to a user\'s message with $unban'
 )
