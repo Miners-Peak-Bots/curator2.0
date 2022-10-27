@@ -46,7 +46,7 @@ def handle_move(client, msg):
 
     prior_text = (
         f'<b>This message was moved from </b> <i>{group.title}</i>\n'
-        f'Sent by {msg.from_user.mention}\n'
+        f'Sent by {target_msg.from_user.mention}\n'
     )
     client.send_message(
         chat_id=group.group_id,
@@ -60,7 +60,7 @@ def handle_move(client, msg):
     target_msg.delete()
     msg.delete()
 
-    response = prepare_move_message(copied)
+    response = prepare_move_message(copied, target_msg)
     keyboard = prepare_follow_move_kb(copied)
     client.send_message(
         chat_id=msg.chat.id,
@@ -103,7 +103,7 @@ def handle_bulk_move(client, msg):
 
     prior_text = (
         f'<b>This conversation was moved from </b> <i>{group.title}</i>\n'
-        f'Sent by {msg.from_user.mention}\n'
+        f'Sent by {target_msg.from_user.mention}\n'
     )
     client.send_message(
         chat_id=group.group_id,
