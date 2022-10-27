@@ -14,9 +14,8 @@ from ...utils.msg import errorify, sched_cleanup
 from pyrogram import filters
 from pyrogram.enums import ParseMode
 from bot.utils.msg import log
-from django.conf.settings import (
-    BOT_COMMAND_PREFIX as CMD_PREFIX
-)
+from django.conf import settings
+CMD_PREFIX = settings.BOT_COMMAND_PREFIX
 
 
 def handle_ban(client, msg):

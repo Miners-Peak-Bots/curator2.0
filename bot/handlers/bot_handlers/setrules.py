@@ -2,9 +2,7 @@ from pyrogram.handlers import MessageHandler
 from pykeyboard import InlineKeyboard, InlineButton
 from pyrogram import filters
 from django.conf import settings
-from django.conf.settings import (
-    BOT_COMMAND_PREFIX as CMD_PREFIX
-)
+CMD_PREFIX = settings.BOT_COMMAND_PREFIX
 
 
 def handle_set_rules(client, msg):

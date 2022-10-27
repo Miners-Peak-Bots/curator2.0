@@ -9,9 +9,7 @@ from bot.utils.msg import log
 from bot.utils.msg import (
     sched_cleanup
 )
-from django.conf.settings import (
-    BOT_COMMAND_PREFIX as CMD_PREFIX
-)
+CMD_PREFIX = settings.BOT_COMMAND_PREFIX
 
 
 def handle_promote(client, msg):

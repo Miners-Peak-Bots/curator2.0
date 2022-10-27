@@ -3,7 +3,6 @@ from pyrogram import filters
 
 
 def handle_outgoing(client, msg):
-    print('outgoing msg, gott delete it later')
     print(msg)
 
 

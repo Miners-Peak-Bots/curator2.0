@@ -15,9 +15,8 @@ from pyrogram.enums import ParseMode
 from pyrogram.types import ChatPermissions
 from ...utils.msg import errorify
 from bot.utils.msg import log
-from django.conf.settings import (
-    BOT_COMMAND_PREFIX as CMD_PREFIX
-)
+from django.conf import settings
+CMD_PREFIX = settings.BOT_COMMAND_PREFIX
 
 
 def handle_mute(client, msg):

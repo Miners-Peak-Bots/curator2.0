@@ -5,9 +5,8 @@ from bot.utils.user import get_target_user
 from bot.utils.msg import (
     sched_cleanup
 )
-from django.conf.settings import (
-    BOT_COMMAND_PREFIX as CMD_PREFIX
-)
+from django.conf import settings
+CMD_PREFIX = settings.BOT_COMMAND_PREFIX
 
 
 def prep_message(user):

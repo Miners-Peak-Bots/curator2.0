@@ -8,10 +8,7 @@ from pyrogram.handlers import MessageHandler
 import os
 import emoji
 from pyrogram import filters
-from pyrogram.types import ChatPrivileges
-from django.conf.settings import (
-    BOT_COMMAND_PREFIX as CMD_PREFIX
-)
+CMD_PREFIX = settings.BOT_COMMAND_PREFIX
 
 
 def handle_unverify(client, msg):

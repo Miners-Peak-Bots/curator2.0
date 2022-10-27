@@ -6,9 +6,7 @@ from pyrogram.enums import ChatType
 from django.conf import settings
 from group.models import Group
 from user.models import TeleUser
-from django.conf.settings import (
-    BOT_COMMAND_PREFIX as CMD_PREFIX
-)
+CMD_PREFIX = settings.BOT_COMMAND_PREFIX
 
 
 def acronym(orig_word):

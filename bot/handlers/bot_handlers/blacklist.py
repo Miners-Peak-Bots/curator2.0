@@ -4,9 +4,7 @@ from pyrogram import filters
 from blacklist.models import Blacklist
 from pyrogram.enums import ParseMode
 from django.core.cache import cache
-from django.conf.settings import (
-    BOT_COMMAND_PREFIX as CMD_PREFIX
-)
+CMD_PREFIX = settings.BOT_COMMAND_PREFIX
 
 
 def add_blacklist(client, msg):

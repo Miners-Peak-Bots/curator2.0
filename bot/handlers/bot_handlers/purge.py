@@ -1,9 +1,7 @@
 from pyrogram.handlers import MessageHandler
 from django.conf import settings
 from pyrogram import filters
-from django.conf.settings import (
-    BOT_COMMAND_PREFIX as CMD_PREFIX
-)
+CMD_PREFIX = settings.BOT_COMMAND_PREFIX
 
 
 async def handle_purge(client, msg):
