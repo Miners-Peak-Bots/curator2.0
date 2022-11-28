@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
-from decouple import config
+from decouple import config, Csv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -141,7 +141,12 @@ BOT_COMMAND_PREFIX = config('BOT_COMMAND_PREFIX', cast=str)
 BOT_API_ID = config('BOT_API_ID', cast=str)
 BOT_API_HASH = config('BOT_API_HASH', cast=str)
 BOT_API_TOKEN = config('BOT_API_TOKEN', cast=str)
-BOT_MASTER = config('BOT_MASTER', cast=int)
+
+BOT_MASTER = config('BOT_MASTER', cast=Csv())
+BOT_MASTER = [int(user_id) for user_id in BOT_MASTER]
+
+print(BOT_MASTER)
+
 REPORT_CHANNEL = config('REPORT_CHANNEL', cast=str)
 LOG_GROUP = config('LOG_GROUP', cast=str)
 ANTISPAM_BOT_TOKEN = config('ANTISPAM_BOT_TOKEN', cast=str)
