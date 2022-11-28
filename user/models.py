@@ -78,6 +78,7 @@ class TeleUser(models.Model):
     banned = models.BooleanField(default=False)
     admin = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
+    helper_admin = models.BooleanField(default=False)
 
     @property
     def keybase_link(self):

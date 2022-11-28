@@ -8,13 +8,26 @@ from pyrogram.handlers import MessageHandler
 import os
 import emoji
 from pyrogram import filters
+
+from user.models import (
+    TeleUser,
+)
+
 CMD_PREFIX = settings.BOT_COMMAND_PREFIX
 
 
 def handle_unverify(client, msg):
-    if msg.from_user.id != settings.BOT_MASTER:
-        msg.delete()
-        return False
+
+    # if msg.from_user.id != settings.BOT_MASTER:
+    #     msg.delete()
+    #     return False
+
+    try:
+        admin = TeleUser.objects.get(pk=msg.from_user.id, helper_admin=True)
+    except TeleUser.DoesNotExist:
+        if msg.from_user.id != settings.BOT_MASTER:
+            msg.delete()
+            return False
 
     if not msg.reply_to_message:
         msg.delete()
@@ -38,7 +51,7 @@ def handle_unverify(client, msg):
 
     user.verified = False
     user.save()
-    user.log(message=reason, event=7)
+
 
     errors = []
     for group in Group.objects.filter(vendor=True).all():
@@ -58,9 +71,16 @@ def handle_unverify(client, msg):
 
 
 def handle_verify(client, msg):
-    if msg.from_user.id != settings.BOT_MASTER:
-        msg.delete()
-        return False
+    # if msg.from_user.id != settings.BOT_MASTER:
+    #     msg.delete()
+    #     return False
+
+    try:
+        admin = TeleUser.objects.get(pk=msg.from_user.id, helper_admin=True)
+    except TeleUser.DoesNotExist:
+        if msg.from_user.id != settings.BOT_MASTER:
+            msg.delete()
+            return False
 
     if not msg.reply_to_message:
         msg.delete()
@@ -132,7 +152,7 @@ def handle_verify(client, msg):
                 f'{str(e)}. Please fix manually or retry.'
             )
 
-    user.log(message='', event=6)
+
     response = errorify('User has been verified', errors)
     msg.reply_text(response)
 
