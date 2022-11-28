@@ -73,7 +73,7 @@ def handle_verify(client, msg):
     try:
         admin = TeleUser.objects.get(pk=msg.from_user.id, helper_admin=True)
     except TeleUser.DoesNotExist:
-        if msg.from_user.id != settings.BOT_MASTER:
+        if msg.from_user.id not in settings.BOT_MASTER:
             msg.delete()
             return False
 

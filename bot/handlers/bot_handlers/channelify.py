@@ -6,7 +6,7 @@ CMD_PREFIX = settings.BOT_COMMAND_PREFIX
 
 
 def handle_channel_mode(client, msg):
-    if msg.from_user.id != settings.BOT_MASTER:
+    if msg.from_user.id not in settings.BOT_MASTER:
         msg.delete()
         return False
 
@@ -15,7 +15,7 @@ def handle_channel_mode(client, msg):
 
 
 def handle_group_mode(client, msg):
-    if msg.from_user.id != settings.BOT_MASTER:
+    if msg.from_user.id not in settings.BOT_MASTER:
         msg.delete()
         return False
 

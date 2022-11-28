@@ -10,7 +10,7 @@ CMD_PREFIX = settings.BOT_COMMAND_PREFIX
 
 
 def handle_notify(client, msg):
-    if msg.from_user.id != settings.BOT_MASTER:
+    if msg.from_user.id not in settings.BOT_MASTER:
         msg.delete()
         return False
 
