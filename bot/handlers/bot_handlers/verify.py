@@ -48,7 +48,6 @@ def handle_unverify(client, msg):
     user.verified = False
     user.save()
 
-
     errors = []
     for group in Group.objects.filter(vendor=True).all():
         privileges = group.get_special_privileges()
@@ -58,7 +57,7 @@ def handle_unverify(client, msg):
                                        privileges=privileges)
         except Exception as e:
             errors.append(
-                f'Could not remove as admin in {group.group_id} due to\n'
+                f'Could not unverify in {group.title}({group.id}) due to\n'
                 f'{str(e)}'
             )
 
@@ -134,7 +133,7 @@ def handle_verify(client, msg):
                                        privileges=privileges)
         except Exception as e:
             errors.append(
-                f'Could not promote in {group.group_id} due to\n'
+                f'Could not verify in {group.title}({group.id}) due to\n'
                 f'{str(e)}. Please fix manually or retry.'
             )
 
@@ -145,10 +144,9 @@ def handle_verify(client, msg):
                                                group.flair)
         except Exception as e:
             errors.append(
-                f'Could not set flair in {group.group_id} due to\n'
+                f'Could not set flair in {group.title}({group.id}) due to\n'
                 f'{str(e)}. Please fix manually or retry.'
             )
-
 
     response = errorify('User has been verified', errors)
     msg.reply_text(response)
