@@ -111,7 +111,7 @@ def handle_unmuteall(client, msg):
         except Exception as e:
             errors.append(
                 f'Could not unmute {user.tele_id} '
-                f'on chat {group.title}({group.id}) due to '
+                f'on chat {group.title}({group.group_id}) due to '
                 f'{str(e)}')
 
     user.log(message=reason, event=5)

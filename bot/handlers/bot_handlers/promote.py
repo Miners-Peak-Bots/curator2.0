@@ -37,7 +37,7 @@ def handle_promote(client, msg):
                                        privileges=privileges)
         except Exception as e:
             errors.append(
-                f'Could not promote user in {group.title}({group.id}) due to '
+                f'Could not promote user in {group.title}({group.group_id}) due to '
                 f'{str(e)}. Please promote manually or retry'
             )
 
@@ -72,7 +72,7 @@ def handle_demote(client, msg):
                                        privileges=privileges)
         except Exception as e:
             errors.append(
-                f'Could not demote in {group.title}({group.id} due to\n'
+                f'Could not demote in {group.title}({group.group_id} due to\n'
                 f'{str(e)}. Please demote manually or retry'
             )
 

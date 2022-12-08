@@ -57,7 +57,7 @@ def handle_unverify(client, msg):
                                        privileges=privileges)
         except Exception as e:
             errors.append(
-                f'Could not unverify in {group.title}({group.id}) due to\n'
+                f'Could not unverify in {group.title}({group.group_id}) due to\n'
                 f'{str(e)}'
             )
 
@@ -133,7 +133,7 @@ def handle_verify(client, msg):
                                        privileges=privileges)
         except Exception as e:
             errors.append(
-                f'Could not verify in {group.title}({group.id}) due to\n'
+                f'Could not verify in {group.title}({group.group_id}) due to\n'
                 f'{str(e)}. Please fix manually or retry.'
             )
 
@@ -144,7 +144,7 @@ def handle_verify(client, msg):
                                                group.flair)
         except Exception as e:
             errors.append(
-                f'Could not set flair in {group.title}({group.id}) due to\n'
+                f'Could not set flair in {group.title}({group.group_id}) due to\n'
                 f'{str(e)}. Please fix manually or retry.'
             )
 
