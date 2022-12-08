@@ -12,7 +12,7 @@ def add_blacklist(client, msg):
         msg.delete()
         return False
 
-    phrase = msg.text.replace('!blacklist', '').strip()
+    phrase = msg.text.replace('$blacklist', '').strip()
     if not len(phrase) >= 1:
         msg.delete()
         return False
@@ -37,7 +37,7 @@ def whitelist(client, msg):
         msg.delete()
         return False
 
-    phrase = msg.text.replace('!whitelist', '').strip()
+    phrase = msg.text.replace('$whitelist', '').strip()
     if not len(phrase) >= 1:
         msg.delete()
         return False
