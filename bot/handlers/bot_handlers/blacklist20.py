@@ -12,13 +12,13 @@ def add_blacklist(client, msg):
         msg.delete()
         return False
 
-    phrase = msg.text.replace('!blacklist20', '').strip()
+    phrase = msg.text.replace('$blacklist20', '').strip()
     if not len(phrase) >= 1:
         msg.delete()
         return False
 
+    ogphrase = phrase
     phrase = f'\\b{phrase}\\b'
-    print(phrase)
     query = Blacklist.objects.filter(regex=phrase)
     if not query.count():
         word = Blacklist.objects.create(regex=phrase, is_temp=True)
@@ -27,7 +27,7 @@ def add_blacklist(client, msg):
         cache.set('blacklist20', blacklist)
 
     msg.reply_text(
-        f'<code>{phrase.strip()}</code> has been added to blacklist.',
+        f'<code>{ogphrase.strip()}</code> has been added to blacklist.',
         parse_mode=ParseMode.HTML
     )
 
@@ -37,16 +37,17 @@ def whitelist(client, msg):
         msg.delete()
         return False
 
-    phrase = msg.text.replace('!whitelist', '').strip()
+    phrase = msg.text.replace('$whitelist20', '').strip()
     if not len(phrase) >= 1:
         msg.delete()
         return False
 
+    ogphrase = phrase
     phrase = f'\\b{phrase}\\b'
     query = Blacklist.objects.filter(regex=phrase, is_temp=True)
     if not query.count():
         msg.reply_text(
-            f'<code>{phrase.strip()}</code> does not exist in blacklist',
+            f'<code>{ogphrase.strip()}</code> does not exist in blacklist',
             parse_mode=ParseMode.HTML
         )
         return False
@@ -55,15 +56,15 @@ def whitelist(client, msg):
     blacklist = [row for row in Blacklist.objects.filter(is_temp=True)]
     cache.set('blacklist20', blacklist)
     msg.reply_text(
-        f'<code>{phrase.strip()}</code> has been whitelisted',
+        f'<code>{ogphrase.strip()}</code> has been whitelisted',
         parse_mode=ParseMode.HTML
     )
 
 
 __HANDLERS__ = [
-    MessageHandler(add_blacklist, filters.command('blacklist',
+    MessageHandler(add_blacklist, filters.command('blacklist20',
                                                   prefixes=CMD_PREFIX)),
-    MessageHandler(whitelist, filters.command('whitelist',
+    MessageHandler(whitelist, filters.command('whitelist20',
                                               prefixes=CMD_PREFIX)),
 ]
 
