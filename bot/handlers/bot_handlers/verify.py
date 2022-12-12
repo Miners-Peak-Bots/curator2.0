@@ -17,13 +17,10 @@ CMD_PREFIX = settings.BOT_COMMAND_PREFIX
 
 
 def handle_unverify(client, msg):
-    try:
-        admin = TeleUser.objects.get(pk=msg.from_user.id, helper_admin=True)
-    except TeleUser.DoesNotExist:
-        if msg.from_user.id not in settings.BOT_MASTER:
-            print(f'{msg.from_user.username} - {msg.from_user.id} not admin')
-            msg.delete()
-            return False
+    if msg.from_user.id not in settings.BOT_MASTER:
+        print(f'{msg.from_user.username} - {msg.from_user.id} not admin')
+        msg.delete()
+        return False
 
     if not msg.reply_to_message:
         msg.delete()
@@ -66,17 +63,10 @@ def handle_unverify(client, msg):
 
 
 def handle_verify(client, msg):
-    # if msg.from_user.id != settings.BOT_MASTER:
-    #     msg.delete()
-    #     return False
-
-    try:
-        admin = TeleUser.objects.get(pk=msg.from_user.id, helper_admin=True)
-    except TeleUser.DoesNotExist:
-        if msg.from_user.id not in settings.BOT_MASTER:
-            msg.delete()
-            print(f'{msg.from_user.username} - {msg.from_user.id} not admin')
-            return False
+    if msg.from_user.id not in settings.BOT_MASTER:
+        print(f'{msg.from_user.username} - {msg.from_user.id} not admin')
+        msg.delete()
+        return False
 
     if not msg.reply_to_message:
         msg.delete()
