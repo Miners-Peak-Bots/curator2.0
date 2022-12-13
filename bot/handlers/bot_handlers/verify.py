@@ -155,8 +155,8 @@ def handle_verify(client, msg):
 
 
 __HANDLERS__ = [
-    MessageHandler(handle_verify, (filters.command('verify', prefixes=CMD_PREFIX) & filters.private)),
-    MessageHandler(handle_unverify, (filters.command('unverify', prefixes=CMD_PREFIX) & filters.private)),
+    MessageHandler(handle_verify, filters.command('verify', prefixes=CMD_PREFIX)),
+    MessageHandler(handle_unverify, filters.command('unverify', prefixes=CMD_PREFIX))
 ]
 
 __HELP__ADMIN__ = (
