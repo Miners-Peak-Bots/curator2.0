@@ -1,8 +1,6 @@
 from ...utils.msg import errorify
 from user.utils import create_get_user
-from group.models import (
-   Group
-)
+from group.models import Group
 from django.conf import settings
 from pyrogram.handlers import MessageHandler
 import os
@@ -17,19 +15,28 @@ CMD_PREFIX = settings.BOT_COMMAND_PREFIX
 
 
 def handle_unverify(client, msg):
+
     try:
-        admin = TeleUser.objects.get(pk=msg.from_user.id, helper_admin=True)
+        TeleUser.objects.get(pk=msg.from_user.id, helper_admin=True)
     except TeleUser.DoesNotExist:
         if msg.from_user.id not in settings.BOT_MASTER:
-            print(f'{msg.from_user.username} - {msg.from_user.id} not admin')
             msg.delete()
+            print(f'{msg.from_user.username} - {msg.from_user.id} not admin')
             return False
 
     if not msg.reply_to_message:
+        msg.reply_text('reply to a message')
         msg.delete()
         return False
 
     if not msg.reply_to_message.forward_from:
+        if msg.forward_sender_name is not None:
+            msg.reply_text(
+                f"user {msg.forward_sender_name} need to change privacy settings for forward message to everyone"
+            )
+        else:
+            msg.reply_text("reply to a forwarded message")
+
         msg.delete()
         return False
 
@@ -52,14 +59,9 @@ def handle_unverify(client, msg):
     for group in Group.objects.filter(vendor=True).all():
         privileges = group.get_special_privileges()
         try:
-            client.promote_chat_member(chat_id=group.group_id,
-                                       user_id=user.tele_id,
-                                       privileges=privileges)
+            client.promote_chat_member(chat_id=group.group_id, user_id=user.tele_id, privileges=privileges)
         except Exception as e:
-            errors.append(
-                f'Could not unverify in {group.title}({group.group_id}) due to\n'
-                f'{str(e)}'
-            )
+            errors.append(f'Could not unverify in {group.title}({group.group_id}) due to\n' f'{str(e)}')
 
     response = errorify('User has been removed from verified users', errors)
     msg.reply_text(response)
@@ -71,7 +73,7 @@ def handle_verify(client, msg):
     #     return False
 
     try:
-        admin = TeleUser.objects.get(pk=msg.from_user.id, helper_admin=True)
+        TeleUser.objects.get(pk=msg.from_user.id, helper_admin=True)
     except TeleUser.DoesNotExist:
         if msg.from_user.id not in settings.BOT_MASTER:
             msg.delete()
@@ -79,10 +81,18 @@ def handle_verify(client, msg):
             return False
 
     if not msg.reply_to_message:
+        msg.reply_text('reply to a message')
         msg.delete()
         return False
 
     if not msg.reply_to_message.forward_from:
+        if msg.forward_sender_name is not None:
+            msg.reply_text(
+                f"user {msg.forward_sender_name} need to change privacy settings for forward message to everyone"
+            )
+        else:
+            msg.reply_text("reply to a forwarded message")
+
         msg.delete()
         return False
 
@@ -128,9 +138,7 @@ def handle_verify(client, msg):
     for group in Group.objects.filter(vendor=True).all():
         try:
             privileges = group.get_special_privileges()
-            client.promote_chat_member(chat_id=group.group_id,
-                                       user_id=user.tele_id,
-                                       privileges=privileges)
+            client.promote_chat_member(chat_id=group.group_id, user_id=user.tele_id, privileges=privileges)
         except Exception as e:
             errors.append(
                 f'Could not verify in {group.title}({group.group_id}) due to\n'
@@ -140,8 +148,7 @@ def handle_verify(client, msg):
         try:
             if group.flair:
                 print("Setting flair to ", group.flair)
-                client.set_administrator_title(group.group_id, user.tele_id,
-                                               group.flair)
+                client.set_administrator_title(group.group_id, user.tele_id, group.flair)
         except Exception as e:
             errors.append(
                 f'Could not set flair in {group.title}({group.group_id}) due to\n'
@@ -153,12 +160,8 @@ def handle_verify(client, msg):
 
 
 __HANDLERS__ = [
-    MessageHandler(handle_verify,
-                   (filters.command('verify', prefixes=CMD_PREFIX) &
-                    filters.private)),
-    MessageHandler(handle_unverify,
-                   (filters.command('unverify', prefixes=CMD_PREFIX) &
-                    filters.private)),
+    MessageHandler(handle_verify, (filters.command('verify', prefixes=CMD_PREFIX) & filters.private)),
+    MessageHandler(handle_unverify, (filters.command('unverify', prefixes=CMD_PREFIX) & filters.private)),
 ]
 
 __HELP__ADMIN__ = (

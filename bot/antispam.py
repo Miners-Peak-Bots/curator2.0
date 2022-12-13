@@ -10,8 +10,7 @@ api_id = settings.BOT_API_ID
 api_hash = settings.BOT_API_HASH
 token = settings.ANTISPAM_BOT_TOKEN
 
-app = Client('antispam.bot', api_id=api_id, api_hash=api_hash,
-             bot_token=token)
+app = Client('antispam.bot', api_id=api_id, api_hash=api_hash, bot_token=token)
 
 
 def get_patterns():
@@ -52,8 +51,7 @@ def handle_refresh_admin(client, msg):
     msg.reply_text('Admins list updated')
 
 
-@app.on_message(filters.regex(
-    '(https?:\/\/)?(www[.])?(telegram|t)\.me\/([a-zA-Z0-9_-]*)\/?$'))
+@app.on_message(filters.regex('(https?:\/\/)?(www[.])?(telegram|t)\.me\/([a-zA-Z0-9_-]*)\/?$'))
 def handle_msg3(client, msg):
     print('tele link detected')
     msg.delete()
@@ -72,11 +70,7 @@ def handle_msg4(client, msg):
             """
             Send log to log group
             """
-            if (
-                msg.chat.type == ChatType.SUPERGROUP
-                or
-                msg.chat.type == ChatType.GROUP
-            ):
+            if msg.chat.type == ChatType.SUPERGROUP or msg.chat.type == ChatType.GROUP:
                 print('group detected')
                 logmsg = (
                     f'Message from {msg.from_user.mention} in '
@@ -90,5 +84,5 @@ def handle_msg4(client, msg):
 
 def initialize():
     print('Antispam module initialized')
-    app.run()
+    app.start()
     idle()

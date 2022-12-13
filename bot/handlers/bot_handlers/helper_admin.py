@@ -6,14 +6,13 @@ from pyrogram.handlers import MessageHandler
 from pyrogram import filters
 from bot.utils.user import get_target_user
 from bot.utils.msg import log
-from bot.utils.msg import (
-    sched_cleanup
-)
+from bot.utils.msg import sched_cleanup
+
 CMD_PREFIX = settings.BOT_COMMAND_PREFIX
 
 
 def handle_add_helper(client, msg):
-    if msg.from_user.id != settings.BOT_MASTER:
+    if msg.from_user.id not in settings.BOT_MASTER:
         msg.delete()
         return False
 
@@ -33,13 +32,10 @@ def handle_add_helper(client, msg):
         client.resolve_peer(group.group_id)
         privileges = group.get_admin_privileges()
         try:
-            client.promote_chat_member(chat_id=group.group_id,
-                                       user_id=member.tele_id,
-                                       privileges=privileges)
+            client.promote_chat_member(chat_id=group.group_id, user_id=member.tele_id, privileges=privileges)
         except Exception as e:
             errors.append(
-                f'Could not promote user in {group.group_id} due to '
-                f'{str(e)}. Please promote manually or retry'
+                f'Could not promote user in {group.group_id} due to ' f'{str(e)}. Please promote manually or retry'
             )
 
     log_msg = errorify(f'{member.mention} can verify members', errors)
@@ -50,7 +46,7 @@ def handle_add_helper(client, msg):
 
 
 def handle_remove_helper(client, msg):
-    if msg.from_user.id != settings.BOT_MASTER:
+    if msg.from_user.id not in settings.BOT_MASTER:
         msg.delete()
         return False
 
@@ -69,13 +65,10 @@ def handle_remove_helper(client, msg):
     for group in Group.objects.all():
         client.resolve_peer(group.group_id)
         try:
-            client.promote_chat_member(chat_id=group.group_id,
-                                       user_id=member.tele_id,
-                                       privileges=privileges)
+            client.promote_chat_member(chat_id=group.group_id, user_id=member.tele_id, privileges=privileges)
         except Exception as e:
             errors.append(
-                f'Could not remove as admin in {group.group_id} due to\n'
-                f'{str(e)}. Please demote manually or retry'
+                f'Could not remove as admin in {group.group_id} due to\n' f'{str(e)}. Please demote manually or retry'
             )
 
     log_msg = errorify(f'{member.mention} cannot verify members', errors)
@@ -86,10 +79,8 @@ def handle_remove_helper(client, msg):
 
 
 __HANDLERS__ = [
-    MessageHandler(handle_add_helper, filters.command('add_helper_admin',
-                                                   prefixes=CMD_PREFIX)),
-    MessageHandler(handle_remove_helper, filters.command('remove_helper_admin',
-                                                  prefixes=CMD_PREFIX)),
+    MessageHandler(handle_add_helper, filters.command('add_helper_admin', prefixes=CMD_PREFIX)),
+    MessageHandler(handle_remove_helper, filters.command('remove_helper_admin', prefixes=CMD_PREFIX)),
 ]
 
 
