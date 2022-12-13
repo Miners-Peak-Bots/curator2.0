@@ -60,7 +60,7 @@ class Group(models.Model):
         if self.verified_privilege:
             return self.verified_privilege.get_privileges()
         else:
-            return ChatPrivileges(can_change_info=True)
+            return ChatPrivileges(can_invite_users=True)
 
     class Meta:
         db_table = 'groups'
