@@ -6,6 +6,7 @@ from pyrogram.enums import ChatType
 from django.conf import settings
 from group.models import Group
 from user.models import TeleUser
+
 CMD_PREFIX = settings.BOT_COMMAND_PREFIX
 
 
@@ -22,9 +23,7 @@ def acronym(orig_word):
         Group title does not have whitespace in them
         eg: FooBarGroup
         """
-        letters = [
-            letter if letter.isupper() else None for letter in orig_word
-        ]
+        letters = [letter if letter.isupper() else None for letter in orig_word]
         letters = [letter for letter in letters if letter is not None]
 
         if len(letters) == 0:
@@ -44,10 +43,7 @@ def handle_new_user(client, msg):
     """
     for member in msg.new_chat_members:
         user, created = TeleUser.objects.get_or_create(
-            tele_id=member.id,
-            username=member.username,
-            first_name=member.first_name,
-            last_name=member.last_name
+            tele_id=member.id, username=member.username, first_name=member.first_name, last_name=member.last_name
         )
 
 
@@ -55,7 +51,7 @@ def handle_self_add(client, msg):
     """
     The bot was added to a group.
     """
-    if msg.from_user.id != settings.BOT_MASTER:
+    if msg.from_user.id not in settings.BOT_MASTER:
         client.send_message(msg.chat.id, "Oops! I don't belong here")
         client.leave_chat(msg.chat.id)
 
@@ -63,19 +59,10 @@ def handle_self_add(client, msg):
     Add group to database
     """
     group, created = Group.objects.get_or_create(
-        group_id=msg.chat.id,
-        enabled=True,
-        title=msg.chat.title,
-        shortname=acronym(msg.chat.title)
+        group_id=msg.chat.id, enabled=True, title=msg.chat.title, shortname=acronym(msg.chat.title)
     )
-    response = (
-        f"Great! I'll help manage the group.\n"
-        f"Group short tag is {group.shortname}"
-    )
-    client.send_message(
-        msg.chat.id,
-        response
-    )
+    response = f"Great! I'll help manage the group.\n" f"Group short tag is {group.shortname}"
+    client.send_message(msg.chat.id, response)
 
 
 def handle_group_join(client, msg):
@@ -128,26 +115,19 @@ def handle_group_update(client, msg):
     if not group.shortname:
         group.shortname = acronym(group.title)
     group.save()
-    response = (
-        f'Group updated\n'
-        f'Group short tag is {group.shortname}'
-    )
-    client.send_message(msg.chat.id,
-                        response)
+    response = f'Group updated\n' f'Group short tag is {group.shortname}'
+    client.send_message(msg.chat.id, response)
 
 
 def handle_id(client, msg):
     if msg.chat.type == ChatType.PRIVATE:
-        return client.send_message(msg.chat.id,
-                                   f'Your user id is {msg.from_user.id}')
+        return client.send_message(msg.chat.id, f'Your user id is {msg.from_user.id}')
     else:
         if msg.reply_to_message:
             target = msg.reply_to_message.from_user
-            return client.send_message(msg.chat.id,
-                                       f'{target.mention} id is {target.id}')
+            return client.send_message(msg.chat.id, f'{target.mention} id is {target.id}')
         else:
-            return client.send_message(msg.chat.id,
-                                       f'Group id is {msg.chat.id}')
+            return client.send_message(msg.chat.id, f'Group id is {msg.chat.id}')
     client.send_message(msg.chat.id, msg.chat.id)
 
 
@@ -155,7 +135,5 @@ __HANDLERS__ = [
     MessageHandler(handle_id, filters.command('id', prefixes=CMD_PREFIX)),
     MessageHandler(handle_group_join, filters.new_chat_members),
     MessageHandler(handle_messages, (filters.all & filters.group)),
-    MessageHandler(handle_group_update,
-                   (filters.command('updategroup', prefixes=CMD_PREFIX) &
-                    filters.group))
+    MessageHandler(handle_group_update, (filters.command('updategroup', prefixes=CMD_PREFIX) & filters.group)),
 ]
