@@ -122,27 +122,31 @@ def handle_verify(client, msg):
     """
     Promote user to admin and set admin title
     """
+
     errors = []
 
     for group in Group.objects.filter(vendor=True).all():
         privileges = group.get_special_privileges()
+
         try:
             client.promote_chat_member(chat_id=group.group_id, user_id=user.tele_id, privileges=privileges)
+
         except Exception as e:
             errors.append(
                 f'Could not verify in {group.title}({group.group_id}) due to\n'
                 f'{str(e)}. Please fix manually or retry.'
             )
 
-        try:
-            if group.flair:
-                print("Setting flair to ", group.flair)
-                client.set_administrator_title(group.group_id, user.tele_id, group.flair)
-        except Exception as e:
-            errors.append(
-                f'Could not set flair in {group.title}({group.group_id}) due to\n'
-                f'{str(e)}. Please fix manually or retry.'
-            )
+        else:
+            try:
+                if group.flair:
+                    print("Setting flair to ", group.flair)
+                    client.set_administrator_title(group.group_id, user.tele_id, group.flair)
+            except Exception as e:
+                errors.append(
+                    f'Could not set flair in {group.title}({group.group_id}) due to\n'
+                    f'{str(e)}. Please fix manually or retry.'
+                )
 
     response = errorify('User has been verified', errors)
     msg.reply_text(response)
