@@ -11,6 +11,9 @@ from user.models import (
     TeleUser,
 )
 
+from pyrogram.types import ChatPrivileges
+
+
 CMD_PREFIX = settings.BOT_COMMAND_PREFIX
 
 
@@ -63,8 +66,10 @@ def handle_unverify(client, msg):
     user.save()
 
     errors = []
+
+    privileges = ChatPrivileges(can_manage_chat=False)
+
     for group in Group.objects.filter(vendor=True).all():
-        privileges = group.get_special_privileges()
         try:
             client.promote_chat_member(chat_id=group.group_id, user_id=user.tele_id, privileges=privileges)
         except Exception as e:
@@ -118,9 +123,10 @@ def handle_verify(client, msg):
     Promote user to admin and set admin title
     """
     errors = []
+
     for group in Group.objects.filter(vendor=True).all():
+        privileges = group.get_special_privileges()
         try:
-            privileges = group.get_special_privileges()
             client.promote_chat_member(chat_id=group.group_id, user_id=user.tele_id, privileges=privileges)
         except Exception as e:
             errors.append(
