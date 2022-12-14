@@ -14,13 +14,12 @@ from user.models import (
 CMD_PREFIX = settings.BOT_COMMAND_PREFIX
 
 
-def handle_unverify(client, msg):
+def is_allowed(msg):
     try:
         TeleUser.objects.get(pk=msg.from_user.id, helper_admin=True)
     except TeleUser.DoesNotExist:
         if msg.from_user.id not in settings.BOT_MASTER:
             msg.delete()
-            print(f'{msg.from_user.username} - {msg.from_user.id} not admin')
             return False
 
     if not msg.reply_to_message:
@@ -29,14 +28,23 @@ def handle_unverify(client, msg):
         return False
 
     if not msg.reply_to_message.forward_from:
-        if msg.forward_sender_name is not None:
+
+        if msg.reply_to_message.forward_sender_name is not None:
             msg.reply_text(
-                f"user {msg.forward_sender_name} need to change privacy settings for forward message to everyone"
+                f"user {msg.reply_to_message.forward_sender_name} need to change privacy settings for forward message to everyone"
             )
         else:
             msg.reply_text("reply to a forwarded message")
 
         msg.delete()
+        return False
+
+    return True
+
+
+def handle_unverify(client, msg):
+
+    if not is_allowed(msg):
         return False
 
     reason = msg.text.replace('$unverify', '').strip()
@@ -67,28 +75,8 @@ def handle_unverify(client, msg):
 
 
 def handle_verify(client, msg):
-    try:
-        TeleUser.objects.get(pk=msg.from_user.id, helper_admin=True)
-    except TeleUser.DoesNotExist:
-        if msg.from_user.id not in settings.BOT_MASTER:
-            msg.delete()
-            print(f'{msg.from_user.username} - {msg.from_user.id} not admin')
-            return False
 
-    if not msg.reply_to_message:
-        msg.reply_text('reply to a message')
-        msg.delete()
-        return False
-
-    if not msg.reply_to_message.forward_from:
-        if msg.forward_sender_name is not None:
-            msg.reply_text(
-                f"user {msg.forward_sender_name} need to change privacy settings for forward message to everyone"
-            )
-        else:
-            msg.reply_text("reply to a forwarded message")
-
-        msg.delete()
+    if not is_allowed(msg):
         return False
 
     reply_to = msg.reply_to_message
@@ -156,7 +144,7 @@ def handle_verify(client, msg):
 
 __HANDLERS__ = [
     MessageHandler(handle_verify, filters.command('verify', prefixes=CMD_PREFIX)),
-    MessageHandler(handle_unverify, filters.command('unverify', prefixes=CMD_PREFIX))
+    MessageHandler(handle_unverify, filters.command('unverify', prefixes=CMD_PREFIX)),
 ]
 
 __HELP__ADMIN__ = (
