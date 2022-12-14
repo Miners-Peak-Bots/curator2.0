@@ -6,6 +6,7 @@ from pyrogram.enums import ChatType
 from django.conf import settings
 from group.models import Group
 from user.models import TeleUser
+from pyrogram.types import ChatPermissions
 
 CMD_PREFIX = settings.BOT_COMMAND_PREFIX
 
@@ -45,6 +46,18 @@ def handle_new_user(client, msg):
         user, created = TeleUser.objects.get_or_create(
             tele_id=member.id, username=member.username, first_name=member.first_name, last_name=member.last_name
         )
+        """
+        Mute user if not admin
+        """
+        if not user.is_admin:
+            try:
+                client.restrict_chat_member(
+                    chat_id=msg.chat.id,
+                    user_id=user.tele_id,
+                    permissions=ChatPermissions()
+                )
+            except Exception as e:
+                print(f'failed muting {user.tele_id} because {str(e)}')
 
 
 def handle_self_add(client, msg):
