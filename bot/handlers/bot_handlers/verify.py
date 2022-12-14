@@ -12,6 +12,7 @@ from user.models import (
 )
 
 from pyrogram.types import ChatPrivileges
+from pyrogram.errors import ChatAdminRequired
 
 
 CMD_PREFIX = settings.BOT_COMMAND_PREFIX
@@ -70,8 +71,15 @@ def handle_unverify(client, msg):
     privileges = ChatPrivileges(can_manage_chat=False)
 
     for group in Group.objects.filter(vendor=True).all():
+
         try:
             client.promote_chat_member(chat_id=group.group_id, user_id=user.tele_id, privileges=privileges)
+
+        except ChatAdminRequired:
+            errors.append(
+                f'Could not unverify in {group.title}({group.group_id}) as bots cant edit admins promoted by other admins\n Demote them and try again'
+            )
+
         except Exception as e:
             errors.append(f'Could not unverify in {group.title}({group.group_id}) due to\n' f'{str(e)}')
 
@@ -130,6 +138,11 @@ def handle_verify(client, msg):
 
         try:
             client.promote_chat_member(chat_id=group.group_id, user_id=user.tele_id, privileges=privileges)
+
+        except ChatAdminRequired:
+            errors.append(
+                f'Could not verify in {group.title}({group.group_id}) as bots cant edit admins promoted by other admins\n Demote them and try again'
+            )
 
         except Exception as e:
             errors.append(
