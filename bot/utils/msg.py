@@ -5,12 +5,12 @@ from bot.sched import jobs
 from django.conf import settings
 
 
-def errorify(msg, erray):
+def errorify(title, erray):
     if not erray:
-        return msg
-    errors = f'Errors occured: {len(erray)}\n'
-    errors = errors + '<code>' + '\n'.join(erray) + '</code>'
-    return msg + '\n\n' + errors
+        return title
+    errors = f'Errors occured: {len(erray)}\n\n'
+    errors = errors + '<code>' + '\n\n'.join(erray) + '</code>'
+    return title + '\n\n' + errors
 
 
 def titlefy(key, value, nl=False):
@@ -41,11 +41,7 @@ def boldify(phrase):
 
 def log(client, message):
     try:
-        client.send_message(
-            chat_id=settings.LOG_GROUP,
-            text=message,
-            parse_mode=ParseMode.HTML
-        )
+        client.send_message(chat_id=settings.LOG_GROUP, text=message, parse_mode=ParseMode.HTML)
     except Exception as e:
         logger.error(e)
 
@@ -71,9 +67,5 @@ def sched_cleanup(msg, interval=None):
     if not interval:
         interval = settings.CLEANUP_INTERVAL
     task_id = create_task_id(msg)
-    args = {
-        'msg': msg,
-        'task_id': task_id
-    }
-    jobs.add_job(delete, 'interval', seconds=interval,
-                 kwargs=args, id=task_id)
+    args = {'msg': msg, 'task_id': task_id}
+    jobs.add_job(delete, 'interval', seconds=interval, kwargs=args, id=task_id)
