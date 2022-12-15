@@ -46,9 +46,46 @@ def is_allowed(msg):
     return True
 
 
+"""
+This function helps get the target user
+of the verify command and also checks if the message is allowed and throws an
+exception if not
+"""
+def is_allowed_and_get_target(msg):
+    try:
+        TeleUser.objects.get(pk=msg.from_user.id, helper_admin=True)
+    except TeleUser.DoesNotExist:
+        if msg.from_user.id not in settings.BOT_MASTER:
+            raise Exception('You need to be an admin to use this command')
+
+    if not msg.reply_to_message:
+        raise Exception('You need to use this command as a response')
+
+    # Target message
+    tmsg = msg.reply_to_message
+
+    if not tmsg.forward_from and tmsg.forward_sender_name is not None:
+        raise Exception(
+            f'{tmsg.forward_sender_name} has to disable their forward privacy'
+        )
+    elif tmsg.forward_from:
+        target = tmsg.forward_from
+    elif not tmsg.forward_from and not tmsg.forward_sender_name:
+        target = tmsg.from_user
+
+    return target
+
+
 def handle_unverify(client, msg):
 
-    if not is_allowed(msg):
+    # if not is_allowed(msg):
+    #     return False
+
+    try:
+        target = is_allowed_and_get_target(msg)
+    except Exception as e:
+        msg.reply_text(e)
+        msg.delete()
         return False
 
     reason = msg.text.replace('$unverify', '').strip()
@@ -56,8 +93,7 @@ def handle_unverify(client, msg):
         msg.reply_text('Please specify a reason')
         return False
 
-    reply_to = msg.reply_to_message
-    user, created = create_get_user(reply_to.forward_from)
+    user, created = create_get_user(target)
 
     if not user.verified:
         msg.reply_text('User is not verified.')
@@ -94,11 +130,21 @@ def handle_unverify(client, msg):
 
 def handle_verify(client, msg):
 
-    if not is_allowed(msg):
+    # if not is_allowed(msg):
+    #     return False
+    target = is_allowed_and_get_target(msg)
+    print(target)
+    return False
+    try:
+        target = is_allowed_and_get_target(msg)
+    except Exception as e:
+        msg.reply_text(e)
+        msg.delete()
         return False
 
-    reply_to = msg.reply_to_message
-    user, created = create_get_user(reply_to.forward_from)
+    print(target)
+    return False
+    user, created = create_get_user(target)
     try:
         flagg = msg.command[1]
     except IndexError:
