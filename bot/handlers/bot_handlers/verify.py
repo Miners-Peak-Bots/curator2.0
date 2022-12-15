@@ -31,15 +31,16 @@ def is_allowed(msg):
         msg.delete()
         return False
 
-    if not msg.reply_to_message.forward_from:
+    if msg.reply_to_message.forward_sender_name is not None:
+        msg.reply_text(
+            f"user {msg.reply_to_message.forward_sender_name} need to change privacy settings for forward message to everyone"
+        )
+        msg.delete()
+        return False
 
-        if msg.reply_to_message.forward_sender_name is not None:
-            msg.reply_text(
-                f"user {msg.reply_to_message.forward_sender_name} need to change privacy settings for forward message to everyone"
-            )
-        else:
-            msg.reply_text("reply to a forwarded message")
+    elif not msg.reply_to_message.forward_from:
 
+        msg.reply_text("reply to a forwarded message")
         msg.delete()
         return False
 
@@ -51,6 +52,8 @@ This function helps get the target user
 of the verify command and also checks if the message is allowed and throws an
 exception if not
 """
+
+
 def is_allowed_and_get_target(msg):
     try:
         TeleUser.objects.get(pk=msg.from_user.id, helper_admin=True)
@@ -64,10 +67,8 @@ def is_allowed_and_get_target(msg):
     # Target message
     tmsg = msg.reply_to_message
 
-    if not tmsg.forward_from and tmsg.forward_sender_name is not None:
-        raise Exception(
-            f'{tmsg.forward_sender_name} has to disable their forward privacy'
-        )
+    if tmsg.forward_sender_name is not None:
+        raise Exception(f'{tmsg.forward_sender_name} has to disable their forward privacy')
     elif tmsg.forward_from:
         target = tmsg.forward_from
     elif not tmsg.forward_from and not tmsg.forward_sender_name:
