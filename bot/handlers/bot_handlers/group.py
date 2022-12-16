@@ -46,18 +46,18 @@ def handle_new_user(client, msg):
         user, created = TeleUser.objects.get_or_create(
             tele_id=member.id, username=member.username, first_name=member.first_name, last_name=member.last_name
         )
-        """
-        Mute user if not admin
-        """
-        if not user.is_admin:
-            try:
-                client.restrict_chat_member(
-                    chat_id=msg.chat.id,
-                    user_id=user.tele_id,
-                    permissions=ChatPermissions()
-                )
-            except Exception as e:
-                print(f'failed muting {user.tele_id} because {str(e)}')
+        # """
+        # Mute user if not admin
+        # """
+        # if not user.is_admin:
+        #     try:
+        #         client.restrict_chat_member(
+        #             chat_id=msg.chat.id,
+        #             user_id=user.tele_id,
+        #             permissions=ChatPermissions()
+        #         )
+        #     except Exception as e:
+        #         print(f'failed muting {user.tele_id} because {str(e)}')
 
 
 def handle_self_add(client, msg):
