@@ -92,7 +92,7 @@ def pm_check(client, msg):
         if current_user.is_admin:
             response = prep_message_admin(user)
         else:
-            response = prep_message_user(current_user)
+            response = prep_message_user(user)
         return msg.reply(response)
     else:
         msg.reply('Unknown error occured, could not find user')
