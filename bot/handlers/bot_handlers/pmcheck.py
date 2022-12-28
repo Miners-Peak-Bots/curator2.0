@@ -85,7 +85,7 @@ def pm_check(client, msg):
             return msg.reply('Target user not found')
 
         try:
-            current_user = TeleUser.objects.get(mpk=msg.from_user.id)
+            current_user = TeleUser.objects.get(pk=msg.from_user.id)
         except TeleUser.DoesNotExist:
             return msg.reply('You do not have the rights to run this operation')
 
