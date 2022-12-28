@@ -62,6 +62,10 @@ def handle_msg4(client, msg):
     # user = msg.from_user.id
     # if user in data['admins']:
     #     return False
+    admins = get_admins()
+    if msg.from_user.id in admins:
+        return False
+
     patterns = cache.get('blacklist', [])
     for pattern in patterns:
         res = pattern.regex.search(msg.text)
