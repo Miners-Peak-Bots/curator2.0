@@ -21,6 +21,7 @@ class Group(models.Model):
         blank=True,
     )
     shortname = models.CharField(max_length=30, null=True, blank=True, unique=True)
+    captcha = models.BooleanField(default=True)
     vendor = models.BooleanField(default=False)
     enabled = models.BooleanField(default=True)
     log_channel = models.IntegerField(null=True, blank=True)
@@ -28,7 +29,7 @@ class Group(models.Model):
     title = models.CharField(null=True, max_length=30, blank=True)
     username = models.CharField(null=True, max_length=30, blank=True)
     link = models.CharField(null=True, max_length=30, blank=True)
-    group_rule = models.TextField(null=True)
+    rules = models.TextField(null=True, blank=True)
 
     def __str__(self):
         if self.title:
