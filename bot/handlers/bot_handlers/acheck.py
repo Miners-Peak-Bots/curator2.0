@@ -76,8 +76,12 @@ def handle_acheck(client, msg):
         return False
 
     response = prep_message(member)
-    reply = msg.reply_text(response, parse_mode=ParseMode.HTML,
-                           disable_web_page_preview=True)
+    reply = client.send_message(
+        chat_id=admin.tele_id,
+        text=response,
+        disable_web_page_preview=True,
+        parse_mode=ParseMode.HTML
+    )
     sched_cleanup(reply)
 
 

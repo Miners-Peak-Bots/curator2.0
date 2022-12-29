@@ -2,6 +2,7 @@ from ...utils.msg import titlefy, linkify, titlefy_simple, boldify
 from pyrogram.handlers import MessageHandler
 from user.utils import create_get_user
 from pyrogram import filters
+from pyrogram.enums import ParseMode
 import emoji
 from user.models import (
     TeleUser
@@ -75,14 +76,19 @@ def prep_message_admin(user):
 
 def pm_check(client, msg):
     if msg.forward_sender_name:
-        msg.reply(f'{msg.forward_sender_name} has forward privacy enabled')
+        return msg.reply_text(f'{msg.forward_sender_name} has forward privacy enabled')
     elif msg.forward_from:
         target = msg.forward_from
 
         try:
             user = TeleUser.objects.get(pk=target.id)
         except TeleUser.DoesNotExist:
-            return msg.reply('Target user not found')
+            user = TeleUser.objects.create(
+                tele_id=target.id,
+                first_name=target.first_name,
+                last_name=target.last_name,
+                username=target.username
+            )
 
         try:
             current_user = TeleUser.objects.get(pk=msg.from_user.id)
@@ -93,7 +99,13 @@ def pm_check(client, msg):
             response = prep_message_admin(user)
         else:
             response = prep_message_user(user)
-        return msg.reply_text(response)
+
+        return client.send_message(
+            chat_id=msg.from_user.id,
+            text=response,
+            parse_mode=ParseMode.HTML,
+            disable_web_page_preview=True
+        )
     else:
         msg.reply('Unknown error occured, could not find user')
 

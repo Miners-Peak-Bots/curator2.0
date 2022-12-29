@@ -1,7 +1,7 @@
 from pyrogram.handlers import MessageHandler
-from pykeyboard import InlineKeyboard, InlineButton
 from pyrogram import filters
 from django.conf import settings
+from group.models import Group
 CMD_PREFIX = settings.BOT_COMMAND_PREFIX
 
 
@@ -14,21 +14,19 @@ def handle_set_rules(client, msg):
         msg.delete()
         return False
 
+    try:
+        group = Group.objects.filter(pk=msg.chat.id).first()
+    except Group.DoesNotExist:
+        return msg.reply('Please run $updategroup first')
+
     target_msg = msg.reply_to_message
-    # rules = target_msg.text
-    keyboard = InlineKeyboard(row_width=1)
-    keyboard.add(
-        InlineButton('Okay! Unmute me', 'unmute'),
-    )
-    # msg = await client.send_message(msg.chat.id, rules,
-    #                                 reply_markup=keyboard,
-    #                                 parse_mode='markdown')
     pinmsg = client.copy_message(
         chat_id=msg.chat.id,
         from_chat_id=msg.chat.id,
         message_id=target_msg.id,
-        reply_markup=keyboard
     )
+    group.rules = target_msg.text
+    group.save()
     pinmsg.pin()
     msg.delete()
     target_msg.delete()
