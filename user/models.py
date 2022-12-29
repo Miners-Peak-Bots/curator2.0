@@ -94,7 +94,7 @@ class TeleUser(models.Model):
 
     @property
     def is_admin(self):
-        if self.tele_id == settings.BOT_MASTER:
+        if self.tele_id in settings.BOT_MASTER:
             return True
         if self.admin:
             return True
