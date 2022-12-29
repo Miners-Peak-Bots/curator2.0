@@ -90,6 +90,13 @@ def pm_check(client, msg):
                 username=target.username
             )
 
+        """
+        update details of the user
+        """
+        user.first_name = target.first_name
+        user.last_name = target.last_name
+        user.username = target.username
+        user.save()
         try:
             current_user = TeleUser.objects.get(pk=msg.from_user.id)
         except TeleUser.DoesNotExist:
