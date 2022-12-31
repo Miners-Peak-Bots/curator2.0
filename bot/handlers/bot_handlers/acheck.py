@@ -31,6 +31,10 @@ def prep_message(user):
     text = text + titlefy('First name', user.first_name)
     text = text + titlefy_simple('Username', user.username_tag)
 
+    uname = user.username_tag
+    text = text + f'<code>{uname.upper()}</code>, <code>{uname.lower()}</code>\n'
+    # text = text + titlefy_simple('Username variants', user.username_tag)
+
     country = None
     if user.country:
         country = emoji.emojize(f':{user.country}:'.title())

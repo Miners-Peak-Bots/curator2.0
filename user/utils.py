@@ -63,7 +63,9 @@ def prep_check(user):
     if user.first_name:
         text = text + f'First name: {user.first_name}\n'
     if user.username:
-        text = text + f'Username: @{user.username}\n'
+        uname = user.username_tag
+        text = text + f'Username: {uname}\n'
+        text = text + f'<code>{uname.upper()}</code>, <code>{uname.lower()}</code>\n'
     if user.country:
         country = emoji.emojize(f':{user.country}:'.title())
         text = text + f'Country: {country}\n'
@@ -91,6 +93,9 @@ def prep_acheck(user):
     text = text + titlefy('User id', user.tele_id)
     text = text + titlefy('First name', user.first_name)
     text = text + titlefy_simple('Username', user.username_tag)
+
+    uname = user.username_tag
+    text = text + f'<code>{uname.upper()}</code>, <code>{uname.lower()}</code>\n'
 
     country = None
     if user.country:

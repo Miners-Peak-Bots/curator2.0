@@ -14,7 +14,9 @@ def prep_message(user):
     if user.first_name:
         text = text + f'First name: {user.first_name}\n'
     if user.username:
-        text = text + f'Username: @{user.username}\n'
+        uname = user.username_tag
+        text = text + f'Username: {uname}\n'
+        text = text + f'<code>{uname.upper()}</code>, <code>{uname.lower()}</code>\n'
     if user.country:
         country = emoji.emojize(f':{user.country}:'.title())
         text = text + f'Country: {country}\n'
