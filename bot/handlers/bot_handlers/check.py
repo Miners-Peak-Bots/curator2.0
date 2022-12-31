@@ -1,29 +1,14 @@
 from pyrogram.handlers import MessageHandler
-import emoji
 from pyrogram import filters
 from bot.utils.user import get_target_user
 from bot.utils.msg import (
     sched_cleanup
 )
+from user.utils import (
+    prep_check
+)
 from django.conf import settings
 CMD_PREFIX = settings.BOT_COMMAND_PREFIX
-
-
-def prep_message(user):
-    text = f'User id: {user.tele_id}\n'
-    if user.first_name:
-        text = text + f'First name: {user.first_name}\n'
-    if user.username:
-        uname = user.username_tag
-        text = text + f'Username: {uname}\n'
-        text = text + f'<code>{uname.upper()}</code>, <code>{uname.lower()}</code>\n'
-    if user.country:
-        country = emoji.emojize(f':{user.country}:'.title())
-        text = text + f'Country: {country}\n'
-    if user.verified:
-        text = text + emoji.emojize(':check_mark_button: Verified')
-
-    return text
 
 
 def handle_check(client, msg):
@@ -34,7 +19,8 @@ def handle_check(client, msg):
         sched_cleanup(reply)
         return False
 
-    response = prep_message(member)
+    # response = prep_message(member)
+    response = prep_check(member)
     reply = msg.reply_text(response)
     sched_cleanup(reply)
 
