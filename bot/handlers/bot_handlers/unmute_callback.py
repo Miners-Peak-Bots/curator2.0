@@ -2,6 +2,7 @@ from pyrogram.handlers import CallbackQueryHandler
 from pyrogram import filters
 from group.models import Group
 
+### DEPRECATED
 
 def handle_unmute_callback(client, msg):
     from_user = msg.from_user
@@ -29,5 +30,5 @@ def handle_unmute_callback(client, msg):
 
 
 __HANDLERS__ = [
-    CallbackQueryHandler(handle_unmute_callback, filters.regex('unmute'))
+    # CallbackQueryHandler(handle_unmute_callback, filters.regex('unmute'))
 ]

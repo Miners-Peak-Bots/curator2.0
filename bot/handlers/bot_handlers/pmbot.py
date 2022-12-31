@@ -51,7 +51,7 @@ def group_rules_pm(client, msg):
              [
                  [
                      InlineKeyboardButton("Okay! Unmute me",
-                                          callback_data=f"unmute_{group_id}"),
+                                          callback_data=f"unmute {group_id}"),
                  ]
              ]
          )
