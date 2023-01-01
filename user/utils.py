@@ -59,19 +59,35 @@ def mute_user(client, chat_id, user_id, duration=30):
 
 
 def prep_check(user):
-    text = f'User id: {user.tele_id}\n'
+    text = '@MinersPeak <b>Curator Bot</b>\n--------------------\n'
+    if user.verified:
+        text = text + emoji.emojize(
+            ':check_mark_button: VERIFIED :check_mark_button:\n\n'
+
+        )
+    else:
+        text = text + emoji.emojize(
+            ':prohibited: NOT VERFIEID :prohibited:\n\n'
+        )
+    text = text + titlefy('User id', user.tele_id)
     if user.first_name:
         text = text + f'First name: {user.first_name}\n'
     if user.username:
         uname = user.username_tag
         text = text + f'Username: {uname}\n'
         text = text + f'<code>{uname.upper()}</code>, <code>{uname.lower()}</code>\n'
+        text = text + '\n'
+
     if user.country:
         country = emoji.emojize(f':{user.country}:'.title())
         text = text + f'Country: {country}\n'
-    if user.verified:
-        text = text + emoji.emojize(':check_mark_button: Verified')
+    else:
+        text = text + f'Country: {user.country}\n'
 
+    text = (
+        text + linkify('keybase.io', 'keybase.io', True) +
+        ': ' + linkify(user.keybase_link, user.keybase) + '\n'
+    )
     return text
 
 
@@ -90,13 +106,22 @@ def prep_user_log(user):
 
 def prep_acheck(user):
     text = '@MinersPeak <b>Curator Bot</b>\n--------------------\n'
+    if user.verified:
+        text = text + emoji.emojize(
+            ':check_mark_button: VERIFIED :check_mark_button:\n\n'
+
+        )
+    else:
+        text = text + emoji.emojize(
+            ':prohibited: NOT VERFIEID :prohibited:\n\n'
+        )
     text = text + titlefy('User id', user.tele_id)
     text = text + titlefy('First name', user.first_name)
     text = text + titlefy_simple('Username', user.username_tag)
 
     uname = user.username_tag
     text = text + f'<code>{uname.upper()}</code>, <code>{uname.lower()}</code>\n'
-
+    text = text + '\n'
     country = None
     if user.country:
         country = emoji.emojize(f':{user.country}:'.title())
@@ -107,10 +132,6 @@ def prep_acheck(user):
     )
     text = text + titlefy('Phone', user.ph_number, nl=True)
     text = text + titlefy('Email', user.email, nl=True)
-    if user.verified:
-        text = text + '\n' + emoji.emojize(
-            ':check_mark_button: <code>Verified!</code>'
-        )
     # text = text + '\n' + titlefy('Reputation', len(user.rep.select()))
     text = text + '------------' + '\n'
     warns = user.warning.count()
