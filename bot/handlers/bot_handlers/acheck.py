@@ -1,6 +1,5 @@
 from ...utils.msg import titlefy, linkify, titlefy_simple, boldify
 from pyrogram.handlers import MessageHandler
-import emoji
 from pyrogram.enums import ParseMode
 from pyrogram import filters
 from user.utils import create_get_user
