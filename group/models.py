@@ -29,6 +29,7 @@ class Group(models.Model):
     title = models.CharField(null=True, max_length=30, blank=True)
     username = models.CharField(null=True, max_length=30, blank=True)
     link = models.CharField(null=True, max_length=30, blank=True)
+    rules_id = models.IntegerField(null=True)
     rules = models.TextField(null=True, blank=True)
 
     def __str__(self):
