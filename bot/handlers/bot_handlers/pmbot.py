@@ -56,9 +56,15 @@ def group_rules_pm(client, msg):
              ]
          )
 
-    client.send_message(
+    # client.send_message(
+    #     chat_id=msg.from_user.id,
+    #     text=group.rules,
+    #     reply_markup=keyboard
+    # )
+    client.copy_message(
         chat_id=msg.from_user.id,
-        text=group.rules,
+        from_chat_id=group.group_id,
+        message_id=group.rules_id,
         reply_markup=keyboard
     )
 
