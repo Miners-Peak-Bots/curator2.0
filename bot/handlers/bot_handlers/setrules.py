@@ -19,6 +19,7 @@ def handle_set_rules(client, msg):
     except Group.DoesNotExist:
         return msg.reply('Please run $updategroup first')
 
+    prev_pin = group.rules_id
     target_msg = msg.reply_to_message
     pinmsg = client.copy_message(
         chat_id=msg.chat.id,
@@ -26,10 +27,22 @@ def handle_set_rules(client, msg):
         message_id=target_msg.id,
     )
     group.rules = target_msg.text
+    group.rules_id = pinmsg.id
     group.save()
     pinmsg.pin()
+
+    """
+    delete previously pinned message message
+    """
+    if prev_pin:
+        client.unpin_chat_message(
+            chat_id=group.group_id,
+            message_id=prev_pin
+        )
+
     msg.delete()
     target_msg.delete()
+
 
 
 __HANDLERS__ = [
