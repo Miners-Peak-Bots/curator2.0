@@ -1,0 +1,6 @@
+n+(i+)[gb]+(a+)s?
+(crypto[.]?)?bit(.)?spot
+(http(s)?://)?(www\.)?(bitcoinhubbell)+(\.com(/)?)?
+(http(s)?://)?(www\.)?(cutt.ly)+(\.com(/)?)?
+^hello$
+^\/.*
