@@ -1,7 +1,7 @@
 from pyrogram.handlers import MessageHandler
 from django.conf import settings
 from pyrogram import filters
-# from django.core.cache import cache
+from django.core.cache import cache
 from ...utils.msg import sched_cleanup
 from group.models import Group
 CMD_PREFIX = settings.BOT_COMMAND_PREFIX
@@ -20,6 +20,11 @@ def handle_toggle(client, msg):
 
     group.antispam = not group.antispam
     group.save()
+
+    group_cfg = cache.get('group_cfg', {})
+    group_cfg[group.group_id] = group.antispam
+    cache.set('group_cfg', group_cfg)
+
     sent = msg.reply_text(
         f'Antispam has been set to {group.antispam}'
     )

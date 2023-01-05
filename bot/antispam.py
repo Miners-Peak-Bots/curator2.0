@@ -55,6 +55,12 @@ def handle_msg4(client, msg):
 
     patterns20 = cache.get('blacklist20', [])
     patterns = cache.get('blacklist', [])
+    group_cfg = cache.get('group_cfg')
+
+    antispam = group_cfg.get(msg.chat.id, True)
+    if not antispam:
+        return False
+
     for pattern in patterns:
         res = pattern.regex.search(msg.text)
         if res is not None:
