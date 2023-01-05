@@ -145,7 +145,6 @@ BOT_API_TOKEN = config('BOT_API_TOKEN', cast=str)
 BOT_MASTER = config('BOT_MASTER', cast=Csv())
 BOT_MASTER = [int(user_id) for user_id in BOT_MASTER]
 
-print(BOT_MASTER)
 
 REPORT_CHANNEL = config('REPORT_CHANNEL', cast=str)
 LOG_GROUP = config('LOG_GROUP', cast=str)

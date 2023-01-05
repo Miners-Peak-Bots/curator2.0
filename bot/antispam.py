@@ -13,9 +13,11 @@ app = Client('antispam.bot', api_id=api_id, api_hash=api_hash, bot_token=token)
 
 msgcount = {}
 
+
 def get_admins():
     admins_all = TeleUser.objects.filter(admin=True).values_list('tele_id')
-    admins = [admin[0] for admin in admins_all] + [settings.BOT_MASTER]
+    admins = [admin[0] for admin in admins_all]
+    admins.extend(settings.BOT_MASTER)
     return admins
 
 
@@ -45,19 +47,18 @@ def handle_msg4(client, msg):
     current_count = current_count + 1
     msgcount[msg.from_user.id] = current_count
 
-    print(msgcount)
     admins = get_admins()
     if msg.from_user.id in admins:
         return False
 
-    if current_count <= 20:
-        print('user has less than 20 scanning')
+    # if current_count <= 20:
+    #     print('user has less than 20 scanning')
 
-    patterns20 = cache.get('blacklist20', [])
+    # patterns20 = cache.get('blacklist20', [])
     patterns = cache.get('blacklist', [])
     group_cfg = cache.get('group_cfg')
+    antispam = group_cfg[str(msg.chat.id)]
 
-    antispam = group_cfg.get(msg.chat.id, True)
     if not antispam:
         return False
 
