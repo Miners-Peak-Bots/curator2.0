@@ -12,13 +12,17 @@ def add_blacklist(client, msg):
         msg.delete()
         return False
 
-    phrase = msg.text.replace('$blacklist', '').strip()
-    if not len(phrase) >= 1:
+    if len(msg.command) == 0:
         msg.delete()
         return False
 
-    ogphrase = phrase
-    phrase = f'\\b{phrase}\\b'
+    if msg.command[1] == '~':
+        phrase = msg.text.replace('$blacklist', '')
+        phrase = ogphrase = phrase.replace('~', '').strip()
+    else:
+        phrase = ogphrase = msg.text.replace('$blacklist', '').strip()
+        phrase = f'\\b{phrase}\\b'
+
     query = Blacklist.objects.filter(regex=phrase, is_temp=False)
     if not query.count():
         word = Blacklist.objects.create(regex=phrase, is_temp=False)
