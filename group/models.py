@@ -31,6 +31,7 @@ class Group(models.Model):
     link = models.CharField(null=True, max_length=30, blank=True)
     rules_id = models.IntegerField(null=True)
     rules = models.TextField(null=True, blank=True)
+    antispam = models.BooleanField(default=True)
 
     def __str__(self):
         if self.title:
