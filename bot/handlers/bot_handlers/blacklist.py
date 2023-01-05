@@ -12,15 +12,21 @@ def add_blacklist(client, msg):
         msg.delete()
         return False
 
-    if len(msg.command) == 0:
+    if len(msg.command) == 1:
         msg.delete()
         return False
 
     if msg.command[1] == '~':
         phrase = msg.text.replace('$blacklist', '')
         phrase = ogphrase = phrase.replace('~', '').strip()
+        if not len(phrase) >= 1:
+            msg.delete()
+            return False
     else:
         phrase = ogphrase = msg.text.replace('$blacklist', '').strip()
+        if not len(phrase) >= 1:
+            msg.delete()
+            return False
         phrase = f'\\b{phrase}\\b'
 
     query = Blacklist.objects.filter(regex=phrase, is_temp=False)
@@ -41,13 +47,23 @@ def whitelist(client, msg):
         msg.delete()
         return False
 
-    phrase = msg.text.replace('$whitelist', '').strip()
-    if not len(phrase) >= 1:
+    if len(msg.command) == 1:
         msg.delete()
         return False
 
-    ogphrase = phrase
-    phrase = f'\\b{phrase}\\b'
+    if msg.command[1] == '~':
+        phrase = msg.text.replace('$whitelist', '')
+        phrase = ogphrase = phrase.replace('~', '').strip()
+        if not len(phrase) >= 1:
+            msg.delete()
+            return False
+    else:
+        phrase = ogphrase = msg.text.replace('$whitelist', '').strip()
+        if not len(phrase) >= 1:
+            msg.delete()
+            return False
+        phrase = f'\\b{phrase}\\b'
+
     query = Blacklist.objects.filter(regex=phrase)
     if not query.count():
         msg.reply_text(
