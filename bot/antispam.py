@@ -4,6 +4,8 @@ from user.models import TeleUser
 from bot.utils.msg import log
 from pyrogram.enums import ChatType
 from django.core.cache import cache
+from group.models import Group
+
 
 api_id = settings.BOT_API_ID
 api_hash = settings.BOT_API_HASH
@@ -33,7 +35,6 @@ def handle_msg2(client, msg):
 
 @app.on_message(filters.regex('(https?:\/\/)?(www[.])?(telegram|t)\.me\/([a-zA-Z0-9_-]*)\/?$'))
 def handle_msg3(client, msg):
-    print('tele link detected')
     msg.delete()
 
 
@@ -56,10 +57,15 @@ def handle_msg4(client, msg):
 
     # patterns20 = cache.get('blacklist20', [])
     patterns = cache.get('blacklist', [])
-    group_cfg = cache.get('group_cfg')
-    antispam = group_cfg[str(msg.chat.id)]
 
-    if not antispam:
+    try:
+        group = Group.objects.get(pk=msg.chat.id)
+    except Group.DoesNotExist:
+        msg = f'Group {msg.chat.title}({msg.chat.id}) not found in db'
+        log(client, msg)
+        return False
+
+    if not group.antispam:
         return False
 
     for pattern in patterns:

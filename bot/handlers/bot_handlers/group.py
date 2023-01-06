@@ -7,6 +7,7 @@ from django.conf import settings
 from group.models import Group
 from user.models import TeleUser
 from pyrogram.types import ChatPermissions
+from ...utils.msg import sched_cleanup
 
 CMD_PREFIX = settings.BOT_COMMAND_PREFIX
 
@@ -141,7 +142,9 @@ def handle_id(client, msg):
             return client.send_message(msg.chat.id, f'{target.mention} id is {target.id}')
         else:
             return client.send_message(msg.chat.id, f'Group id is {msg.chat.id}')
-    client.send_message(msg.chat.id, msg.chat.id)
+    sent = client.send_message(msg.chat.id, msg.chat.id)
+    sched_cleanup(sent)
+    sched_cleanup(msg)
 
 
 __HANDLERS__ = [

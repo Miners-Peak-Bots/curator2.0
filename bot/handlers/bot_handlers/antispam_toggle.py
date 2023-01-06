@@ -21,10 +21,6 @@ def handle_toggle(client, msg):
     group.antispam = not group.antispam
     group.save()
 
-    group_cfg = cache.get('group_cfg', {})
-    group_cfg[group.group_id] = group.antispam
-    cache.set('group_cfg', group_cfg)
-
     sent = msg.reply_text(
         f'Antispam has been set to {group.antispam}'
     )

@@ -2,6 +2,7 @@ from pyrogram.handlers import MessageHandler
 from pyrogram import filters
 from django.conf import settings
 from group.models import Group
+from ...utils.msg import sched_cleanup
 CMD_PREFIX = settings.BOT_COMMAND_PREFIX
 
 
@@ -17,7 +18,8 @@ def handle_set_rules(client, msg):
     try:
         group = Group.objects.filter(pk=msg.chat.id).first()
     except Group.DoesNotExist:
-        return msg.reply('Please run $updategroup first')
+        sent = msg.reply('Please run $updategroup first')
+        sched_cleanup(sent)
 
     prev_pin = group.rules_id
     target_msg = msg.reply_to_message
@@ -26,7 +28,6 @@ def handle_set_rules(client, msg):
         from_chat_id=msg.chat.id,
         message_id=target_msg.id,
     )
-    group.rules = target_msg.text
     group.rules_id = pinmsg.id
     group.save()
     pinmsg.pin()
@@ -42,7 +43,6 @@ def handle_set_rules(client, msg):
 
     msg.delete()
     target_msg.delete()
-
 
 
 __HANDLERS__ = [
