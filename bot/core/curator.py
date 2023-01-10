@@ -1,11 +1,6 @@
 import os
-import pathlib
 from logzero import logger
-from typing import Union
-from ..core import config_engine
 from pyrogram import Client
-from pyrogram.handlers import MessageHandler
-from pyrogram import filters
 import importlib
 from django.conf import settings
 
@@ -13,8 +8,9 @@ from django.conf import settings
 class Curator(Client):
     def __init__(self,
                  name: str,
-                 config: Union[str, pathlib.Path, dict]):
+                 handler_path: str):
         self.name = name
+        self.handler_path = handler_path
         self.help = []
         self.admin_manual = []
         self.help = []
@@ -42,7 +38,7 @@ class Curator(Client):
 
     def __attach_handlers(self):
         dis_allowed = ['__init__.py', '__pycache__']
-        module_path = 'bot/handlers/bot_handlers/'
+        module_path = self.handler_path
         search_path = os.path.join(settings.BASE_DIR, module_path)
         import_path = module_path.replace('/', '.')
 
