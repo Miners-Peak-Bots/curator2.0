@@ -1,34 +1,44 @@
 from pyrogram.handlers import CallbackQueryHandler
 from pyrogram import filters
-from group.models import Group
+from captcha.models import Captcha
 
-### DEPRECATED
 
-def handle_unmute_callback(client, msg):
-    from_user = msg.from_user
-    chat = msg.message.chat
+def handle_unmute_callback(client, callback_query):
+    _, captcha_id, answer = callback_query.data.split('_')
+    user_id = callback_query.from_user.id
 
     try:
-        group = Group.objects.get(pk=chat.id)
-    except Exception as e:
-        repr(e)
-        msg.answer('An unexpected error ocucred. Please talk to an admin')
+        captcha = Captcha.objects.get(pk=captcha_id)
+    except Captcha.DoesNotExist:
+        callback_query.answer('An unexpected error occured')
         return False
 
     try:
-        client.restrict_chat_member(
-            chat_id=group.group_id,
-            user_id=from_user.id,
-            permissions=group.get_permissions()
+        captcha_id = int(captcha_id)
+    except ValueError:
+        # Malicious input?
+        callback_query.answer('Invalid response type')
+        return False
+
+    try:
+        answer = int(answer)
+    except ValueError:
+        # Malicious input?
+        callback_query.answer('Invalid response type')
+        return False
+
+    if captcha.answer == answer:
+        callback_query.answer(text="Congrats your request to join group has been accepted", show_alert=True)
+        client.approve_chat_join_request(captcha.group_id, user_id)
+        callback_query.message.edit_reply_markup(
+            reply_markup=None,
         )
-    except Exception as e:
-        repr(e)
-        msg.answer('An unexpected error ocucred. Please talk to an admin')
+        return True
+    else:
+        callback_query.answer('Wrong answer! Try again', show_alert=True)
         return False
-
-    msg.answer('You have been unmuted')
 
 
 __HANDLERS__ = [
-    # CallbackQueryHandler(handle_unmute_callback, filters.regex('unmute'))
+    CallbackQueryHandler(handle_unmute_callback, filters.regex('umt_'))
 ]

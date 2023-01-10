@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'django_extensions',
     'user',
     'group',
-    'blacklist'
+    'blacklist',
+    'captcha'
 ]
 
 MIDDLEWARE = [
