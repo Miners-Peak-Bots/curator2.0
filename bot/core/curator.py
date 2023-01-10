@@ -26,15 +26,15 @@ class Curator(Client):
         try:
             self.help.append(module.__HELP__)
         except Exception as e:
-            print(str(e))
-            pass
+            logger.warning(str(e))
+            return
 
     def __attach_admin_manual(self, module):
         try:
             self.admin_manual.append(module.__HELP__ADMIN__)
         except Exception as e:
-            print(str(e))
-            pass
+            logger.warning(str(e))
+            return
 
     def __attach_handlers(self):
         dis_allowed = ['__init__.py', '__pycache__']
