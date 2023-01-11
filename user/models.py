@@ -79,6 +79,7 @@ class TeleUser(models.Model):
     admin = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     helper_admin = models.BooleanField(default=False)
+    msg_count = models.IntegerField(default=0)
 
     @property
     def keybase_link(self):
