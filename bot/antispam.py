@@ -41,21 +41,21 @@ def handle_msg3(client, msg):
 @app.on_message(filters.text)
 def handle_msg4(client, msg):
     try:
-        current_count = msgcount[msg.from_user.id]
-    except KeyError:
-        current_count = 0
+        user = TeleUser.objects.get(pk=msg.from_user.id)
+    except TeleUser.DoesNotExist:
+        user = TeleUser.objects.create(tele_id=msg.from_user.id,
+                                       first_name=msg.from_user.first_name,
+                                       last_name=msg.from_user.last_name,
+                                       username=msg.from_user.username)
 
-    current_count = current_count + 1
-    msgcount[msg.from_user.id] = current_count
+    user.msg_count = user.msg_count + 1
+    user.save()
 
     admins = get_admins()
     if msg.from_user.id in admins:
         return False
 
-    # if current_count <= 20:
-    #     print('user has less than 20 scanning')
-
-    # patterns20 = cache.get('blacklist20', [])
+    patterns20 = cache.get('blacklist20', [])
     patterns = cache.get('blacklist', [])
 
     try:
@@ -68,6 +68,31 @@ def handle_msg4(client, msg):
     if not group.antispam:
         return False
 
+    if user.msg_count <= 20:
+        for pattern in patterns20:
+            res = pattern.regex.search(msg.text)
+            if res is not None:
+                msg.delete()
+                """
+                Send log to log group
+                """
+                if msg.chat.type == ChatType.SUPERGROUP or msg.chat.type == ChatType.GROUP:
+                    logmsg = (
+                        f'Message from {msg.from_user.mention} in '
+                        f'{msg.chat.title} was deleted for blacklisted word'
+                        f'/phrase\n<code>{msg.text}</code>\n'
+                        f'Matched pattern: {pattern.regex}'
+                    )
+                    log(client, logmsg)
+                    """
+                    we can exit if we actually deleted a message
+                    """
+                return True
+
+    """
+    if there were no matches in the blacklist20
+    then we proceed to the main blacklist
+    """
     for pattern in patterns:
         res = pattern.regex.search(msg.text)
         if res is not None:
@@ -76,7 +101,6 @@ def handle_msg4(client, msg):
             Send log to log group
             """
             if msg.chat.type == ChatType.SUPERGROUP or msg.chat.type == ChatType.GROUP:
-                print('group detected')
                 logmsg = (
                     f'Message from {msg.from_user.mention} in '
                     f'{msg.chat.title} was deleted for blacklisted word'
