@@ -1,7 +1,6 @@
 from bot import initialize
 from django.core.cache import cache
 from blacklist.models import Blacklist
-# from group.models import Group
 
 
 def run(*args):
