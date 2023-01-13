@@ -68,6 +68,7 @@ def handle_self_add(client, msg):
     if msg.from_user.id not in settings.BOT_MASTER:
         client.send_message(msg.chat.id, "Oops! I don't belong here")
         client.leave_chat(msg.chat.id)
+        return False
 
     """
     Add group to database
