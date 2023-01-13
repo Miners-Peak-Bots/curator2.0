@@ -134,8 +134,7 @@ def handle_verify(client, msg):
     # if not is_allowed(msg):
     #     return False
     target = is_allowed_and_get_target(msg)
-    print(target)
-    return False
+
     try:
         target = is_allowed_and_get_target(msg)
     except Exception as e:
