@@ -142,8 +142,6 @@ def handle_verify(client, msg):
         msg.delete()
         return False
 
-    print(target)
-    return False
     user, created = create_get_user(target)
     try:
         flagg = msg.command[1]
