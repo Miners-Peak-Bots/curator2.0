@@ -127,7 +127,7 @@ def prep_acheck(user):
         country = emoji.emojize(f':{user.country}:'.title())
     text = text + titlefy('Country', country)
     text = (
-        text + linkify('keybase.io', 'keybase.io', True) +
+        text + 'Keybase' +
         ': ' + linkify(user.keybase_link, user.keybase) + '\n'
     )
     text = text + titlefy('Phone', user.ph_number, nl=True)
