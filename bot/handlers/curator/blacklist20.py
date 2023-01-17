@@ -27,7 +27,7 @@ def add_blacklist(client, msg):
         cache.set('blacklist20', blacklist)
 
     msg.reply_text(
-        f'<code>{ogphrase.strip()}</code> has been added to blacklist.',
+        f'<code>{ogphrase.strip()}</code> has been added to 20 count blacklist',
         parse_mode=ParseMode.HTML
     )
 
@@ -47,7 +47,7 @@ def whitelist(client, msg):
     query = Blacklist.objects.filter(regex=phrase, is_temp=True)
     if not query.count():
         msg.reply_text(
-            f'<code>{ogphrase.strip()}</code> does not exist in blacklist',
+            f'<code>{ogphrase.strip()}</code> does not exist in 20 count blacklist',
             parse_mode=ParseMode.HTML
         )
         return False
@@ -56,7 +56,7 @@ def whitelist(client, msg):
     blacklist = [row for row in Blacklist.objects.filter(is_temp=True)]
     cache.set('blacklist20', blacklist)
     msg.reply_text(
-        f'<code>{ogphrase.strip()}</code> has been whitelisted',
+        f'<code>{ogphrase.strip()}</code> has been removed from 20 count blacklist',
         parse_mode=ParseMode.HTML
     )
 
