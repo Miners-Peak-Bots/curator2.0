@@ -41,7 +41,7 @@ def handle_unmute(client, msg):
     try:
         reason = get_reason(msg)
     except Exception:
-        reply = msg.reply_text('Please specify a reason to unmute')
+        reply = msg.reply_text('Please specify a reason')
         sched_cleanup(reply)
         return False
 
@@ -92,7 +92,7 @@ def handle_unmuteall(client, msg):
     try:
         reason = get_reason(msg)
     except Exception:
-        reply = msg.reply_text('Please specify a reason to warn')
+        reply = msg.reply_text('Please specify a reason')
         sched_cleanup(reply)
         return False
 
