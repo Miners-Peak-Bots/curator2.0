@@ -21,7 +21,7 @@ def handle_warn(client, msg):
         """
         A warn reason was not provided
         """
-        reply = msg.reply_text('Please specify a reason to warn for')
+        reply = msg.reply_text('Please specify a reason')
         sched_cleanup(reply)
         return False
 
@@ -42,7 +42,7 @@ def handle_warn(client, msg):
     try:
         reason = get_reason(msg)
     except Exception:
-        reply = msg.reply_text('Please specify a reason to warn')
+        reply = msg.reply_text('Please specify a reason')
         sched_cleanup(reply)
         return False
 

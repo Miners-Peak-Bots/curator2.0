@@ -33,7 +33,7 @@ def handle_unwarn(client, msg):
     try:
         reason = get_reason(msg)
     except Exception:
-        reply = msg.reply_text('Please specify a reason to unwarn')
+        reply = msg.reply_text('Please specify a reason')
         sched_cleanup(reply)
         return False
 
