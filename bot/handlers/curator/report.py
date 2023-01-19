@@ -13,10 +13,11 @@ def handle_report(client, msg):
         msg.delete()
         return False
 
+    target_msg = msg.reply_to_message
     from_user = msg.from_user
     target_user = msg.reply_to_message.from_user
     response = (
-        f'{from_user.mention} reported a <a href="{msg.link}">message</a>'
+        f'{from_user.mention} reported a <a href="{target_msg.link}">message</a>'
         f' from {target_user.mention}'
     )
     client.send_message(
