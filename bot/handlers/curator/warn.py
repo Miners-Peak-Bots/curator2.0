@@ -98,21 +98,25 @@ def handle_warn(client, msg):
     else:
         victim.log(message=reason, event=0)
 
-    reply = client.send_message(msg.chat.id, response,
-                                parse_mode=ParseMode.HTML)
-    sched_cleanup(reply)
+    user_message_id = None
     if msg.reply_to_message:
         """
         Delete the target message
         """
-        # msg.reply_to_message.delete()
-        sched_cleanup(msg.reply_to_message, interval=120)
+        user_message_id = msg.reply_to_message.id
+        sched_cleanup(msg.reply_to_message, interval=10)
 
+    reply = client.send_message(
+        chat_id=msg.chat.id,
+        text=response,
+        reply_to_message_id=user_message_id,
+        parse_mode=ParseMode.HTML
+    )
+    sched_cleanup(reply)
     """
     Delete the issued command
     """
     msg.delete()
-    sched_cleanup(msg, interval=120)
 
 
 __HANDLERS__ = [
