@@ -106,12 +106,13 @@ def handle_warn(client, msg):
         Delete the target message
         """
         # msg.reply_to_message.delete()
-        sched_cleanup(msg.reply_to_message, interval=10)
+        sched_cleanup(msg.reply_to_message, interval=120)
 
     """
     Delete the issued command
     """
     msg.delete()
+    sched_cleanup(msg, interval=120)
 
 
 __HANDLERS__ = [
