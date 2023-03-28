@@ -23,7 +23,7 @@ def handle_check(client, msg):
     # response = prep_message(member)
     response = prep_check(member)
     reply = msg.reply_text(response, parse_mode=ParseMode.HTML)
-    sched_cleanup(reply)
+    # sched_cleanup(reply)
 
 
 __HANDLERS__ = [
