@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
+import emoji
 
 
 class User(AbstractUser):
@@ -33,8 +34,6 @@ class TeleUserLog(models.Model):
         3: 'unbanned',
         4: 'muted',
         5: 'unmuted',
-        6: 'verified',
-        7: 'unverified'
     }
     user = models.ForeignKey('user.TeleUser',
                              on_delete=models.CASCADE,
@@ -57,6 +56,25 @@ class TeleUserLog(models.Model):
     def message(self):
         event_msg = self.events.get(self.event)
         return f'{self.created_at.date()} - {event_msg} - {self.reason}'
+
+
+class TeleUserVerifyLog(models.Model):
+    events = {
+        1: 'Verified',
+        2: 'Unverified',
+        3: 'Renewed'
+    }
+    user = models.ForeignKey('user.TeleUser',
+                             on_delete=models.CASCADE,
+                             related_name='vlogs')
+    event = models.IntegerField()
+    reason = models.CharField(max_length=256, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def message(self):
+        event_msg = self.events.get(self.event)
+        return f'{event_msg}: {self.created_at.date()}'
 
 
 class TeleUser(models.Model):
@@ -95,6 +113,11 @@ class TeleUser(models.Model):
         return '@'+self.username
 
     @property
+    def country_emoji(self):
+        cntry = f':{self.country.title()}:'
+        return emoji.emojize(cntry)
+
+    @property
     def is_admin(self):
         if self.tele_id in settings.BOT_MASTER:
             return True
@@ -112,6 +135,13 @@ class TeleUser(models.Model):
 
     def log(self, event, message=None):
         return TeleUserLog.objects.create(
+            user=self,
+            reason=message,
+            event=event
+        )
+
+    def verify_log(self, event, message=None):
+        return TeleUserVerifyLog.objects.create(
             user=self,
             reason=message,
             event=event

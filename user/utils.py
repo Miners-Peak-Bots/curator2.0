@@ -138,6 +138,9 @@ def prep_acheck(user):
     text = text + titlefy('Warns', f'{warns}/5')
     banned_status = 'Yes' if user.banned else 'No'
     text = text + titlefy('Banned', banned_status)
+    for event in user.vlogs.all():
+        text = text + f'<code>{event.message}</code>\n'
+
 
     text = text + '------------' + '\n'
     text = text + '<b>User log:\n</b>\n'

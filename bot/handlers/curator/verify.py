@@ -101,8 +101,8 @@ def handle_unverify(client, msg):
         return False
 
     user.verified = False
-    user.log(message=reason, event=7)
     user.save()
+    user.verify_log(message=reason, event=2)
 
     errors = []
 
@@ -177,7 +177,7 @@ def handle_verify(client, msg):
     user.verified = True
     user.save()
 
-    user.log(message=None, event=6)
+    user.verify_log(event=1, message=None)
 
     """
     Promote user to admin and set admin title
