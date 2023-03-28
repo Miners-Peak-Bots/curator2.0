@@ -25,7 +25,13 @@ def handle_report(client, msg):
         text=response,
         parse_mode=ParseMode.HTML
     )
+    notify = client.send_message(
+        chat_id=msg.chat.id,
+        text=response,
+        parse_mode=ParseMode.HTML
+    )
     sched_cleanup(msg)
+    sched_cleanup(notify)
 
 
 __HANDLERS__ = [
