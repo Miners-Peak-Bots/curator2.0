@@ -39,7 +39,7 @@ class TeleUserLog(models.Model):
     user = models.ForeignKey('user.TeleUser',
                              on_delete=models.CASCADE,
                              related_name='logs')
-    reason = models.CharField(max_length=256)
+    reason = models.CharField(max_length=256, null=True)
     """
     0 - Warn
     1 - Unwarn
@@ -47,7 +47,8 @@ class TeleUserLog(models.Model):
     3 - Unban
     4 - Mute
     5 - Unmute
-    6 - Unverify
+    6 - Verified
+    7 - Unverified
     """
     event = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -109,7 +110,7 @@ class TeleUser(models.Model):
             banning_warn=banning_warn
         )
 
-    def log(self, message, event):
+    def log(self, event, message=None):
         return TeleUserLog.objects.create(
             user=self,
             reason=message,
