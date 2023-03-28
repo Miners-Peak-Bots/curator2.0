@@ -3,6 +3,7 @@ from pyrogram.enums import ParseMode
 from pyrogram import filters
 from user.models import TeleUser
 from django.conf import settings
+
 CMD_PREFIX = settings.BOT_COMMAND_PREFIX
 
 
@@ -10,9 +11,18 @@ def handle_verified(client, msg):
     verified_l = TeleUser.objects.filter(verified=True)
     message = []
     for user in verified_l:
-        message.append(user.mention)
-    response = '\n'.join(message)
-    msg.reply_text(response)
+        message.append(
+            f'{user.country_emoji} | {user.mention}'
+        )
+        # message.append(user.mention)
+    users = '\n'.join(message)
+    response = (
+        f'⚜️<b>Verified Users</b> ⚜️ - Randomized 25\n\n'
+        '<code>Country | User</code>\n\n'
+        f'{users}\n\n'
+        '<b>Powered by</b> @HardwareMarket'
+    )
+    msg.reply_text(response, parse_mode=ParseMode.HTML)
     pass
 
 
