@@ -12,13 +12,13 @@ def handle_verified(client, msg):
     message = []
     for user in verified_l:
         message.append(
-            f'{user.country_emoji} | {user.mention}'
+            f'{user.country_emoji} | {user.mention} | {user.first_name}'
         )
         # message.append(user.mention)
     users = '\n'.join(message)
     response = (
         f'⚜️<b>Verified Users</b> ⚜️ - Randomized 25\n\n'
-        '<code>Country | User</code>\n\n'
+        '<code>Country | User | Name</code>\n\n'
         f'{users}\n\n'
         '<b>Powered by</b> @HardwareMarket'
     )
