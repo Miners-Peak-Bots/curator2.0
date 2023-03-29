@@ -54,5 +54,5 @@ __HANDLERS__ = [
 
 
 __HELP__ = (
-    '$help/$commands - Send list of all avialable commands and usage'
+    '$help/$commands - Send list of all avialable commands and usage(in DM)'
 )
