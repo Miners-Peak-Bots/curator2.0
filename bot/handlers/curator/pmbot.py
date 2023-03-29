@@ -44,9 +44,14 @@ def group_rules_pm(client, msg):
         raise
         return False
 
+    if msg.chat.username:
+        chatusername = f'@{msg.chat.username}'
+    else:
+        chatusername = msg.chat.title
+
     client.send_message(
         chat_id=msg.from_user.id,
-        text=captcha.msg(),
+        text=f'Please read me to join {chatusername}',
         reply_markup=captcha.keyboard(captcha_db.id)
     )
 

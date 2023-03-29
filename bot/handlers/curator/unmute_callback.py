@@ -51,8 +51,7 @@ def handle_unmute_callback(client, callback_query):
             captcha.answer = new_captcha.ans
             captcha.incorrect = incorrect
             captcha.save()
-            callback_query.message.edit_text(
-                text=new_captcha.msg(),
+            callback_query.message.edit_reply_markup(
                 reply_markup=new_captcha.keyboard(captcha.id)
             )
             callback_query.answer('Wrong answer! Try again', show_alert=True)

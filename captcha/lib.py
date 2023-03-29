@@ -3,7 +3,10 @@ from pyrogram.types import (
     InlineKeyboardMarkup,
     InlineKeyboardButton
 )
+import pprint
 
+
+pp = pprint.PrettyPrinter(indent=4)
 
 def chunks(lst, n):
     for i in range(0, len(lst), n):
@@ -37,6 +40,8 @@ class CaptchaEngine:
         self.choices.append(ansbutton)
         random.shuffle(self.choices)
         self.choices = list(chunks(self.choices, 3))
+        header = [InlineKeyboardButton(self.msg(), callback_data='foo')]
+        self.choices.insert(0, header)
         return InlineKeyboardMarkup(self.choices)
 
     def msg(self):
