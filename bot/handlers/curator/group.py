@@ -93,6 +93,7 @@ def handle_group_join(client, msg):
     A user joined the group
     """
     handle_new_user(client, msg)
+    msg.delete()
 
 
 def handle_messages(client, msg):
@@ -148,9 +149,14 @@ def handle_id(client, msg):
     sched_cleanup(msg)
 
 
+def handle_service_messages(client, msg):
+    msg.delete()
+
+
 __HANDLERS__ = [
     MessageHandler(handle_id, filters.command('id', prefixes=CMD_PREFIX)),
     MessageHandler(handle_group_join, filters.new_chat_members),
+    MessageHandler(handle_service_messages, filters.service),
     MessageHandler(handle_messages, (filters.all & filters.group)),
     MessageHandler(handle_group_update, (filters.command('updategroup', prefixes=CMD_PREFIX) & filters.group)),
 ]
