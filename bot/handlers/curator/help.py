@@ -5,6 +5,8 @@ from user.models import (
     TeleUser,
 )
 from django.conf import settings
+import os
+import textwrap
 CMD_PREFIX = settings.BOT_COMMAND_PREFIX
 
 
@@ -24,12 +26,23 @@ def handle_help(client, msg):
     else:
         help_ = client.help
 
-    response = '\n\n'.join(help_)
-    response = f'<code>{response}</code>'
-    msg.reply(
-        text=response,
-        parse_mode=ParseMode.HTML
-    )
+    help_text = '\n\n'.join(help_)
+
+    if not is_admin:
+        response = f'<code>{response}</code>'
+        msg.reply(
+            text=response,
+            parse_mode=ParseMode.HTML
+        )
+    else:
+        if not os.path.isfile('help-full.txt'):
+            with open('help-full.txt', 'w') as f:
+                f.write(help_text)
+        client.send_document(
+            chat_id=msg.chat.id,
+            document='help-full.txt'
+        )
+
 
 
 __HANDLERS__ = [
