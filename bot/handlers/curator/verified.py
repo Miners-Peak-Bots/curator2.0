@@ -37,5 +37,5 @@ __HANDLERS__ = [
 
 
 __HELP__ = (
-    "$verified: Print a list of verified users"
+    "$verified: Print a list of verified users(in DM)"
 )
