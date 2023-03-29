@@ -1,6 +1,7 @@
 from pyrogram.handlers import CallbackQueryHandler
 from pyrogram import filters
 from captcha.models import Captcha
+from captcha.lib import CaptchaEngine
 
 
 def handle_unmute_callback(client, callback_query):
@@ -35,7 +36,26 @@ def handle_unmute_callback(client, callback_query):
         )
         return True
     else:
-        callback_query.answer('Wrong answer! Try again', show_alert=True)
+        incorrect = captcha.incorrect + 1
+        if incorrect >= 3:
+            callback_query.answer(
+                text=(
+                    'You failed to solve the captcha. '
+                    'Contact an admin to join group.'
+                ),
+                show_alert=True)
+            callback_query.message.delete()
+        else:
+            new_captcha = CaptchaEngine()
+            captcha.answer = new_captcha.ans
+            captcha.incorrect = incorrect
+            captcha.save()
+            callback_query.message.edit_text(
+                text=new_captcha.msg(),
+                reply_markup=new_captcha.keyboard(captcha.id)
+            )
+            callback_query.answer('Wrong answer! Try again', show_alert=True)
+
         return False
 
 
