@@ -45,6 +45,7 @@ def handle_unmute_callback(client, callback_query):
                 ),
                 show_alert=True)
             callback_query.message.delete()
+            captcha.delete()
         else:
             new_captcha = CaptchaEngine()
             captcha.answer = new_captcha.ans
