@@ -222,8 +222,65 @@ def handle_verify(client, msg):
     msg.reply_text(response)
 
 
+def handle_renew(client, msg):
+
+    # if not is_allowed(msg):
+    #     return False
+    target = is_allowed_and_get_target(msg)
+
+    try:
+        target = is_allowed_and_get_target(msg)
+    except Exception as e:
+        msg.reply_text(e)
+        msg.delete()
+        return False
+
+    user, created = create_get_user(target)
+
+    if not user.verified:
+        msg.reply_text('User is not verified and cannot be renewed')
+        return False
+
+    try:
+        flagg = msg.command[1]
+    except IndexError:
+        msg.reply_text('Please mention a country')
+        return False
+
+    try:
+        phone = msg.command[2]
+    except IndexError:
+        msg.reply_text('Please mention a phone number')
+        return False
+
+    try:
+        email = msg.command[3]
+    except IndexError:
+        msg.reply_text('Please mention an email')
+        return False
+
+    try:
+        keybase = msg.command[4]
+    except IndexError:
+        msg.reply_text('Please mention a valid keybase address')
+        return False
+
+    country = emoji.demojize(flagg).replace(':', '').strip().lower()
+
+    user.country = country
+    user.keybase = os.path.basename(keybase)
+    user.email = email
+    user.ph_number = phone
+    user.verified = True
+    user.save()
+
+    user.verify_log(event=3, message=None)
+    msg.reply_text("User's verification has been renewed")
+
+
 __HANDLERS__ = [
     MessageHandler(handle_verify, filters.command('verify', prefixes=CMD_PREFIX)),
+    MessageHandler(handle_verify, filters.command('renew', prefixes=CMD_PREFIX)),
     MessageHandler(handle_unverify, filters.command('unverify', prefixes=CMD_PREFIX)),
 ]
 
@@ -231,6 +288,8 @@ __HELP__ADMIN__ = (
     '$verify: Promote a user to verified seller status\n'
     '    Respond to a forwarded message of a user in private to verify\n'
     '    $verify 🇺🇸 +14332334234 user@mail.com keybase.io/username\n'
+    '$renew: Renew a user\'s verification status\n'
+    '   Works same as $verify\n'
     '$unverify: Remove a user from verified seller status\n'
     '    Respond to a forwarded message of a user in private to unverify\n'
 )
