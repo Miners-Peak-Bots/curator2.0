@@ -81,6 +81,7 @@ def handle_self_add(client, msg):
 
 
 def handle_group_join(client, msg):
+    msg.delete()
     if client.me.id == msg.new_chat_members[0].id:
         """
         The bot was added to a group. Add group to list of groups.
@@ -93,7 +94,6 @@ def handle_group_join(client, msg):
     A user joined the group
     """
     handle_new_user(client, msg)
-    msg.delete()
 
 
 def handle_messages(client, msg):
