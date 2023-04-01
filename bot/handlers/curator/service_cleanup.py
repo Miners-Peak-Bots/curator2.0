@@ -31,10 +31,14 @@ def handle_raw(client, update, users, chats):
     except Exception:
         pass
 
+    try:
+        update.continue_propagation()
+    except Exception:
+        pass
     return True
 
 
 __HANDLERS__ = [
     MessageHandler(cleanup_servicemsg, filters.service),
-    # RawUpdateHandler(handle_raw)
+    RawUpdateHandler(handle_raw)
 ]
