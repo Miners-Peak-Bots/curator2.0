@@ -36,5 +36,5 @@ def handle_raw(client, update, users, chats):
 
 __HANDLERS__ = [
     MessageHandler(cleanup_servicemsg, filters.service),
-    RawUpdateHandler(handle_raw)
+    # RawUpdateHandler(handle_raw)
 ]
