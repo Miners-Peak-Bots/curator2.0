@@ -15,7 +15,7 @@ def handle_raw(client, update, users, chats):
     This bit of code is to remove service message that is delivered
     when user is approved into a group after completing captcha
     """
-    print('raw handler')
+    print(update)
     action = types.MessageActionChatJoinedByRequest
     try:
         if isinstance(update.message.action, action):
@@ -30,6 +30,8 @@ def handle_raw(client, update, users, chats):
             )
     except Exception:
         pass
+
+    return True
 
 
 __HANDLERS__ = [
