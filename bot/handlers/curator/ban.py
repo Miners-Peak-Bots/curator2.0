@@ -84,19 +84,42 @@ def handle_ban(client, msg):
     )
     log_msg = errorify(response, errors)
     log(client, log_msg)
-    reply = client.send_message(msg.chat.id, response,
-                                parse_mode=ParseMode.HTML)
+
+    # reply = client.send_message(msg.chat.id, response,
+    #                             parse_mode=ParseMode.HTML)
+    # if msg.reply_to_message:
+    #     """
+    #     Delete the target message
+    #     """
+    #     msg.reply_to_message.delete()
+
+    # sched_cleanup(reply, interval=120)
+    # """
+    # Delete the command
+    # """
+    # msg.delete()
+
+    user_message_id = None
     if msg.reply_to_message:
         """
         Delete the target message
         """
-        msg.reply_to_message.delete()
+        user_message_id = msg.reply_to_message.id
+        sched_cleanup(msg.reply_to_message, interval=10)
 
-    sched_cleanup(reply, interval=120)
+    reply = client.send_message(
+        chat_id=msg.chat.id,
+        text=response,
+        reply_to_message_id=user_message_id,
+        parse_mode=ParseMode.HTML
+    )
+    sched_cleanup(reply)
     """
-    Delete the command
+    Delete the issued command
     """
     msg.delete()
+
+
 
 
 __HANDLERS__ = [
