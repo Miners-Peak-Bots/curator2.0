@@ -67,7 +67,7 @@ def prep_check(user):
         )
     else:
         text = text + emoji.emojize(
-            ':prohibited: NOT VERFIEID :prohibited:\n\n'
+            ':prohibited: NOT VERIFIED :prohibited:\n\n'
         )
     text = text + titlefy('User id', user.tele_id)
     if user.first_name:
