@@ -25,7 +25,7 @@ class Group(models.Model):
     vendor = models.BooleanField(default=False)
     enabled = models.BooleanField(default=True)
     log_channel = models.IntegerField(null=True, blank=True)
-    flair = models.CharField(null=True, max_length=30, blank=True, default='verified')
+    flair = models.CharField(null=True, max_length=30, blank=True, default='Verified')
     title = models.CharField(null=True, max_length=30, blank=True)
     username = models.CharField(null=True, max_length=30, blank=True)
     link = models.CharField(null=True, max_length=30, blank=True)
@@ -52,9 +52,9 @@ class Group(models.Model):
 
     def get_special_privileges(self):
         if self.verified_privilege:
-            return self.verified_privilege.get_privileges()
+            return ChatPrivileges(can_invite_users=False)
         else:
-            return ChatPrivileges(can_invite_users=True)
+            return ChatPrivileges(can_invite_users=False)
 
     class Meta:
         db_table = 'groups'

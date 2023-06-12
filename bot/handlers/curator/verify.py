@@ -32,14 +32,11 @@ def is_allowed(msg):
         return False
 
     if msg.reply_to_message.forward_sender_name is not None:
-        msg.reply_text(
-            f"user {msg.reply_to_message.forward_sender_name} need to change privacy settings for forward message to everyone"
-        )
+        msg.reply_text(f"user {msg.reply_to_message.forward_sender_name} need to change privacy settings for forward message to everyone")
         msg.delete()
         return False
 
     elif not msg.reply_to_message.forward_from:
-
         msg.reply_text("reply to a forwarded message")
         msg.delete()
         return False
@@ -78,7 +75,6 @@ def is_allowed_and_get_target(msg):
 
 
 def handle_unverify(client, msg):
-
     # if not is_allowed(msg):
     #     return False
 
@@ -109,7 +105,6 @@ def handle_unverify(client, msg):
     privileges = ChatPrivileges(can_manage_chat=False)
 
     for group in Group.objects.filter(vendor=True).all():
-
         try:
             client.promote_chat_member(chat_id=group.group_id, user_id=user.tele_id, privileges=privileges)
 
@@ -119,9 +114,7 @@ def handle_unverify(client, msg):
             )
 
         except UserPrivacyRestricted:
-            errors.append(
-                f'Can not demote in {group.title}({group.group_id}) as {msg.reply_to_message.forward_sender_name} isnt member of this group'
-            )
+            errors.append(f'Can not demote in {group.title}({group.group_id}) as {msg.reply_to_message.forward_sender_name} isnt member of this group')
 
         except Exception as e:
             errors.append(f'Could not unverify in {group.title}({group.group_id}) due to\n' f'{str(e)}')
@@ -131,7 +124,6 @@ def handle_unverify(client, msg):
 
 
 def handle_verify(client, msg):
-
     # if not is_allowed(msg):
     #     return False
     target = is_allowed_and_get_target(msg)
@@ -197,15 +189,10 @@ def handle_verify(client, msg):
             )
 
         except UserPrivacyRestricted:
-            errors.append(
-                f'Can not promote in {group.title}({group.group_id}) as {msg.reply_to_message.forward_sender_name} isnt member of this group'
-            )
+            errors.append(f'Can not promote in {group.title}({group.group_id}) as {msg.reply_to_message.forward_sender_name} isnt member of this group')
 
         except Exception as e:
-            errors.append(
-                f'Could not verify in {group.title}({group.group_id}) due to\n'
-                f'{str(e)}. Please fix manually or retry.'
-            )
+            errors.append(f'Could not verify in {group.title}({group.group_id}) due to\n' f'{str(e)}. Please fix manually or retry.')
 
         else:
             try:
@@ -213,17 +200,13 @@ def handle_verify(client, msg):
                     print("Setting flair to ", group.flair)
                     client.set_administrator_title(group.group_id, user.tele_id, group.flair)
             except Exception as e:
-                errors.append(
-                    f'Could not set flair in {group.title}({group.group_id}) due to\n'
-                    f'{str(e)}. Please fix manually or retry.'
-                )
+                errors.append(f'Could not set flair in {group.title}({group.group_id}) due to\n' f'{str(e)}. Please fix manually or retry.')
 
     response = errorify('User has been verified', errors)
     msg.reply_text(response)
 
 
 def handle_renew(client, msg):
-
     # if not is_allowed(msg):
     #     return False
     target = is_allowed_and_get_target(msg)
@@ -280,7 +263,7 @@ def handle_renew(client, msg):
 
 __HANDLERS__ = [
     MessageHandler(handle_verify, filters.command('verify', prefixes=CMD_PREFIX)),
-    MessageHandler(handle_verify, filters.command('renew', prefixes=CMD_PREFIX)),
+    MessageHandler(handle_renew, filters.command('renew', prefixes=CMD_PREFIX)),
     MessageHandler(handle_unverify, filters.command('unverify', prefixes=CMD_PREFIX)),
 ]
 

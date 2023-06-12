@@ -6,19 +6,16 @@ from django.conf import settings
 
 
 class Curator(Client):
-    def __init__(self,
-                 name: str,
-                 handler_path: str):
+    def __init__(self, name: str, handler_path: str):
         self.name = name
         self.handler_path = handler_path
         self.help = []
         self.admin_manual = []
         self.help = []
+        plugins = dict(root=handler_path)
+
         super().__init__(
-            name=f'{os.getcwd()}/{name}',
-            api_id=settings.BOT_API_ID,
-            api_hash=settings.BOT_API_HASH,
-            bot_token=settings.BOT_API_TOKEN
+            name=f'{os.getcwd()}/{name}', api_id=settings.BOT_API_ID, api_hash=settings.BOT_API_HASH, bot_token=settings.BOT_API_TOKEN, plugins=plugins
         )
         self.__attach_handlers()
 
@@ -46,7 +43,7 @@ class Curator(Client):
         modules = [module for module in modules if module[-4:] != '.pyc']
         for module in modules:
             logger.info(f'Attaching handlers in {module}')
-            module_path = import_path+module.replace('.py', '')
+            module_path = import_path + module.replace('.py', '')
             module_ = importlib.import_module(module_path)
 
             self.__attach_manual(module_)
@@ -54,7 +51,7 @@ class Curator(Client):
 
             for handler in module_.__HANDLERS__:
                 if isinstance(handler, list):
-                    event_handler = handler[0],
+                    event_handler = (handler[0],)
                     group = handler[1]
                     self.add_handler(event_handler, group=group)
                 else:
