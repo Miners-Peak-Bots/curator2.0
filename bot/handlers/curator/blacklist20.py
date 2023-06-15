@@ -1,9 +1,11 @@
+import re
 from pyrogram.handlers import MessageHandler
 from django.conf import settings
 from pyrogram import filters
 from blacklist.models import Blacklist
 from pyrogram.enums import ParseMode
 from django.core.cache import cache
+
 CMD_PREFIX = settings.BOT_COMMAND_PREFIX
 
 
@@ -18,18 +20,20 @@ def add_blacklist(client, msg):
         return False
 
     ogphrase = phrase
-    phrase = f'\\b{phrase}\\b'
+    phrase = fr'\s+{re.escape(phrase)}\s+'
     query = Blacklist.objects.filter(regex=phrase)
     if not query.count():
-        word = Blacklist.objects.create(regex=phrase, is_temp=True)
+        try:
+            word = Blacklist.objects.create(regex=phrase, is_temp=True)
+        except Exception as e:
+            msg.reply_text(str(e), parse_mode=ParseMode.HTML)
+            return None
+
         blacklist = cache.get('blacklist20', [])
         blacklist.append(word)
         cache.set('blacklist20', blacklist)
 
-    msg.reply_text(
-        f'<code>{ogphrase.strip()}</code> has been added to 20 count blacklist',
-        parse_mode=ParseMode.HTML
-    )
+    msg.reply_text(f'<code>{ogphrase.strip()}</code> has been added to 20 count blacklist', parse_mode=ParseMode.HTML)
 
 
 def whitelist(client, msg):
@@ -43,29 +47,21 @@ def whitelist(client, msg):
         return False
 
     ogphrase = phrase
-    phrase = f'\\b{phrase}\\b'
+    phrase = fr'\s+{re.escape(phrase)}\s+'
     query = Blacklist.objects.filter(regex=phrase, is_temp=True)
     if not query.count():
-        msg.reply_text(
-            f'<code>{ogphrase.strip()}</code> does not exist in 20 count blacklist',
-            parse_mode=ParseMode.HTML
-        )
+        msg.reply_text(f'<code>{ogphrase.strip()}</code> does not exist in 20 count blacklist', parse_mode=ParseMode.HTML)
         return False
 
     query.all().delete()
     blacklist = [row for row in Blacklist.objects.filter(is_temp=True)]
     cache.set('blacklist20', blacklist)
-    msg.reply_text(
-        f'<code>{ogphrase.strip()}</code> has been removed from 20 count blacklist',
-        parse_mode=ParseMode.HTML
-    )
+    msg.reply_text(f'<code>{ogphrase.strip()}</code> has been removed from 20 count blacklist', parse_mode=ParseMode.HTML)
 
 
 __HANDLERS__ = [
-    MessageHandler(add_blacklist, filters.command('blacklist20',
-                                                  prefixes=CMD_PREFIX)),
-    MessageHandler(whitelist, filters.command('whitelist20',
-                                              prefixes=CMD_PREFIX)),
+    MessageHandler(add_blacklist, filters.command('blacklist20', prefixes=CMD_PREFIX)),
+    MessageHandler(whitelist, filters.command('whitelist20', prefixes=CMD_PREFIX)),
 ]
 
 

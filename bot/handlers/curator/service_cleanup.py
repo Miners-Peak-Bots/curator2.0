@@ -1,13 +1,12 @@
 from pyrogram.handlers import MessageHandler
 from pyrogram import filters
 from pyrogram.raw import types
+from pyrogram import Client, filters
+from pyrogram import ContinuePropagation
 
 
 def cleanup_servicemsg(client, msg):
     msg.delete()
-
-
-from pyrogram import Client, filters
 
 
 @Client.on_raw_update(group=-1)
@@ -29,7 +28,7 @@ def handle_raw(client, update, users, chats):
     except Exception:
         pass
 
-    # update.continue_propagation()
+    raise ContinuePropagation
 
 
 __HANDLERS__ = [

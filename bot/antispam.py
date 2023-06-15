@@ -38,20 +38,19 @@ def handle_msg3(client, msg):
     msg.delete()
 
 
-@app.on_message(filters.text)
+@app.on_message(filters.text & filters.group)
 def handle_msg4(client, msg):
     try:
         user = TeleUser.objects.get(pk=msg.from_user.id)
     except TeleUser.DoesNotExist:
-        user = TeleUser.objects.create(tele_id=msg.from_user.id,
-                                       first_name=msg.from_user.first_name,
-                                       last_name=msg.from_user.last_name,
-                                       username=msg.from_user.username)
+        user = TeleUser.objects.create(
+            tele_id=msg.from_user.id, first_name=msg.from_user.first_name, last_name=msg.from_user.last_name, username=msg.from_user.username
+        )
 
     user.msg_count = user.msg_count + 1
     user.save()
 
-    admins = get_admins()
+    admins = get_admins() + [app.get_me().id]
     if msg.from_user.id in admins:
         return False
 
@@ -61,16 +60,17 @@ def handle_msg4(client, msg):
     try:
         group = Group.objects.get(pk=msg.chat.id)
     except Group.DoesNotExist:
-        msg = f'Group {msg.chat.title}({msg.chat.id}) not found in db'
+        msg = f'Group {msg.chat.title}({msg.chat.id}) is not a vendor'
         log(client, msg)
         return False
 
     if not group.antispam:
         return False
 
+    text_hack = f" {msg.text.strip()} "
     if user.msg_count <= 20:
         for pattern in patterns20:
-            res = pattern.regex.search(msg.text)
+            res = pattern.regex.search(text_hack)
             if res is not None:
                 msg.delete()
                 """
@@ -94,7 +94,7 @@ def handle_msg4(client, msg):
     then we proceed to the main blacklist
     """
     for pattern in patterns:
-        res = pattern.regex.search(msg.text)
+        res = pattern.regex.search(text_hack)
         if res is not None:
             msg.delete()
             """

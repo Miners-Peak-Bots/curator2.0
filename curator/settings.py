@@ -26,11 +26,13 @@ SECRET_KEY = 'django-insecure-zs$0b&3g0+d2+660vnn979-*pt9$$fwisx_@c9am+zu&@146)6
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', cast=bool)
 
-# ALLOWED_HOSTS = []
-# ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
-ALLOWED_HOSTS = ['.localhost', '127.0.0.1', '[::1]']
-# Application definition
 
+if DEBUG:
+    ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
+else:
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+
+# Application definition
 INSTALLED_APPS = [
     'jazzmin',
     'django.contrib.admin',
