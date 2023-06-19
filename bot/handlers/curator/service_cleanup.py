@@ -16,8 +16,9 @@ def handle_raw(client, update, users, chats):
     when user is approved into a group after completing captcha
     """
     # print(client, update, users, chats)
-    action = types.MessageActionChatJoinedByRequest
+
     try:
+        action = types.MessageActionChatJoinedByRequest
         if isinstance(update.message.action, action):
             channel_id = update.message.peer_id.channel_id
 
@@ -27,8 +28,8 @@ def handle_raw(client, update, users, chats):
             client.delete_messages(chat_id=chat_id, message_ids=msg_id)
     except Exception:
         pass
-
-    raise ContinuePropagation
+    finally:
+        raise ContinuePropagation
 
 
 __HANDLERS__ = [
