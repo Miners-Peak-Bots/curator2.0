@@ -42,6 +42,6 @@ __HANDLERS__ = [
 
 
 __HELP__ADMIN__ = (
-    '$notification: Send a network side message(admin only)\n'
-    '   Reply to a message with !notification'
+    '$notification: Send network side message(admin only)\n'
+    'Reply to message with !notification in pm'
 )

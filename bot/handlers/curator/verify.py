@@ -7,6 +7,7 @@ import os
 import emoji
 from pyrogram import filters
 
+from .acheck import handle_acheck
 from user.models import (
     TeleUser,
 )
@@ -204,6 +205,7 @@ def handle_verify(client, msg):
 
     response = errorify('User has been verified', errors)
     msg.reply_text(response)
+    handle_acheck(client, msg.reply_to_message, user_id=user.tele_id)
 
 
 def handle_renew(client, msg):
@@ -259,6 +261,7 @@ def handle_renew(client, msg):
 
     user.verify_log(event=3, message=None)
     msg.reply_text("User's verification has been renewed")
+    handle_acheck(client, msg.reply_to_message, user_id=user.tele_id)
 
 
 __HANDLERS__ = [

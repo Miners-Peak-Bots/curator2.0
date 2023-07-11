@@ -1,5 +1,7 @@
-from group.utils import create_get_group
+import time
+
 from django.conf import settings
+from group.utils import create_get_group
 from pyrogram import filters
 from pyrogram.handlers import MessageHandler
 from user.models import TeleUser
@@ -19,6 +21,7 @@ def handle_makespecial(client, msg):
         privileges = group.get_special_privileges()
         try:
             client.promote_chat_member(chat_id=group.group_id, user_id=user.tele_id, privileges=privileges)
+            time.sleep(2)
             if group.flair:
                 print("Setting flair to ", group.flair)
                 client.set_administrator_title(group.group_id, user.tele_id, group.flair)
