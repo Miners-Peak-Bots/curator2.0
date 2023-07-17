@@ -113,5 +113,4 @@ def handle_msg4(client, msg):
 
 def initialize():
     print('Antispam module initialized')
-    app.start()
-    idle()
+    app.run()

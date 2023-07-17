@@ -1,20 +1,20 @@
-from ...utils.msg import errorify
-from user.utils import create_get_user
-from group.models import Group
-from django.conf import settings
-from pyrogram.handlers import MessageHandler
 import os
-import emoji
-from pyrogram import filters
+import time
 
-from .acheck import handle_acheck
+import emoji
+from django.conf import settings
+from group.models import Group
+from pyrogram import filters
+from pyrogram.errors import ChatAdminRequired, UserPrivacyRestricted
+from pyrogram.handlers import MessageHandler
+from pyrogram.types import ChatPrivileges
 from user.models import (
     TeleUser,
 )
+from user.utils import create_get_user
 
-from pyrogram.types import ChatPrivileges
-from pyrogram.errors import ChatAdminRequired, UserPrivacyRestricted
-
+from ...utils.msg import errorify
+from .acheck import handle_acheck
 
 CMD_PREFIX = settings.BOT_COMMAND_PREFIX
 
@@ -183,6 +183,7 @@ def handle_verify(client, msg):
 
         try:
             client.promote_chat_member(chat_id=group.group_id, user_id=user.tele_id, privileges=privileges)
+            time.sleep(2)
 
         except ChatAdminRequired:
             errors.append(

@@ -62,5 +62,9 @@ class Curator(Client):
         self.me = self.get_me()
         logger.info(f'{self.name} started')
 
+    def run(self):
+        super().run()
+
     def stop(self):
         logger.info(f'{self.name} stopped')
+        super().stop()
