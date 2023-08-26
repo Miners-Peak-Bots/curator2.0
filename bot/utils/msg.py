@@ -5,7 +5,7 @@ from bot.sched import jobs
 from django.conf import settings
 
 
-def errorify(title, erray):
+def errorify(title, erray=None):
     if not erray:
         return title
     errors = f'Errors occured: {len(erray)}\n\n'

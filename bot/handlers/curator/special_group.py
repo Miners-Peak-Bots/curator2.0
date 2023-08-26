@@ -17,16 +17,16 @@ def handle_makespecial(client, msg):
     group, created = create_get_group(msg.chat)
     group.vendor = True
     group.save()
-    for user in TeleUser.objects.filter(verified=True):
-        privileges = group.get_special_privileges()
-        try:
-            client.promote_chat_member(chat_id=group.group_id, user_id=user.tele_id, privileges=privileges)
-            time.sleep(2)
-            if group.flair:
-                print("Setting flair to ", group.flair)
-                client.set_administrator_title(group.group_id, user.tele_id, group.flair)
-        except Exception:
-            pass
+    # for user in TeleUser.objects.filter(verified=True):
+    #     privileges = group.get_special_privileges()
+    #     try:
+    #         client.promote_chat_member(chat_id=group.group_id, user_id=user.tele_id, privileges=privileges)
+    #         time.sleep(2)
+    #         if group.flair:
+    #             print("Setting flair to ", group.flair)
+    #             client.set_administrator_title(group.group_id, user.tele_id, group.flair)
+    #     except Exception:
+    #         pass
 
     return msg.reply_text('Group has been marked as special.\n' 'Please set privileges and flair from dashboard')
 

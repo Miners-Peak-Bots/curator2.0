@@ -33,7 +33,9 @@ def is_allowed(msg):
         return False
 
     if msg.reply_to_message.forward_sender_name is not None:
-        msg.reply_text(f"user {msg.reply_to_message.forward_sender_name} need to change privacy settings for forward message to everyone")
+        msg.reply_text(
+            f"user {msg.reply_to_message.forward_sender_name} need to change privacy settings for forward message to everyone"
+        )
         msg.delete()
         return False
 
@@ -101,26 +103,28 @@ def handle_unverify(client, msg):
     user.save()
     user.verify_log(message=reason, event=2)
 
-    errors = []
+    # errors = []
 
-    privileges = ChatPrivileges(can_manage_chat=False)
+    # privileges = ChatPrivileges(can_manage_chat=False)
 
-    for group in Group.objects.filter(vendor=True).all():
-        try:
-            client.promote_chat_member(chat_id=group.group_id, user_id=user.tele_id, privileges=privileges)
+    # for group in Group.objects.filter(vendor=True).all():
+    #     try:
+    #         client.promote_chat_member(chat_id=group.group_id, user_id=user.tele_id, privileges=privileges)
 
-        except ChatAdminRequired:
-            errors.append(
-                f'Could not unverify in {group.title}({group.group_id}) as bots cant edit admins promoted by other admins\n Demote them and try again'
-            )
+    #     except ChatAdminRequired:
+    #         errors.append(
+    #             f'Could not unverify in {group.title}({group.group_id}) as bots cant edit admins promoted by other admins\n Demote them and try again'
+    #         )
 
-        except UserPrivacyRestricted:
-            errors.append(f'Can not demote in {group.title}({group.group_id}) as {msg.reply_to_message.forward_sender_name} isnt member of this group')
+    #     except UserPrivacyRestricted:
+    #         errors.append(
+    #             f'Can not demote in {group.title}({group.group_id}) as {msg.reply_to_message.forward_sender_name} isnt member of this group'
+    #         )
 
-        except Exception as e:
-            errors.append(f'Could not unverify in {group.title}({group.group_id}) due to\n' f'{str(e)}')
+    #     except Exception as e:
+    #         errors.append(f'Could not unverify in {group.title}({group.group_id}) due to\n' f'{str(e)}')
 
-    response = errorify('User has been removed from verified users', errors)
+    response = errorify('User has been removed from verified users')
     msg.reply_text(response)
 
 
@@ -172,39 +176,39 @@ def handle_verify(client, msg):
 
     user.verify_log(event=1, message=None)
 
-    """
-    Promote user to admin and set admin title
-    """
+    # """
+    # Promote user to admin and set admin title
+    # """
 
-    errors = []
+    # errors = []
 
-    for group in Group.objects.filter(vendor=True).all():
-        privileges = group.get_special_privileges()
+    # for group in Group.objects.filter(vendor=True).all():
+    #     privileges = group.get_special_privileges()
 
-        try:
-            client.promote_chat_member(chat_id=group.group_id, user_id=user.tele_id, privileges=privileges)
-            time.sleep(2)
+    #     try:
+    #         client.promote_chat_member(chat_id=group.group_id, user_id=user.tele_id, privileges=privileges)
+    #         time.sleep(2)
 
-        except ChatAdminRequired:
-            errors.append(
-                f'Could not verify in {group.title}({group.group_id}) as bots cant edit admins promoted by other admins\n Demote them and try again'
-            )
+    #     except ChatAdminRequired:
+    #         errors.append(
+    #             f'Could not verify in {group.title}({group.group_id}) as bots cant edit admins promoted by other admins\n Demote them and try again'
+    #         )
 
-        except UserPrivacyRestricted:
-            errors.append(f'Can not promote in {group.title}({group.group_id}) as {msg.reply_to_message.forward_sender_name} isnt member of this group')
+    #     except UserPrivacyRestricted:
+    #         errors.append(f'Can not promote in {group.title}({group.group_id}) as {msg.reply_to_message.forward_sender_name} isnt member of this group')
 
-        except Exception as e:
-            errors.append(f'Could not verify in {group.title}({group.group_id}) due to\n' f'{str(e)}. Please fix manually or retry.')
+    #     except Exception as e:
+    #         errors.append(f'Could not verify in {group.title}({group.group_id}) due to\n' f'{str(e)}. Please fix manually or retry.')
 
-        else:
-            try:
-                if group.flair:
-                    print("Setting flair to ", group.flair)
-                    client.set_administrator_title(group.group_id, user.tele_id, group.flair)
-            except Exception as e:
-                errors.append(f'Could not set flair in {group.title}({group.group_id}) due to\n' f'{str(e)}. Please fix manually or retry.')
+    #     else:
+    #         try:
+    #             if group.flair:
+    #                 print("Setting flair to ", group.flair)
+    #                 client.set_administrator_title(group.group_id, user.tele_id, group.flair)
+    #         except Exception as e:
+    #             errors.append(f'Could not set flair in {group.title}({group.group_id}) due to\n' f'{str(e)}. Please fix manually or retry.')
 
-    response = errorify('User has been verified', errors)
+    response = errorify('User has been verified')
     msg.reply_text(response)
     handle_acheck(client, msg.reply_to_message, user_id=user.tele_id)
 
