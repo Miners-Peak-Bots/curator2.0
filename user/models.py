@@ -9,13 +9,8 @@ class User(AbstractUser):
 
 
 class Warn(models.Model):
-    user = models.ForeignKey('user.TeleUser',
-                             on_delete=models.CASCADE,
-                             related_name='warning')
-    admin = models.ForeignKey('user.TeleUser',
-                              on_delete=models.SET_NULL,
-                              null=True,
-                              related_name='dispatched_warn')
+    user = models.ForeignKey('user.TeleUser', on_delete=models.CASCADE, related_name='warning')
+    admin = models.ForeignKey('user.TeleUser', on_delete=models.SET_NULL, null=True, related_name='dispatched_warn')
     reason = models.CharField(max_length=128)
     """
     Warn type can have two values
@@ -35,9 +30,7 @@ class TeleUserLog(models.Model):
         4: 'muted',
         5: 'unmuted',
     }
-    user = models.ForeignKey('user.TeleUser',
-                             on_delete=models.CASCADE,
-                             related_name='logs')
+    user = models.ForeignKey('user.TeleUser', on_delete=models.CASCADE, related_name='logs')
     reason = models.CharField(max_length=256, null=True)
     """
     0 - Warn
@@ -59,14 +52,8 @@ class TeleUserLog(models.Model):
 
 
 class TeleUserVerifyLog(models.Model):
-    events = {
-        1: 'Verified',
-        2: 'Unverified',
-        3: 'Renewed'
-    }
-    user = models.ForeignKey('user.TeleUser',
-                             on_delete=models.CASCADE,
-                             related_name='vlogs')
+    events = {1: 'Verified', 2: 'Unverified', 3: 'Renewed'}
+    user = models.ForeignKey('user.TeleUser', on_delete=models.CASCADE, related_name='vlogs')
     event = models.IntegerField()
     reason = models.CharField(max_length=256, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -79,14 +66,13 @@ class TeleUserVerifyLog(models.Model):
 
 class TeleUser(models.Model):
     tele_id = models.IntegerField(primary_key=True)
-    username = models.CharField(max_length=32, null=True, default=None,
-                                blank=True)
-    first_name = models.CharField(max_length=64, null=True, default=None,
-                                  blank=True)
-    last_name = models.CharField(max_length=64, null=True, default=None,
-                                 blank=True)
+    username = models.CharField(max_length=32, null=True, default=None, blank=True)
+    first_name = models.CharField(max_length=64, null=True, default=None, blank=True)
+    last_name = models.CharField(max_length=64, null=True, default=None, blank=True)
     captcha_solved = models.BooleanField(default=False, editable=False)
     verified = models.BooleanField(default=False, blank=True)
+    verification_expires_at = models.DateTimeField(null=True)
+    verification_expires_thirty_days_notification = models.BooleanField(default=False, null=True)
     email = models.CharField(max_length=40, null=True, blank=True)
     keybase = models.CharField(max_length=120, null=True, blank=True)
     ph_number = models.CharField(max_length=20, null=True, blank=True)
@@ -104,13 +90,13 @@ class TeleUser(models.Model):
     def keybase_link(self):
         if not self.keybase:
             return None
-        return 'https://keybase.io/'+self.keybase
+        return 'https://keybase.io/' + self.keybase
 
     @property
     def username_tag(self):
         if not self.username:
             return None
-        return '@'+self.username
+        return '@' + self.username
 
     @property
     def country_emoji(self):
@@ -126,26 +112,13 @@ class TeleUser(models.Model):
         return False
 
     def warn(self, admin, reason, banning_warn=False):
-        return Warn.objects.create(
-            user=self,
-            reason=reason,
-            admin=admin,
-            banning_warn=banning_warn
-        )
+        return Warn.objects.create(user=self, reason=reason, admin=admin, banning_warn=banning_warn)
 
     def log(self, event, message=None):
-        return TeleUserLog.objects.create(
-            user=self,
-            reason=message,
-            event=event
-        )
+        return TeleUserLog.objects.create(user=self, reason=message, event=event)
 
     def verify_log(self, event, message=None):
-        return TeleUserVerifyLog.objects.create(
-            user=self,
-            reason=message,
-            event=event
-        )
+        return TeleUserVerifyLog.objects.create(user=self, reason=message, event=event)
 
     @property
     def mention(self):

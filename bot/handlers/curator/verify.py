@@ -2,6 +2,8 @@ import os
 import time
 
 import emoji
+from datetime import timedelta
+from django.utils import timezone
 from django.conf import settings
 from group.models import Group
 from pyrogram import filters
@@ -141,6 +143,11 @@ def handle_verify(client, msg):
         return False
 
     user, created = create_get_user(target)
+
+    if user.verified is True:
+        msg.reply_text('User is verified, use renew command')
+        return None
+
     try:
         flagg = msg.command[1]
     except IndexError:
@@ -172,6 +179,7 @@ def handle_verify(client, msg):
     user.email = email
     user.ph_number = phone
     user.verified = True
+    user.verification_expires_at = timezone.now() + timedelta(days=365)
     user.save()
 
     user.verify_log(event=1, message=None)
@@ -262,6 +270,7 @@ def handle_renew(client, msg):
     user.email = email
     user.ph_number = phone
     user.verified = True
+    user.verification_expires_at = user.verification_expires_at + timedelta(days=365)
     user.save()
 
     user.verify_log(event=3, message=None)
