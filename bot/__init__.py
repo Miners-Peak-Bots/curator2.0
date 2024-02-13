@@ -21,7 +21,8 @@ def cron_job(bot):
                 pyrogram_user_object = bot.get_users(user.tele_id)
                 user_details = f"{pyrogram_user_object.mention} -- {pyrogram_user_object.username}"
                 bot.send_message(f"Your verification is expires on {expires_at}")
-            except Exception:
+            except Exception as exc:
+                print(exc)
                 first_name = user.first_name or ""
                 last_name = user.last_name or ""
                 full_name = f"{first_name} {last_name}"
@@ -38,7 +39,8 @@ def cron_job(bot):
                 pyrogram_user_object = bot.get_users(user.tele_id)
                 user_details = f"{pyrogram_user_object.mention} -- {pyrogram_user_object.username}"
                 bot.send_message(f"Your verification expires on {expires_at} -- Remaining days: {remaining_days}")
-            except Exception:
+            except Exception as exc:
+                print(exc)
                 first_name = user.first_name or ""
                 last_name = user.last_name or ""
                 full_name = f"{first_name} {last_name}"
@@ -50,6 +52,6 @@ def cron_job(bot):
 
 def initialize():
     jobs.start()
-    bot.run()
     kwargs = {'bot': bot}
     jobs.add_job(cron_job, trigger='cron', day="*", hour=00, minute=00, second=0, kwargs=kwargs, id='cron-job')
+    bot.run()
