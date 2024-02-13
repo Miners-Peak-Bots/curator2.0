@@ -52,4 +52,4 @@ def initialize():
     jobs.start()
     bot.run()
     kwargs = {'bot': bot}
-    jobs.add_job(cron_job, trigger='cron', day="*", hour='*', minute=20, second=0, kwargs=kwargs, id='cron-job')
+    jobs.add_job(cron_job, trigger='cron', day="*", hour=00, minute=00, second=0, kwargs=kwargs, id='cron-job')
