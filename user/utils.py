@@ -6,12 +6,15 @@ from pyrogram.types import ChatPermissions
 
 
 def create_user(member):
-    return TeleUser.objects.create(tele_id=member.id, username=member.username, first_name=member.first_name, last_name=member.last_name)
+    return TeleUser.objects.create(
+        tele_id=member.id, username=member.username, first_name=member.first_name, last_name=member.last_name
+    )
 
 
 def create_get_user(member):
     return TeleUser.objects.get_or_create(
-        tele_id=member.id, defaults={'username': member.username, 'first_name': member.first_name, 'last_name': member.last_name}
+        tele_id=member.id,
+        defaults={'username': member.username, 'first_name': member.first_name, 'last_name': member.last_name},
     )
 
 
@@ -80,6 +83,7 @@ def prep_acheck(user):
     text = '@MinersPeak <b>Curator Bot</b>\n--------------------\n'
     if user.verified:
         text = text + emoji.emojize(':check_mark_button: VERIFIED :check_mark_button:\n\n')
+
     else:
         text = text + emoji.emojize(':prohibited: NOT VERFIEID :prohibited:\n\n')
     text = text + titlefy('User id', user.tele_id)
@@ -104,7 +108,8 @@ def prep_acheck(user):
     text = text + titlefy('Banned', banned_status)
     for event in user.vlogs.all():
         text = text + f'<code>{event.message}</code>\n'
-
+    if user.verified:
+        text = text + f"Verification expires on: {user.verification_expires_at}"
     text = text + '------------' + '\n'
     text = text + '<b>User log:\n</b>\n'
     """
