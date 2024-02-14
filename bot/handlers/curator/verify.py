@@ -239,36 +239,40 @@ def handle_renew(client, msg):
         msg.reply_text('User is not verified and cannot be renewed')
         return False
 
-    try:
-        flagg = msg.command[1]
-    except IndexError:
-        msg.reply_text('Please mention a country')
-        return False
+    if len(msg.command) > 1:
+        try:
+            flagg = msg.command[1]
+        except IndexError:
+            msg.reply_text('Please mention a country')
+            return False
 
-    try:
-        phone = msg.command[2]
-    except IndexError:
-        msg.reply_text('Please mention a phone number')
-        return False
+        try:
+            phone = msg.command[2]
+        except IndexError:
+            msg.reply_text('Please mention a phone number')
+            return False
 
-    try:
-        email = msg.command[3]
-    except IndexError:
-        msg.reply_text('Please mention an email')
-        return False
+        try:
+            email = msg.command[3]
+        except IndexError:
+            msg.reply_text('Please mention an email')
+            return False
 
-    try:
-        keybase = msg.command[4]
-    except IndexError:
-        msg.reply_text('Please mention a valid keybase address')
-        return False
+        try:
+            keybase = msg.command[4]
+        except IndexError:
+            msg.reply_text('Please mention a valid keybase address')
+            return False
 
-    country = emoji.demojize(flagg).replace(':', '').strip().lower()
+        country = emoji.demojize(flagg).replace(':', '').strip().lower()
 
-    user.country = country
-    user.keybase = os.path.basename(keybase)
-    user.email = email
-    user.ph_number = phone
+        user.country = country
+        user.keybase = os.path.basename(keybase)
+        user.email = email
+        user.ph_number = phone
+    else:
+        msg.reply_text("Users verification is being renewed without updating any existing info")
+
     user.verified = True
     user.verification_expires_at = user.verification_expires_at + timedelta(days=365)
     user.save()
