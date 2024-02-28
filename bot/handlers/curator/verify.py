@@ -180,6 +180,7 @@ def handle_verify(client, msg):
     user.ph_number = phone
     user.verified = True
     user.verification_expires_at = timezone.now() + timedelta(days=365)
+    user.verification_expires_thirty_days_notification = False
     user.save()
 
     user.verify_log(event=1, message=None)
@@ -275,6 +276,7 @@ def handle_renew(client, msg):
 
     user.verified = True
     user.verification_expires_at = user.verification_expires_at + timedelta(days=365)
+    user.verification_expires_thirty_days_notification = False
     user.save()
 
     user.verify_log(event=3, message=None)

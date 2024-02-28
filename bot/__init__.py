@@ -21,14 +21,16 @@ def cron_job(bot):
 
             try:
                 pyrogram_user_object = bot.get_users(user.tele_id)
-                user_details = f"{pyrogram_user_object.mention} -- {pyrogram_user_object.username}"
+                username_string = f'@{pyrogram_user_object.username}' if pyrogram_user_object.username else ''
+                user_details = f"{pyrogram_user_object.mention} -- {username_string}"
                 bot.send_message(user.tele_id, f"Your verification expired on {expires_at_string}")
             except Exception as exc:
                 print(exc)
                 first_name = user.first_name or ""
                 last_name = user.last_name or ""
                 full_name = f"{first_name} {last_name}"
-                user_details = f"{full_name} -- {user.username}"
+                username_string = f'@{user.username}' if user.username else ''
+                user_details = f"{full_name} -- {username_string}"
 
             message = f"Verification of {user_details} expired on {expires_at_string}"
             bot.send_message("@joe_cryptech", message)
@@ -39,19 +41,21 @@ def cron_job(bot):
 
             try:
                 pyrogram_user_object = bot.get_users(user.tele_id)
-                user_details = f"{pyrogram_user_object.mention} -- {pyrogram_user_object.username}"
+                username_string = f'@{pyrogram_user_object.username}' if pyrogram_user_object.username else ''
+                user_details = f"{pyrogram_user_object.mention} -- {username_string}"
                 bot.send_message(
                     user.tele_id,
-                    f"Your verification expires on {expires_at_string} -- Remaining days: {remaining_days}",
+                    f"Your verification will expire at {expires_at_string} -- Remaining days: {remaining_days}",
                 )
             except Exception as exc:
                 first_name = user.first_name or ""
                 last_name = user.last_name or ""
                 full_name = f"{first_name} {last_name}"
-                user_details = f"{full_name} -- {user.username}"
+                username_string = f'@{user.username}' if user.username else ''
+                user_details = f"{full_name} -- {username_string}"
 
             message = (
-                f"Verification of {user_details} expires on {expires_at_string} -- Remaining days: {remaining_days}"
+                f"Verification of {user_details} will expire at {expires_at_string} -- Remaining days: {remaining_days}"
             )
             bot.send_message("@joe_cryptech", message)
 
@@ -59,5 +63,9 @@ def cron_job(bot):
 def initialize():
     jobs.start()
     kwargs = {'bot': bot}
+
+    with bot:
+        cron_job(bot)
+
     jobs.add_job(cron_job, trigger='cron', day="*", hour=00, minute=00, second=0, kwargs=kwargs, id='cron-job')
     bot.run()
