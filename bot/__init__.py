@@ -7,6 +7,8 @@ from django.utils import timezone
 def cron_job(bot):
     for user in TeleUser.objects.filter(verified=True):
         expires_at = user.verification_expires_at
+
+        expires_at_string = expires_at.strftime('%Y-%m-%d')
         is_notified = user.verification_expires_thirty_days_notification
         current_time = timezone.now()
 
@@ -20,7 +22,7 @@ def cron_job(bot):
             try:
                 pyrogram_user_object = bot.get_users(user.tele_id)
                 user_details = f"{pyrogram_user_object.mention} -- {pyrogram_user_object.username}"
-                bot.send_message(user.tele_id, f"Your verification is expires on {expires_at}")
+                bot.send_message(user.tele_id, f"Your verification expired on {expires_at_string}")
             except Exception as exc:
                 print(exc)
                 first_name = user.first_name or ""
@@ -28,7 +30,7 @@ def cron_job(bot):
                 full_name = f"{first_name} {last_name}"
                 user_details = f"{full_name} -- {user.username}"
 
-            message = f"Verification of {user_details} expired on {expires_at}"
+            message = f"Verification of {user_details} expired on {expires_at_string}"
             bot.send_message("@joe_cryptech", message)
 
         elif remaining_days <= 30 and is_notified is False:
@@ -39,16 +41,18 @@ def cron_job(bot):
                 pyrogram_user_object = bot.get_users(user.tele_id)
                 user_details = f"{pyrogram_user_object.mention} -- {pyrogram_user_object.username}"
                 bot.send_message(
-                    user.tele_id, f"Your verification expired on {expires_at} -- Remaining days: {remaining_days}"
+                    user.tele_id,
+                    f"Your verification expires on {expires_at_string} -- Remaining days: {remaining_days}",
                 )
             except Exception as exc:
-                print(exc)
                 first_name = user.first_name or ""
                 last_name = user.last_name or ""
                 full_name = f"{first_name} {last_name}"
                 user_details = f"{full_name} -- {user.username}"
 
-            message = f"Verification of {user_details} expired on {expires_at} -- Remaining days: {remaining_days}"
+            message = (
+                f"Verification of {user_details} expires on {expires_at_string} -- Remaining days: {remaining_days}"
+            )
             bot.send_message("@joe_cryptech", message)
 
 
