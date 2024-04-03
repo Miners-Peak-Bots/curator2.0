@@ -4,12 +4,18 @@ from user.models import TeleUser
 from django.utils import timezone
 
 
-def cron_job(bot):
+def cron_job(bot, startup_check=None):
     for user in TeleUser.objects.filter(verified=True):
         expires_at = user.verification_expires_at
 
         expires_at_string = expires_at.strftime('%Y-%m-%d')
-        is_notified = user.verification_expires_thirty_days_notification
+
+        if startup_check:
+            is_notified = False
+        else:
+            is_notified = user.verification_expires_thirty_days_notification
+
+        
         current_time = timezone.now()
 
         remaining_days = (expires_at - current_time).days
@@ -67,11 +73,9 @@ def initialize():
     bot.start()
     from pyrogram import idle
 
-    cron_job(bot)
+    cron_job(bot, startup_check=True)
+    jobs.add_job(cron_job, trigger='cron', day="*", hour=0, minute=0, second=0, kwargs=kwargs, id='cron-job')
+
     idle()
 
     bot.stop()
-
-    jobs.add_job(cron_job, trigger='cron', day="*", hour=00, minute=00, second=0, kwargs=kwargs, id='cron-job')
-
-    bot.run()
