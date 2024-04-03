@@ -64,8 +64,14 @@ def initialize():
     jobs.start()
     kwargs = {'bot': bot}
 
-    with bot:
-        cron_job(bot)
+    bot.start()
+    from pyrogram import idle
+
+    cron_job(bot)
+    idle()
+
+    bot.stop()
 
     jobs.add_job(cron_job, trigger='cron', day="*", hour=00, minute=00, second=0, kwargs=kwargs, id='cron-job')
+
     bot.run()
