@@ -142,18 +142,18 @@ def handle_msg5(client, msg):
         word_limit = group_limits.word_limit
         new_line_limit = group_limits.new_line_limit
 
-        if word_limit is not None and len(msg.text) > word_limit:
+        if (word_limit is not None and len(msg.text) > word_limit) or (
+            new_line_limit is not None and msg.text.count('\n') > new_line_limit
+        ):
             msg.delete()
 
-        elif new_line_limit is not None and msg.text.count('\n') > new_line_limit:
-            msg.delete()
+            sent = client.send_message(
+                group_id,
+                text=f'Hi {msg.from_user.mention}, Make sure your message doesnt contain more than {word_limit} words(including spaces) and {new_line_limit} lines.',
+            )
 
-        sent = client.send_message(
-            group_id,
-            text=f'Hi {msg.from_user.mention}, Make sure your message doesnt contain more than {word_limit} words(including spaces) and {new_line_limit} lines.',
-        )
+            sched_cleanup(msg=sent, interval=10)
 
-        sched_cleanup(msg=sent, interval=10)
         return None
 
 
