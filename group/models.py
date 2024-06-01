@@ -36,7 +36,7 @@ class Group(models.Model):
         if self.title:
             return f'{self.title}({self.group_id})'
         else:
-            return self.group_id
+            return f'{self.group_id}'
 
     def get_admin_privileges(self):
         if self.admin_privilege:
@@ -58,6 +58,13 @@ class Group(models.Model):
 
     class Meta:
         db_table = 'groups'
+
+
+class GroupLimits(models.Model):
+    group = models.OneToOneField(Group, on_delete=models.CASCADE, related_name="group_limits")
+
+    word_limit = models.IntegerField(null=True, blank=True)
+    new_line_limit = models.IntegerField(null=True, blank=True)
 
 
 class Permission(models.Model):

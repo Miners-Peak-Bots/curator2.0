@@ -1,11 +1,14 @@
-from pyrogram import Client, idle, filters
 from django.conf import settings
-from user.models import TeleUser
-from bot.utils.msg import log
-from pyrogram.enums import ChatType
 from django.core.cache import cache
-from group.models import Group
+from django.core.exceptions import ObjectDoesNotExist
+from pyrogram import Client, filters, idle
+from pyrogram.enums import ChatType
 
+from bot.utils.msg import log
+from bot.utils.msg import sched_cleanup
+
+from group.models import Group
+from user.models import TeleUser
 
 api_id = settings.BOT_API_ID
 api_hash = settings.BOT_API_HASH
@@ -21,6 +24,10 @@ def get_admins():
     admins = [admin[0] for admin in admins_all]
     admins.extend(settings.BOT_MASTER)
     return admins
+
+
+def is_admin(user_id):
+    return user_id in get_admins()
 
 
 @app.on_message(filters.regex('.+[\u4E00-\uA000]'))
@@ -44,7 +51,10 @@ def handle_msg4(client, msg):
         user = TeleUser.objects.get(pk=msg.from_user.id)
     except TeleUser.DoesNotExist:
         user = TeleUser.objects.create(
-            tele_id=msg.from_user.id, first_name=msg.from_user.first_name, last_name=msg.from_user.last_name, username=msg.from_user.username
+            tele_id=msg.from_user.id,
+            first_name=msg.from_user.first_name,
+            last_name=msg.from_user.last_name,
+            username=msg.from_user.username,
         )
 
     user.msg_count = user.msg_count + 1
@@ -109,6 +119,47 @@ def handle_msg4(client, msg):
                 )
                 log(client, logmsg)
             break
+
+
+@app.on_message(filters.group)
+def handle_msg5(client, msg):
+    if msg.text is None:
+        return None
+
+    group_id = msg.chat.id
+
+    try:
+        group_limits = Group.objects.get(group_id=group_id).group_limits
+    except ObjectDoesNotExist:
+        return None
+
+    user_id = msg.from_user.id
+
+    if user_id is None:
+        return None
+
+    if not is_admin(user_id):
+        word_limit = group_limits.word_limit
+        new_line_limit = group_limits.new_line_limit
+
+        if word_limit is not None:
+            if len(msg.text) > word_limit:
+                msg.delete()
+                return None
+
+        if new_line_limit is not None:
+            if msg.text.count('\n') > new_line_limit:
+                msg.delete()
+                return None
+
+        sent = client.send_message(
+            group_id,
+            text=f'Hi {msg.mention}, Make sure your message doesnt contain more than {word_limit} words(including spaces) and {new_line_limit} lines.',
+        )
+
+        sched_cleanup(sent)
+
+        return None
 
 
 def initialize():
