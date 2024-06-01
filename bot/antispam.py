@@ -121,7 +121,7 @@ def handle_msg4(client, msg):
             break
 
 
-@app.on_message(filters.group)
+@app.on_message(filters.group, group=-1)
 def handle_msg5(client, msg):
     if msg.text is None:
         return None
