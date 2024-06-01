@@ -1,11 +1,9 @@
 from django.conf import settings
 from django.core.cache import cache
-from django.core.exceptions import ObjectDoesNotExist
 from pyrogram import Client, filters, idle
 from pyrogram.enums import ChatType
 
 from bot.utils.msg import log
-from bot.utils.msg import sched_cleanup
 
 from group.models import Group
 from user.models import TeleUser
@@ -14,13 +12,14 @@ api_id = settings.BOT_API_ID
 api_hash = settings.BOT_API_HASH
 token = settings.ANTISPAM_BOT_TOKEN
 
-app = Client('antispam.bot', api_id=api_id, api_hash=api_hash, bot_token=token)
+
+app = Client("antispam.bot", api_id=api_id, api_hash=api_hash, bot_token=token)
 
 msgcount = {}
 
 
 def get_admins():
-    admins_all = TeleUser.objects.filter(admin=True).values_list('tele_id')
+    admins_all = TeleUser.objects.filter(admin=True).values_list("tele_id")
     admins = [admin[0] for admin in admins_all]
     admins.extend(settings.BOT_MASTER)
     return admins
@@ -30,17 +29,19 @@ def is_admin(user_id):
     return user_id in get_admins()
 
 
-@app.on_message(filters.regex('.+[\u4E00-\uA000]'))
+@app.on_message(filters.regex(".+[\u4e00-\ua000]"))
 def handle_msg(client, msg):
     msg.delete()
 
 
-@app.on_message(filters.regex('.+[\u0600-\u06ff]'))
+@app.on_message(filters.regex(".+[\u0600-\u06ff]"))
 def handle_msg2(client, msg):
     msg.delete()
 
 
-@app.on_message(filters.regex('(https?:\/\/)?(www[.])?(telegram|t)\.me\/([a-zA-Z0-9_-]*)\/?$'))
+@app.on_message(
+    filters.regex("(https?:\/\/)?(www[.])?(telegram|t)\.me\/([a-zA-Z0-9_-]*)\/?$")
+)
 def handle_msg3(client, msg):
     msg.delete()
 
@@ -64,13 +65,13 @@ def handle_msg4(client, msg):
     if msg.from_user.id in admins:
         return False
 
-    patterns20 = cache.get('blacklist20', [])
-    patterns = cache.get('blacklist', [])
+    patterns20 = cache.get("blacklist20", [])
+    patterns = cache.get("blacklist", [])
 
     try:
         group = Group.objects.get(pk=msg.chat.id)
     except Group.DoesNotExist:
-        msg = f'Group {msg.chat.title}({msg.chat.id}) is not a vendor'
+        msg = f"Group {msg.chat.title}({msg.chat.id}) is not a vendor"
         log(client, msg)
         return False
 
@@ -86,12 +87,15 @@ def handle_msg4(client, msg):
                 """
                 Send log to log group
                 """
-                if msg.chat.type == ChatType.SUPERGROUP or msg.chat.type == ChatType.GROUP:
+                if (
+                    msg.chat.type == ChatType.SUPERGROUP
+                    or msg.chat.type == ChatType.GROUP
+                ):
                     logmsg = (
-                        f'Message from {msg.from_user.mention} in '
-                        f'{msg.chat.title} was deleted for blacklisted word'
-                        f'/phrase\n<code>{msg.text}</code>\n'
-                        f'Matched pattern: {pattern.regex}'
+                        f"Message from {msg.from_user.mention} in "
+                        f"{msg.chat.title} was deleted for blacklisted word"
+                        f"/phrase\n<code>{msg.text}</code>\n"
+                        f"Matched pattern: {pattern.regex}"
                     )
                     log(client, logmsg)
                     """
@@ -112,51 +116,15 @@ def handle_msg4(client, msg):
             """
             if msg.chat.type == ChatType.SUPERGROUP or msg.chat.type == ChatType.GROUP:
                 logmsg = (
-                    f'Message from {msg.from_user.mention} in '
-                    f'{msg.chat.title} was deleted for blacklisted word'
-                    f'/phrase\n<code>{msg.text}</code>\n'
-                    f'Matched pattern: {pattern.regex}'
+                    f"Message from {msg.from_user.mention} in "
+                    f"{msg.chat.title} was deleted for blacklisted word"
+                    f"/phrase\n<code>{msg.text}</code>\n"
+                    f"Matched pattern: {pattern.regex}"
                 )
                 log(client, logmsg)
             break
 
 
-@app.on_message(filters.group, group=-1)
-def handle_msg5(client, msg):
-    if msg.text is None:
-        return None
-
-    group_id = msg.chat.id
-
-    try:
-        group_limits = Group.objects.get(group_id=group_id).group_limits
-    except ObjectDoesNotExist:
-        return None
-
-    user_id = msg.from_user.id
-
-    if user_id is None:
-        return None
-
-    if not is_admin(user_id):
-        word_limit = group_limits.word_limit
-        new_line_limit = group_limits.new_line_limit
-
-        if (word_limit is not None and len(msg.text) > word_limit) or (
-            new_line_limit is not None and msg.text.count('\n') > new_line_limit
-        ):
-            msg.delete()
-
-            sent = client.send_message(
-                group_id,
-                text=f'Hi {msg.from_user.mention}, Make sure your message doesnt contain more than {word_limit} words(including spaces) and {new_line_limit} lines.',
-            )
-
-            sched_cleanup(msg=sent, interval=10)
-
-        return None
-
-
 def initialize():
-    print('Antispam module initialized')
+    print("Antispam module initialized")
     app.run()

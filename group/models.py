@@ -4,20 +4,22 @@ from pyrogram.types import ChatPermissions, ChatPrivileges
 
 class Group(models.Model):
     group_id = models.CharField(max_length=30, primary_key=True)
-    permission = models.ForeignKey('group.Permission', on_delete=models.SET_NULL, null=True, blank=True)
+    permission = models.ForeignKey(
+        "group.Permission", on_delete=models.SET_NULL, null=True, blank=True
+    )
     verified_privilege = models.ForeignKey(
-        'group.Privilege',
-        help_text=('Privileges for verified' 'users'),
+        "group.Privilege",
+        help_text=("Privileges for verified" "users"),
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )
     admin_privilege = models.ForeignKey(
-        'group.Privilege',
-        help_text=('Privileges for admins'),
+        "group.Privilege",
+        help_text=("Privileges for admins"),
         on_delete=models.SET_NULL,
         null=True,
-        related_name='+',
+        related_name="+",
         blank=True,
     )
     shortname = models.CharField(max_length=30, null=True, blank=True, unique=True)
@@ -25,7 +27,7 @@ class Group(models.Model):
     vendor = models.BooleanField(default=False)
     enabled = models.BooleanField(default=True)
     log_channel = models.IntegerField(null=True, blank=True)
-    flair = models.CharField(null=True, max_length=30, blank=True, default='Verified')
+    flair = models.CharField(null=True, max_length=30, blank=True, default="Verified")
     title = models.CharField(null=True, max_length=30, blank=True)
     username = models.CharField(null=True, max_length=30, blank=True)
     link = models.CharField(null=True, max_length=30, blank=True)
@@ -34,9 +36,9 @@ class Group(models.Model):
 
     def __str__(self):
         if self.title:
-            return f'{self.title}({self.group_id})'
+            return f"{self.title}({self.group_id})"
         else:
-            return f'{self.group_id}'
+            return f"{self.group_id}"
 
     def get_admin_privileges(self):
         if self.admin_privilege:
@@ -57,13 +59,15 @@ class Group(models.Model):
             return ChatPrivileges(can_invite_users=False)
 
     class Meta:
-        db_table = 'groups'
+        db_table = "groups"
 
 
 class GroupLimits(models.Model):
-    group = models.OneToOneField(Group, on_delete=models.CASCADE, related_name="group_limits")
+    group = models.OneToOneField(
+        Group, on_delete=models.CASCADE, related_name="group_limits"
+    )
 
-    word_limit = models.IntegerField(null=True, blank=True)
+    character_limit = models.IntegerField(null=True, blank=True)
     new_line_limit = models.IntegerField(null=True, blank=True)
 
 
@@ -90,8 +94,12 @@ class Privilege(models.Model):
     can_restrict_members = models.BooleanField(default=False)
     can_promote_members = models.BooleanField(default=False)
     can_change_info = models.BooleanField(default=False)
-    can_post_messages = models.BooleanField(default=False, help_text="Only for channels")
-    can_edit_messages = models.BooleanField(default=False, help_text="Only for channels")
+    can_post_messages = models.BooleanField(
+        default=False, help_text="Only for channels"
+    )
+    can_edit_messages = models.BooleanField(
+        default=False, help_text="Only for channels"
+    )
     can_invite_users = models.BooleanField(default=False)
     can_pin_messages = models.BooleanField(default=True)
     is_anonymous = models.BooleanField(default=False)
