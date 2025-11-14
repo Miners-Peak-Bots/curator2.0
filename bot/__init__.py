@@ -39,7 +39,7 @@ def cron_job(bot, startup_check=None):
                 user_details = f"{full_name} -- {username_string}"
 
             message = f"Verification of {user_details} expired on {expires_at_string}"
-            bot.send_message("@joe_cryptech", message)
+            bot.send_message("@joe_sytneq", message)
 
         elif remaining_days <= 30 and is_notified is False:
             user.verification_expires_thirty_days_notification = True
@@ -63,7 +63,7 @@ def cron_job(bot, startup_check=None):
             message = (
                 f"Verification of {user_details} will expire at {expires_at_string} -- Remaining days: {remaining_days}"
             )
-            bot.send_message("@joe_cryptech", message)
+            bot.send_message("@joe_sytneq", message)
 
 
 def initialize():
