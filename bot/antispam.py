@@ -7,6 +7,7 @@ from bot.utils.msg import log
 
 from group.models import Group
 from user.models import TeleUser
+from blacklist.models import Blacklist
 
 api_id = settings.BOT_API_ID
 api_hash = settings.BOT_API_HASH
@@ -16,6 +17,19 @@ token = settings.ANTISPAM_BOT_TOKEN
 app = Client("antispam.bot", api_id=api_id, api_hash=api_hash, bot_token=token)
 
 msgcount = {}
+
+
+def load_blacklist_cache():
+    """Load blacklist from DB into cache on startup"""
+    # Load permanent blacklist
+    blacklist = list(Blacklist.objects.filter(is_temp=False))
+    cache.set('blacklist', blacklist)
+    print(f"[Antispam] Loaded {len(blacklist)} permanent blacklist entries into cache")
+    
+    # Load temp blacklist (first 20 messages)
+    blacklist20 = list(Blacklist.objects.filter(is_temp=True))
+    cache.set('blacklist20', blacklist20)
+    print(f"[Antispam] Loaded {len(blacklist20)} temp blacklist entries into cache")
 
 
 def get_admins():
@@ -127,4 +141,6 @@ def handle_msg4(client, msg):
 
 def initialize():
     print("Antispam module initialized")
+    # Load blacklist into cache before starting
+    load_blacklist_cache()
     app.run()

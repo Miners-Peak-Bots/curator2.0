@@ -2,6 +2,21 @@ from .core import bot
 from .sched import jobs
 from user.models import TeleUser
 from django.utils import timezone
+from django.core.cache import cache
+from blacklist.models import Blacklist
+
+
+def load_blacklist_cache():
+    """Load blacklist from DB into cache on startup"""
+    # Load permanent blacklist
+    blacklist = list(Blacklist.objects.filter(is_temp=False))
+    cache.set('blacklist', blacklist)
+    print(f"[Blacklist] Loaded {len(blacklist)} permanent entries into cache")
+    
+    # Load temp blacklist (first 20 messages)
+    blacklist20 = list(Blacklist.objects.filter(is_temp=True))
+    cache.set('blacklist20', blacklist20)
+    print(f"[Blacklist] Loaded {len(blacklist20)} temp (20-msg) entries into cache")
 
 
 def cron_job(bot, startup_check=None):
@@ -69,6 +84,9 @@ def cron_job(bot, startup_check=None):
 def initialize():
     jobs.start()
     kwargs = {'bot': bot}
+
+    # Load blacklist into cache before bot starts
+    load_blacklist_cache()
 
     bot.start()
     from pyrogram import idle
